@@ -5,15 +5,16 @@
 
 <html>
 <head>
-  <title>addFile (Dia::Uml)</title>
+  <title>eachPackage (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 158</span>
-158:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addFile</span>(<span class="ruby-identifier">srcFile</span>)
-159:       <span class="ruby-identifier">readFile</span>(<span class="ruby-identifier">srcFile</span>) ;
-160:       <span class="ruby-identifier">scan</span>() ;
-161:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 251</span>
+251:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eachPackage</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+252:       <span class="ruby-ivar">@packageTable</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">package</span><span class="ruby-operator">|</span>
+253:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">package</span>) ;
+254:       }
+255:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

@@ -5,20 +5,16 @@
 
 <html>
 <head>
-  <title>new (Dia::Uml)</title>
+  <title>eachGeneralization (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 145</span>
-145:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">srcFile</span>)
-146:       <span class="ruby-keyword kw">super</span>
-147:       <span class="ruby-ivar">@classTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>,<span class="ruby-identifier">:name</span>]) ;
-148:       <span class="ruby-ivar">@generalizationTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>]) ;
-149:       <span class="ruby-ivar">@packageTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>,<span class="ruby-identifier">:name</span>]) ;
-150:       <span class="ruby-ivar">@associationTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>]) ;
-151: 
-152:       <span class="ruby-identifier">scan</span>() ;
-153:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 242</span>
+242:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eachGeneralization</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+243:       <span class="ruby-ivar">@generalizationTable</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">gen</span><span class="ruby-operator">|</span>
+244:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">gen</span>) ;
+245:       }
+246:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

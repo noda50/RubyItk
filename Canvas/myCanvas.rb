@@ -1,14 +1,10 @@
 ## -*- Mode:Ruby -*-
-##
-##Header:
-##Title: Generic Canvas Utility
-##Author: Itsuki Noda
-##Type: class definition
-##Date: 2004/12/01
-##EndHeader:
-##
-##Usage:
-#   * create canvas
+##= Generic Canvas Utility
+# Author:: Itsuki Noda
+# Type:: class definition
+# Date:: 2004/12/01
+# === Usage:
+# * create canvas
 #	canvas = MyCanvas.new('gtk',  # or 'tgif'
 #			{ 'width'	=> 512,
 #			  'height'	=> 512,
@@ -17,19 +13,19 @@
 #			  'filename'	=> "foo.obj",	# used in tgif
 #			  '' 		=> nil}) ;
 #
-#   * single page
+# * single page
 #	canvas.singlePage(bgcolor) {
 #	  # draw operations
 #	}
 #
-#   * multi page 
+# * multi page 
 #	canvas.multiPage() {
 #	  canvas.page(bgcolor) { # draw opereations }
 #	  canvas.page(bgcolor) { # draw opereations }
 #	  ...
 #	}
 #
-#   * animation
+# * animation
 #	canvas.animation(true,interval=0,bgcolor="white") {|i|
 #	  # draw operations
 #	}
@@ -42,7 +38,7 @@
 #	  # draw operations
 #	}
 #
-#   * primitive form
+# * primitive form
 #	canvas.run() ;
 #	canvas.beginPage(bgcolor) ;
 #	# draw operations
@@ -50,7 +46,7 @@
 #	# additional pages
 #	canvas.finish() ;
 #
-#   * draw primitives
+# * draw primitives
 #	drawDashedLine(x0,y0,x1,y1,thickness=1,color="grey") ;
 #	drawSolidLine(x0,y0,x1,y1,thickness=1,color="black") ;
 #
@@ -72,8 +68,7 @@
 #	drawFilledPolygon([[x0,y0],[x1,y1],...], color="black")
 #	drawFramedPolygon([[x0,y0],[x1,y1],...], framecolor="black",fillcolor="white")
 #       drawText(x,y,text,fontSize = 14, fontFamily = :times, color = "black") 
-
-##EndUsage:
+#
 
 require "myCanvasDevBase.rb" ;
 require "myCanvasTgif.rb" ;

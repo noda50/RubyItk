@@ -5,17 +5,19 @@
 
 <html>
 <head>
-  <title>float2maxima (Itk::Maxima)</title>
+  <title>call (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 150</span>
-150:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">float2maxima</span>(<span class="ruby-identifier">value</span>)
-151:       <span class="ruby-identifier">str</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span> ;
-152:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/^0\./</span>,<span class="ruby-value str">'.'</span>) ;
-153:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/^-0\./</span>,<span class="ruby-value str">'-.'</span>) ;
-154:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
-155:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 42</span>
+42:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">form</span>)
+43: <span class="ruby-comment cmt">#      p [:inp, form] ;</span>
+44:       <span class="ruby-ivar">@strm</span>.<span class="ruby-identifier">puts</span>(<span class="ruby-identifier">form</span>) ;
+45: <span class="ruby-comment cmt">#      r = @strm.gets() ;</span>
+46:       <span class="ruby-identifier">r</span> = <span class="ruby-identifier">readAfterSkip</span>() ;
+47: <span class="ruby-comment cmt">#      p [:ret, r] ;</span>
+48:       <span class="ruby-identifier">r</span>
+49:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

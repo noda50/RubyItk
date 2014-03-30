@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: myCanvas.rb</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>myCanvas.rb</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>Canvas/myCanvas.rb
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Mon Mar 31 03:07:56 +0900 2014</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+    <div id="diagram">
+      <map id="map" name="map">
+  <area shape="rect" coords="31,101,116,149"      href="../../classes/MyCanvas.html" alt="MyCanvas" />
+  <area shape="rect" coords="5,5,141,53"      href="../../classes/MyCanvasDevBase.html" alt="MyCanvasDevBase" />
+</map>
+<img src="../../dot/f_4.png" usemap="#map" border="0" alt="dot/f_4.png">
+    </div>
+
+    <div id="description">
+      <pre>
+ -*- Mode:Ruby -*-
+</pre>
+<h1>Generic Canvas Utility</h1>
+<table>
+<tr><td valign="top">Author:</td><td>Itsuki Noda
+
+</td></tr>
+<tr><td valign="top">Type:</td><td>class definition
+
+</td></tr>
+<tr><td valign="top">Date:</td><td>2004/12/01
+
+</td></tr>
+</table>
+<h3>Usage:</h3>
+<ul>
+<li>create canvas
+
+<pre>
+    canvas = MyCanvas.new('gtk',  # or 'tgif'
+                    { 'width'   =&gt; 512,
+                      'height'  =&gt; 512,
+                      'scale'   =&gt; 100,
+                      'centerp' =&gt; true,
+                      'filename'        =&gt; &quot;foo.obj&quot;,  # used in tgif
+                      ''                =&gt; nil}) ;
+</pre>
+</li>
+<li>single page
+
+<pre>
+    canvas.singlePage(bgcolor) {
+      # draw operations
+    }
+</pre>
+</li>
+<li>multi page
+
+<pre>
+    canvas.multiPage() {
+      canvas.page(bgcolor) { # draw opereations }
+      canvas.page(bgcolor) { # draw opereations }
+      ...
+    }
+</pre>
+</li>
+<li>animation
+
+<pre>
+    canvas.animation(true,interval=0,bgcolor=&quot;white&quot;) {|i|
+      # draw operations
+    }
+    -OR-
+    canvas.animation(10,interval=0,bgcolor=&quot;white&quot;) {|i|
+      # draw operations
+    }
+    -OR-
+    canvas.animation((0...10),interval=0,bgcolor=&quot;white&quot;) {|i|
+      # draw operations
+    }
+</pre>
+</li>
+<li>primitive form
+
+<pre>
+    canvas.run() ;
+    canvas.beginPage(bgcolor) ;
+    # draw operations
+    canvas.endPage() ;
+    # additional pages
+    canvas.finish() ;
+</pre>
+</li>
+<li>draw primitives
+
+<pre>
+    drawDashedLine(x0,y0,x1,y1,thickness=1,color=&quot;grey&quot;) ;
+    drawSolidLine(x0,y0,x1,y1,thickness=1,color=&quot;black&quot;) ;
+
+    drawCircle(x,y,r,fillp,color=&quot;black&quot;)
+    drawEmptyCircle(x,y,r,color=&quot;black&quot;)
+    drawFilledCircle(x,y,r,color=&quot;black&quot;)
+    drawFramedCircle(x,y,r,framecolor=&quot;black&quot;,fillcolor=&quot;white&quot;)
+
+    drawRectangle(x,y,w,h,fillp,color=&quot;black&quot;)
+    drawEmptyRectangle(x,y,w,h,color=&quot;black&quot;)
+    drawFilledRectangle(x,y,w,h,color=&quot;black&quot;)
+    drawFramedRectangle(x,y,w,h,framecolor=&quot;black&quot;,fillcolor=&quot;white&quot;)
+    drawEmptyRectangleAbs(x0,y0,x1,y1,color=&quot;black&quot;)
+    drawFilledRectangleAbs(x0,y0,x1,y1,color=&quot;black&quot;)
+    drawFramedRectangleAbs(x0,y0,x1,y1,framecolor=&quot;black&quot;,fillcolor=&quot;white&quot;)
+
+    drawPolygon([[x0,y0],[x1,y1],...],fillp, color=&quot;black&quot;)
+    drawEmptyPolygon([[x0,y0],[x1,y1],...], color=&quot;black&quot;)
+    drawFilledPolygon([[x0,y0],[x1,y1],...], color=&quot;black&quot;)
+    drawFramedPolygon([[x0,y0],[x1,y1],...], framecolor=&quot;black&quot;,fillcolor=&quot;white&quot;)
+    drawText(x,y,text,fontSize = 14, fontFamily = :times, color = &quot;black&quot;)
+</pre>
+</li>
+</ul>
+
+    </div>
+
+    <div id="requires-list">
+      <h3 class="section-bar">Required files</h3>
+
+      <div class="name-list">
+      myCanvasDevBase.rb&nbsp;&nbsp;
+      myCanvasTgif.rb&nbsp;&nbsp;
+      myCanvasGtk.rb&nbsp;&nbsp;
+      </div>
+    </div>
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

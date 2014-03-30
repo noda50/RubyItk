@@ -1,40 +1,93 @@
 digraph TopLevel {
     compound = true
     fontname = Arial
+    label = "TopLevel"
     bgcolor = lightcyan1
     fontsize = 8
-    label = "TopLevel"
     node [
         color = black,
         fontname = Arial,
         fontsize = 8
     ]
 
-    Test [
-        style = filled,
-        shape = ellipse,
-        color = palegoldenrod,
-        fontcolor = black,
-        URL = "classes/Test.html",
-        label = "Test"
+    subgraph cluster_XML {
+        color = blue
+        style = filled
+        URL = "classes/XML.html"
+        fontname = Arial
+        label = "XML"
+        fillcolor = palegreen1
+        XML [
+            shape = plaintext,
+            height = 0.01,
+            width = 0.75,
+            label = ""
+        ]
+
+    }
+
+    REXML [
+        URL = "classes/REXML.html",
+        shape = box,
+        label = "REXML"
+    ]
+
+    REXML -> XML [
+        lhead = cluster_XML
     ]
 
     Dia [
-        style = filled,
-        shape = ellipse,
         color = palegoldenrod,
+        style = filled,
         fontcolor = black,
         URL = "classes/Dia.html",
+        shape = ellipse,
         label = "Dia"
     ]
 
+    HashedArray [
+        color = palegoldenrod,
+        style = filled,
+        fontcolor = black,
+        URL = "classes/HashedArray.html",
+        shape = ellipse,
+        label = "HashedArray"
+    ]
+
+    MyTest [
+        color = palegoldenrod,
+        style = filled,
+        fontcolor = black,
+        URL = "classes/MyTest.html",
+        shape = ellipse,
+        label = "MyTest"
+    ]
+
     Utility [
-        shape = box,
         URL = "classes/Utility.html",
+        shape = box,
         label = "Utility"
     ]
 
     Utility -> Dia [
+
+    ]
+
+    Array [
+        URL = "classes/Array.html",
+        label = "Array"
+    ]
+
+    Array -> HashedArray [
+
+    ]
+
+    Test__Unit__TestCase [
+        URL = "classes/Test/Unit/TestCase.html",
+        label = "Test::Unit::TestCase"
+    ]
+
+    Test__Unit__TestCase -> MyTest [
 
     ]
 

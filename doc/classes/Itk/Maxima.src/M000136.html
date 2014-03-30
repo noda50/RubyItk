@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>matrix2maxima (Itk::Maxima)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 136</span>
+136:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">matrix2maxima</span>(<span class="ruby-identifier">matrix</span>)
+137:       <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;matrix(&quot;</span> ;
+138:       <span class="ruby-identifier">matrix</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">vector</span><span class="ruby-operator">|</span>
+139:         <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;[&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">vector</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">float2maxima</span>(<span class="ruby-identifier">v</span>)}.<span class="ruby-identifier">join</span>(<span class="ruby-value str">','</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;],&quot;</span> ;
+140:       }
+141:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">chop!</span>() ; <span class="ruby-comment cmt">## remove last &quot;,&quot;</span>
+142:       <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;)&quot;</span> ;
+143:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
+144:     <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

@@ -55,10 +55,6 @@
         <tr class="top-aligned-row">
             <td><strong>In:</strong></td>
             <td>
-                <a href="../files/Dia/Dia_rb.html">
-                Dia/Dia.rb
-                </a>
-        <br />
                 <a href="../files/Dia/DiaUml_rb.html">
                 Dia/DiaUml.rb
                 </a>
@@ -84,15 +80,15 @@
     <div id="diagram">
       <map id="map" name="map">
   <area shape="rect" coords="27,5,99,53"      href="REXML.html" alt="REXML" />
-  <area shape="rect" coords="155,101,227,149"      href="MyTest.html" alt="MyTest" />
-  <area shape="rect" coords="283,101,355,149"      href="Dia.html" alt="Dia" />
-  <area shape="rect" coords="379,101,477,149"      href="HashedArray.html" alt="HashedArray" />
-  <area shape="rect" coords="123,5,259,53"      href="Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
-  <area shape="rect" coords="283,5,355,53"      href="Utility.html" alt="Utility" />
-  <area shape="rect" coords="392,5,464,53"      href="Array.html" alt="Array" />
+  <area shape="rect" coords="123,101,195,149"      href="Dia.html" alt="Dia" />
+  <area shape="rect" coords="219,101,317,149"      href="HashedArray.html" alt="HashedArray" />
+  <area shape="rect" coords="360,101,432,149"      href="MyTest.html" alt="MyTest" />
+  <area shape="rect" coords="123,5,195,53"      href="Utility.html" alt="Utility" />
+  <area shape="rect" coords="232,5,304,53"      href="Array.html" alt="Array" />
+  <area shape="rect" coords="328,5,464,53"      href="Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
   <area shape="rect" coords="16,89,109,137"      href="XML.html" alt="XML" />
 </map>
-<img src="../dot/f_2.png" usemap="#map" border="0" alt="dot/f_2.png">
+<img src="../dot/f_1.png" usemap="#map" border="0" alt="dot/f_1.png">
     </div>
 
     <div id="description">
@@ -109,22 +105,13 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000037">addObject</a>&nbsp;&nbsp;
-      <a href="#M000028">addObject</a>&nbsp;&nbsp;
-      <a href="#M000031">assignAllConnections</a>&nbsp;&nbsp;
-      <a href="#M000032">assignAllLabels</a>&nbsp;&nbsp;
-      <a href="#M000038">eachObject</a>&nbsp;&nbsp;
-      <a href="#M000030">getLabeledList</a>&nbsp;&nbsp;
-      <a href="#M000039">getObject</a>&nbsp;&nbsp;
-      <a href="#M000029">getTypedList</a>&nbsp;&nbsp;
-      <a href="#M000033">new</a>&nbsp;&nbsp;
-      <a href="#M000024">new</a>&nbsp;&nbsp;
-      <a href="#M000034">readFile</a>&nbsp;&nbsp;
-      <a href="#M000035">scanEachLayer</a>&nbsp;&nbsp;
-      <a href="#M000036">scanEachObject</a>&nbsp;&nbsp;
-      <a href="#M000025">scanFile</a>&nbsp;&nbsp;
-      <a href="#M000026">scanStream</a>&nbsp;&nbsp;
-      <a href="#M000027">scanXml</a>&nbsp;&nbsp;
+      <a href="#M000043">addObject</a>&nbsp;&nbsp;
+      <a href="#M000044">eachObject</a>&nbsp;&nbsp;
+      <a href="#M000045">getObject</a>&nbsp;&nbsp;
+      <a href="#M000039">new</a>&nbsp;&nbsp;
+      <a href="#M000040">readFile</a>&nbsp;&nbsp;
+      <a href="#M000041">scanEachLayer</a>&nbsp;&nbsp;
+      <a href="#M000042">scanEachObject</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -146,8 +133,6 @@
       <h3 class="section-bar">Classes and Modules</h3>
 
       Module <a href="Dia/Utility.html" class="link">Dia::Utility</a><br />
-Class <a href="Dia/Connection.html" class="link">Dia::Connection</a><br />
-Class <a href="Dia/Object.html" class="link">Dia::Object</a><br />
 Class <a href="Dia/Uml.html" class="link">Dia::Uml</a><br />
 
     </div>
@@ -164,22 +149,9 @@ Class <a href="Dia/Uml.html" class="link">Dia::Uml</a><br />
           <td class="context-item-name">doc</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
           <td class="context-item-desc">
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-</td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">doc</td>
-          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc">
 <a href="XML.html">XML</a> Document
 
 </td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">labeledList</td>
-          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">layerTable</td>
@@ -190,20 +162,10 @@ Layer Table
 </td>
         </tr>
         <tr class="top-aligned-row context-row">
-          <td class="context-item-name">objectList</td>
-          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
-        </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">objectTable</td>
-          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
-        </tr>
-        <tr class="top-aligned-row context-row">
           <td class="context-item-name">objectTable</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
           <td class="context-item-desc">
-<a href="Dia/Object.html">Object</a> Table
+Object Table
 
 </td>
         </tr>
@@ -215,11 +177,6 @@ source file
 
 </td>
         </tr>
-        <tr class="top-aligned-row context-row">
-          <td class="context-item-name">typedList</td>
-          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
-        </tr>
         </table>
       </div>
     </div>
@@ -230,12 +187,12 @@ source file
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000033" class="method-detail">
-        <a name="M000033"></a>
+      <div id="method-M000039" class="method-detail">
+        <a name="M000039"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000033.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000033.html');return false;">
+          <a href="Dia.src/M000039.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000039.html');return false;">
           <span class="method-name">new</span><span class="method-args">(srcFile = nil)</span>
           </a>
         </div>
@@ -244,29 +201,14 @@ source file
         </div>
       </div>
 
-      <div id="method-M000024" class="method-detail">
-        <a name="M000024"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000024.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000024.html');return false;">
-          <span class="method-name">new</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
-        </div>
-      </div>
-
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000037" class="method-detail">
-        <a name="M000037"></a>
+      <div id="method-M000043" class="method-detail">
+        <a name="M000043"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000037.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000037.html');return false;">
+          <a href="Dia.src/M000043.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000043.html');return false;">
           <span class="method-name">addObject</span><span class="method-args">(object)</span>
           </a>
         </div>
@@ -275,57 +217,12 @@ source file
         </div>
       </div>
 
-      <div id="method-M000028" class="method-detail">
-        <a name="M000028"></a>
+      <div id="method-M000044" class="method-detail">
+        <a name="M000044"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000028.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000028.html');return false;">
-          <span class="method-name">addObject</span><span class="method-args">(obj)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
-        </div>
-      </div>
-
-      <div id="method-M000031" class="method-detail">
-        <a name="M000031"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000031.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000031.html');return false;">
-          <span class="method-name">assignAllConnections</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
-        </div>
-      </div>
-
-      <div id="method-M000032" class="method-detail">
-        <a name="M000032"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000032.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000032.html');return false;">
-          <span class="method-name">assignAllLabels</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
-        </div>
-      </div>
-
-      <div id="method-M000038" class="method-detail">
-        <a name="M000038"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000038.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000038.html');return false;">
+          <a href="Dia.src/M000044.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000044.html');return false;">
           <span class="method-name">eachObject</span><span class="method-args">(&amp;block)</span>
           </a>
         </div>
@@ -334,27 +231,12 @@ source file
         </div>
       </div>
 
-      <div id="method-M000030" class="method-detail">
-        <a name="M000030"></a>
+      <div id="method-M000045" class="method-detail">
+        <a name="M000045"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000030.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000030.html');return false;">
-          <span class="method-name">getLabeledList</span><span class="method-args">(label)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
-        </div>
-      </div>
-
-      <div id="method-M000039" class="method-detail">
-        <a name="M000039"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000039.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000039.html');return false;">
+          <a href="Dia.src/M000045.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000045.html');return false;">
           <span class="method-name">getObject</span><span class="method-args">(id)</span>
           </a>
         </div>
@@ -363,27 +245,12 @@ source file
         </div>
       </div>
 
-      <div id="method-M000029" class="method-detail">
-        <a name="M000029"></a>
+      <div id="method-M000040" class="method-detail">
+        <a name="M000040"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000029.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000029.html');return false;">
-          <span class="method-name">getTypedList</span><span class="method-args">(type)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
-        </div>
-      </div>
-
-      <div id="method-M000034" class="method-detail">
-        <a name="M000034"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000034.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000034.html');return false;">
+          <a href="Dia.src/M000040.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000040.html');return false;">
           <span class="method-name">readFile</span><span class="method-args">(filename)</span>
           </a>
         </div>
@@ -392,12 +259,12 @@ source file
         </div>
       </div>
 
-      <div id="method-M000035" class="method-detail">
-        <a name="M000035"></a>
+      <div id="method-M000041" class="method-detail">
+        <a name="M000041"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000035.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000035.html');return false;">
+          <a href="Dia.src/M000041.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000041.html');return false;">
           <span class="method-name">scanEachLayer</span><span class="method-args">(&amp;block)</span>
           </a>
         </div>
@@ -406,62 +273,17 @@ source file
         </div>
       </div>
 
-      <div id="method-M000036" class="method-detail">
-        <a name="M000036"></a>
+      <div id="method-M000042" class="method-detail">
+        <a name="M000042"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000036.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000036.html');return false;">
+          <a href="Dia.src/M000042.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000042.html');return false;">
           <span class="method-name">scanEachObject</span><span class="method-args">(&amp;block)</span>
           </a>
         </div>
       
         <div class="method-description">
-        </div>
-      </div>
-
-      <div id="method-M000025" class="method-detail">
-        <a name="M000025"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000025.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000025.html');return false;">
-          <span class="method-name">scanFile</span><span class="method-args">(file)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
-        </div>
-      </div>
-
-      <div id="method-M000026" class="method-detail">
-        <a name="M000026"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000026.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000026.html');return false;">
-          <span class="method-name">scanStream</span><span class="method-args">(strm)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
-        </div>
-      </div>
-
-      <div id="method-M000027" class="method-detail">
-        <a name="M000027"></a>
-
-        <div class="method-heading">
-          <a href="Dia.src/M000027.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000027.html');return false;">
-          <span class="method-name">scanXml</span><span class="method-args">(xml)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <hr size="10"></hr>
         </div>
       </div>
 

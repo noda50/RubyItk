@@ -5,16 +5,18 @@
 
 <html>
 <head>
-  <title>invert (Itk::Maxima)</title>
+  <title>readAfterSkip (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 96</span>
- 96:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">invert</span>(<span class="ruby-identifier">matrix</span>)
- 97:       <span class="ruby-identifier">form</span> = <span class="ruby-node">&quot;invert(#{matrix2maxima(matrix)});&quot;</span> ;
- 98:       <span class="ruby-identifier">reply</span> = <span class="ruby-identifier">call</span>(<span class="ruby-identifier">form</span>) ;
- 99:       <span class="ruby-identifier">scan</span>(<span class="ruby-identifier">reply</span>) ;
-100:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 54</span>
+54:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">readAfterSkip</span>()
+55:       <span class="ruby-identifier">r</span> = <span class="ruby-keyword kw">nil</span> ;
+56:       <span class="ruby-keyword kw">while</span>(<span class="ruby-identifier">r</span> = <span class="ruby-ivar">@strm</span>.<span class="ruby-identifier">gets</span>())
+57:         <span class="ruby-keyword kw">break</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-operator">!</span>(<span class="ruby-identifier">r</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/errors/</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">r</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/warnings/</span>)) ;
+58:       <span class="ruby-keyword kw">end</span>
+59:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">r</span> ;
+60:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

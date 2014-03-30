@@ -5,14 +5,16 @@
 
 <html>
 <head>
-  <title>scan (Itk::Maxima)</title>
+  <title>setup (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 78</span>
-78:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scan</span>(<span class="ruby-identifier">form</span>)
-79:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">instance_eval</span>(<span class="ruby-identifier">reformForRuby</span>(<span class="ruby-identifier">form</span>)) ;
-80:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 32</span>
+32:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setup</span>()
+33:       <span class="ruby-ivar">@strm</span> = <span class="ruby-constant">IO</span><span class="ruby-operator">::</span><span class="ruby-identifier">popen</span>(<span class="ruby-node">&quot;#{CommandPath} #{CommandOpts}&quot;</span>,<span class="ruby-value str">'r+'</span>) ;
+34:       <span class="ruby-identifier">call</span>(<span class="ruby-value str">&quot;display2d:false;&quot;</span>)
+35:       <span class="ruby-identifier">call</span>(<span class="ruby-value str">&quot;linel:1000000000;&quot;</span>)
+36:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

@@ -1,13 +1,56 @@
 digraph TopLevel {
     compound = true
     fontname = Arial
+    label = "TopLevel"
     bgcolor = lightcyan1
     fontsize = 8
-    label = "TopLevel"
     node [
         color = black,
         fontname = Arial,
         fontsize = 8
+    ]
+
+    subgraph cluster_Itk {
+        color = blue
+        style = filled
+        URL = "classes/Itk.html"
+        fontname = Arial
+        label = "Itk"
+        fillcolor = palegreen1
+        Itk [
+            shape = plaintext,
+            height = 0.01,
+            width = 0.01,
+            label = ""
+        ]
+
+        Itk__Maxima [
+            color = palegoldenrod,
+            style = filled,
+            fontcolor = black,
+            URL = "classes/Itk/Maxima.html",
+            shape = ellipse,
+            label = "Maxima"
+        ]
+
+    }
+
+    TC_Maxima [
+        color = palegoldenrod,
+        style = filled,
+        fontcolor = black,
+        URL = "classes/TC_Maxima.html",
+        shape = ellipse,
+        label = "TC_Maxima"
+    ]
+
+    Test__Unit__TestCase [
+        URL = "classes/Test/Unit/TestCase.html",
+        label = "Test::Unit::TestCase"
+    ]
+
+    Test__Unit__TestCase -> TC_Maxima [
+
     ]
 
 }
