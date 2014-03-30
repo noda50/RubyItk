@@ -1,0 +1,95 @@
+digraph TopLevel {
+    compound = true
+    fontname = Arial
+    bgcolor = lightcyan1
+    fontsize = 8
+    label = "TopLevel"
+    node [
+        color = black,
+        fontname = Arial,
+        fontsize = 8
+    ]
+
+    subgraph cluster_XML {
+        style = filled
+        fillcolor = palegreen1
+        color = blue
+        fontname = Arial
+        URL = "classes/XML.html"
+        label = "XML"
+        XML [
+            shape = plaintext,
+            width = 0.75,
+            height = 0.01,
+            label = ""
+        ]
+
+    }
+
+    REXML [
+        shape = box,
+        URL = "classes/REXML.html",
+        label = "REXML"
+    ]
+
+    REXML -> XML [
+        lhead = cluster_XML
+    ]
+
+    MyTest [
+        style = filled,
+        shape = ellipse,
+        color = palegoldenrod,
+        fontcolor = black,
+        URL = "classes/MyTest.html",
+        label = "MyTest"
+    ]
+
+    Dia [
+        style = filled,
+        shape = ellipse,
+        color = palegoldenrod,
+        fontcolor = black,
+        URL = "classes/Dia.html",
+        label = "Dia"
+    ]
+
+    HashedArray [
+        style = filled,
+        shape = ellipse,
+        color = palegoldenrod,
+        fontcolor = black,
+        URL = "classes/HashedArray.html",
+        label = "HashedArray"
+    ]
+
+    Test__Unit__TestCase [
+        URL = "classes/Test/Unit/TestCase.html",
+        label = "Test::Unit::TestCase"
+    ]
+
+    Test__Unit__TestCase -> MyTest [
+
+    ]
+
+    Utility [
+        shape = box,
+        URL = "classes/Utility.html",
+        label = "Utility"
+    ]
+
+    Utility -> Dia [
+
+    ]
+
+    Array [
+        URL = "classes/Array.html",
+        label = "Array"
+    ]
+
+    Array -> HashedArray [
+
+    ]
+
+}
+

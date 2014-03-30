@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>getValueByType_Line (Dia::Object)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>     <span class="ruby-comment cmt"># File Dia/Dia.rb, line 88</span>
+ 88:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getValueByType_Line</span>()
+ 89:       <span class="ruby-identifier">node</span> = <span class="ruby-ivar">@attribute</span>[<span class="ruby-value str">&quot;conn_endpoints&quot;</span>] ;
+ 90:       <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">node</span>)
+ 91:         <span class="ruby-identifier">pointList</span> = [] ;
+ 92:         <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">node</span>, <span class="ruby-value str">&quot;./dia:point/@val&quot;</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">str</span><span class="ruby-operator">|</span>
+ 93:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">str</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^(.*),(.*)$/</span>) <span class="ruby-keyword kw">then</span>
+ 94:             (<span class="ruby-identifier">x</span>, <span class="ruby-identifier">y</span>) = [<span class="ruby-identifier">$1</span>.<span class="ruby-identifier">to_f</span>, <span class="ruby-identifier">$2</span>.<span class="ruby-identifier">to_f</span>] ;
+ 95:             <span class="ruby-identifier">pointList</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>]) ;
+ 96:           <span class="ruby-keyword kw">end</span>
+ 97:         }
+ 98:         <span class="ruby-identifier">line</span> = <span class="ruby-constant">Geo2D</span><span class="ruby-operator">::</span><span class="ruby-constant">LineString</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">pointList</span>) ;
+ 99: <span class="ruby-comment cmt">#        p line ;</span>
+100:         <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">line</span> ;
+101:       <span class="ruby-keyword kw">end</span>
+102:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> ;
+103:     <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

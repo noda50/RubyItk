@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>eigenvalues_not_work (Itk::Maxima)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 108</span>
+108:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eigenvalues_not_work</span>(<span class="ruby-identifier">matrix</span>)
+109:       <span class="ruby-identifier">form</span> = <span class="ruby-node">&quot;eigenvalues(#{matrix2maxima(matrix)});&quot;</span> ;
+110:       <span class="ruby-identifier">reply</span> = <span class="ruby-identifier">call</span>(<span class="ruby-identifier">form</span>) ;
+111:       <span class="ruby-identifier">eValMaxima</span> = <span class="ruby-identifier">scan</span>(<span class="ruby-identifier">reply</span>) ;
+112:       <span class="ruby-identifier">eVal</span> = [] ;
+113:       (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">eValMaxima</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">size</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+114:         <span class="ruby-identifier">ev</span> = <span class="ruby-identifier">eValMaxima</span>[<span class="ruby-value">0</span>][<span class="ruby-identifier">i</span>] ;
+115:         <span class="ruby-identifier">n</span> = <span class="ruby-identifier">eValMaxima</span>[<span class="ruby-value">1</span>][<span class="ruby-identifier">i</span>] ;
+116:         <span class="ruby-identifier">n</span>.<span class="ruby-identifier">times</span>{ <span class="ruby-identifier">eVal</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">ev</span>)} ;
+117:       }
+118:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">eVal</span> ;
+119:     <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

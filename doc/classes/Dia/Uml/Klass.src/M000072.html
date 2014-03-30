@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>scanEachComposite (Dia::Uml::Klass)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 396</span>
+396:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanEachComposite</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+397:         <span class="ruby-identifier">attrsNode</span> = <span class="ruby-identifier">getAttribute</span>(<span class="ruby-value str">'attributes'</span>) ;
+398:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">attrsNode</span>) <span class="ruby-keyword kw">then</span>
+399:           <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">attrsNode</span>,
+400:                           <span class="ruby-value str">&quot;dia:composite[@type='umlattribute']&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">comp</span><span class="ruby-operator">|</span>
+401:             <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">comp</span>) ;
+402:           }
+403:         <span class="ruby-keyword kw">end</span>
+404:       <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

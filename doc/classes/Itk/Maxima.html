@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Itk::Maxima</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Itk::Maxima</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/Maxima/Maxima_rb.html">
+                Maxima/Maxima.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+    <div id="diagram">
+      <map id="map" name="map">
+  <area shape="rect" coords="27,51,99,99"      href="Maxima.html" alt="Maxima" />
+  <area shape="rect" coords="16,16,133,109"      href="../Itk.html" alt="Itk" />
+</map>
+<img src="../../dot/m_4_0.png" usemap="#map" border="0" alt="dot/m_4_0.png">
+    </div>
+
+    <div id="description">
+      <p>
+<a href="Maxima.html">Maxima</a> interface
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000119">call</a>&nbsp;&nbsp;
+      <a href="#M000123">determinant</a>&nbsp;&nbsp;
+      <a href="#M000125">eigenvalues_not_work</a>&nbsp;&nbsp;
+      <a href="#M000128">float2maxima</a>&nbsp;&nbsp;
+      <a href="#M000124">invert</a>&nbsp;&nbsp;
+      <a href="#M000129">matrix</a>&nbsp;&nbsp;
+      <a href="#M000127">matrix2maxima</a>&nbsp;&nbsp;
+      <a href="#M000117">new</a>&nbsp;&nbsp;
+      <a href="#M000120">readAfterSkip</a>&nbsp;&nbsp;
+      <a href="#M000121">reformForRuby</a>&nbsp;&nbsp;
+      <a href="#M000122">scan</a>&nbsp;&nbsp;
+      <a href="#M000118">setup</a>&nbsp;&nbsp;
+      <a href="#M000126">trace</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+    <div id="constants-list">
+      <h3 class="section-bar">Constants</h3>
+
+      <div class="name-list">
+        <table summary="Constants">
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">CommandPath</td>
+          <td>=</td>
+          <td class="context-item-value">'/usr/bin/maxima'</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+path to maxima
+
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">CommandOpts</td>
+          <td>=</td>
+          <td class="context-item-value">'--very-quiet'</td>
+        </tr>
+        </table>
+      </div>
+    </div>
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">strm</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc">
+a pipe process of <a href="Maxima.html">Maxima</a>
+
+</td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000117" class="method-detail">
+        <a name="M000117"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000117.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000117.html');return false;">
+          <span class="method-name">new</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+initialization
+</p>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000119" class="method-detail">
+        <a name="M000119"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000119.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000119.html');return false;">
+          <span class="method-name">call</span><span class="method-args">(form)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+simple <a href="Maxima.html#M000119">call</a> from String to String
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000123" class="method-detail">
+        <a name="M000123"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000123.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000123.html');return false;">
+          <span class="method-name">determinant</span><span class="method-args">(matrix)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+calc <a href="Maxima.html#M000123">determinant</a>
+</p>
+<table>
+<tr><td valign="top"><a href="Maxima.html#M000129">matrix</a>:</td><td>Array of Array of Numeric
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000125" class="method-detail">
+        <a name="M000125"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000125.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000125.html');return false;">
+          <span class="method-name">eigenvalues_not_work</span><span class="method-args">(matrix)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+calc eigen values of <a href="Maxima.html#M000129">matrix</a>
+</p>
+<table>
+<tr><td valign="top"><a href="Maxima.html#M000129">matrix</a>:</td><td>Array of Array of Numeric
+
+</td></tr>
+<tr><td valign="top">return:</td><td>An Array of eigen values
+
+</td></tr>
+</table>
+<p>
+<a href="Maxima.html">Maxima</a>
+の返り値が実数ではないため、対応できず。
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000128" class="method-detail">
+        <a name="M000128"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000128.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000128.html');return false;">
+          <span class="method-name">float2maxima</span><span class="method-args">(value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+converter from Ruby Float to <a href="Maxima.html">Maxima</a> Float
+</p>
+<table>
+<tr><td valign="top">value:</td><td>Float
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000124" class="method-detail">
+        <a name="M000124"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000124.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000124.html');return false;">
+          <span class="method-name">invert</span><span class="method-args">(matrix)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+calc <a href="Maxima.html#M000124">invert</a> <a
+href="Maxima.html#M000129">matrix</a>
+</p>
+<table>
+<tr><td valign="top"><a href="Maxima.html#M000129">matrix</a>:</td><td>Array of Array of Numeric
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000129" class="method-detail">
+        <a name="M000129"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000129.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000129.html');return false;">
+          <span class="method-name">matrix</span><span class="method-args">(*arrays)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+converter from <a href="Maxima.html">Maxima</a> form to Ruby Matrix
+</p>
+<table>
+<tr><td valign="top">arrays:</td><td>list of Array of Numeric
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000127" class="method-detail">
+        <a name="M000127"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000127.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000127.html');return false;">
+          <span class="method-name">matrix2maxima</span><span class="method-args">(matrix)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+converter from Ruby Matrix to <a href="Maxima.html">Maxima</a> form
+</p>
+<table>
+<tr><td valign="top"><a href="Maxima.html#M000129">matrix</a>:</td><td>Array of Array of Numeric
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000120" class="method-detail">
+        <a name="M000120"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000120.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000120.html');return false;">
+          <span class="method-name">readAfterSkip</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+read after skip errors/warnings
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000121" class="method-detail">
+        <a name="M000121"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000121.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000121.html');return false;">
+          <span class="method-name">reformForRuby</span><span class="method-args">(form)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+reform <a href="Maxima.html">Maxima</a> form for Ruby
+</p>
+<table>
+<tr><td valign="top">form:</td><td><a href="Maxima.html">Maxima</a> form
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000122" class="method-detail">
+        <a name="M000122"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000122.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000122.html');return false;">
+          <span class="method-name">scan</span><span class="method-args">(form)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="Maxima.html#M000122">scan</a> <a href="Maxima.html">Maxima</a>
+form for Ruby
+</p>
+<table>
+<tr><td valign="top">form:</td><td><a href="Maxima.html">Maxima</a> form
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000118" class="method-detail">
+        <a name="M000118"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000118.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000118.html');return false;">
+          <span class="method-name">setup</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="Maxima.html#M000118">setup</a> pipe and suppress 2d display
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000126" class="method-detail">
+        <a name="M000126"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000126.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000126.html');return false;">
+          <span class="method-name">trace</span><span class="method-args">(matrix)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+calc <a href="Maxima.html#M000126">trace</a> of <a
+href="Maxima.html#M000129">matrix</a>
+</p>
+<table>
+<tr><td valign="top"><a href="Maxima.html#M000129">matrix</a>:</td><td>Array of Array of Numeric
+
+</td></tr>
+<tr><td valign="top">return:</td><td>the <a href="Maxima.html#M000126">trace</a> value
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

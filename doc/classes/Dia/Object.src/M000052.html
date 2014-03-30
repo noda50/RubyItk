@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>getValueByType_Box (Dia::Object)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>     <span class="ruby-comment cmt"># File Dia/Dia.rb, line 106</span>
+106:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getValueByType_Box</span>()
+107:       <span class="ruby-identifier">node</span> = <span class="ruby-ivar">@attribute</span>[<span class="ruby-value str">&quot;obj_bb&quot;</span>] ;
+108:       <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">node</span>)
+109:         <span class="ruby-identifier">str</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">node</span>, <span class="ruby-value str">&quot;./dia:rectangle/@val&quot;</span>) ;
+110:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">str</span>) <span class="ruby-keyword kw">then</span>
+111:           <span class="ruby-identifier">data</span> = <span class="ruby-identifier">str</span>.<span class="ruby-identifier">to_s</span> ;
+112:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">data</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^(.*),(.*);(.*),(.*)$/</span>) <span class="ruby-keyword kw">then</span>
+113:             (<span class="ruby-identifier">x0</span>, <span class="ruby-identifier">y0</span>, <span class="ruby-identifier">x1</span>, <span class="ruby-identifier">y1</span>) = [<span class="ruby-identifier">$1</span>,<span class="ruby-identifier">$2</span>,<span class="ruby-identifier">$3</span>,<span class="ruby-identifier">$4</span>].<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">to_f</span>} ;
+114:             <span class="ruby-identifier">box</span> = <span class="ruby-constant">Geo2D</span><span class="ruby-operator">::</span><span class="ruby-constant">Box</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">x0</span>, <span class="ruby-identifier">y0</span>], [<span class="ruby-identifier">x1</span>, <span class="ruby-identifier">y1</span>]) ;
+115: <span class="ruby-comment cmt">#            p box ;</span>
+116:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">box</span> ;
+117:           <span class="ruby-keyword kw">end</span>
+118:         <span class="ruby-keyword kw">end</span>
+119:       <span class="ruby-keyword kw">end</span>
+120:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> ;
+121:     <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
