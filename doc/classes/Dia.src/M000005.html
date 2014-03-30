@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>scanXml (Dia)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File Dia/Dia.rb, line 252</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanXml</span>(<span class="ruby-identifier">xml</span>)
+    <span class="ruby-ivar">@doc</span> = <span class="ruby-identifier">xml</span> ;
+    <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-ivar">@doc</span>.<span class="ruby-identifier">root</span>, <span class="ruby-value str">&quot;//dia:object&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">objXml</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">obj</span> = <span class="ruby-constant">Dia</span><span class="ruby-operator">::</span><span class="ruby-constant">Object</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">objXml</span>) ;
+      <span class="ruby-identifier">addObject</span>(<span class="ruby-identifier">obj</span>) ;
+    }
+    <span class="ruby-identifier">assignAllConnections</span>() ;
+    <span class="ruby-identifier">assignAllLabels</span>() ;
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

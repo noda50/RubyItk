@@ -1,0 +1,45 @@
+#! /usr/bin/env ruby
+## -*- mode: ruby -*-
+
+require 'optparse';
+require 'ostruct' ;
+
+require './DiaUml.rb';
+
+##======================================================================
+$conf = 
+  OpenStruct.new({
+                 }) ;
+
+##======================================================================
+$op = OptionParser.new() {|op|
+  op.banner = <<_END_
+  Usage: #{$0} [Options]* dia_file
+_END_
+
+  op.separator("Options:") ;
+  op.set_summary_indent("") ;
+  op.set_summary_width(60) ;
+  sep = "\n\t\t" ;
+
+  op.on_tail("--help", sep + "show this message.") { |h|
+    puts(op)
+    exit(1)
+  }
+}
+
+$op.parse!(ARGV) ;
+
+########################################################################
+########################################################################
+########################################################################
+
+$infile = ARGV[0] ;
+
+dia = Dia::Uml.new($infile) ;
+dia.eachClass(){|klass|
+  puts klass.toRubyDef() ;
+}
+
+
+

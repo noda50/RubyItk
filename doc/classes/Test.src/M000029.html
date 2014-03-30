@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>test_B (Test)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File Dia/Dia.rb, line 353</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_B</span>()
+      <span class="ruby-identifier">dia</span> = <span class="ruby-constant">Dia</span>.<span class="ruby-identifier">new</span>() ;
+      <span class="ruby-identifier">dia</span>.<span class="ruby-identifier">scanFile</span>(<span class="ruby-constant">SampleFile</span>) ;
+      <span class="ruby-identifier">dia</span>.<span class="ruby-identifier">getTypedList</span>(<span class="ruby-identifier">:text</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">text</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">pp</span> <span class="ruby-identifier">text</span> ;
+      }
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
