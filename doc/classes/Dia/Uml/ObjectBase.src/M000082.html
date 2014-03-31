@@ -5,22 +5,16 @@
 
 <html>
 <head>
-  <title>linkReferences (Dia::Uml::ObjectBase)</title>
+  <title>scanParent (Dia::Uml::ObjectBase)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 383</span>
-383:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>(<span class="ruby-identifier">umlDoc</span>)
-384:         <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@parent</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
-385:           <span class="ruby-identifier">pobj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@parent</span>) ;
-386:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">pobj</span>)
-387: <span class="ruby-comment cmt">#            p [:link, :parent, self.to_s, @parent, pobj.to_s] ;</span>
-388:             <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">pobj</span> ;
-389:           <span class="ruby-keyword kw">else</span>
-390:             <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;unknown ID:#{@parent} in object:#{self}&quot;</span> ;
-391:           <span class="ruby-keyword kw">end</span>
-392:         <span class="ruby-keyword kw">end</span>
-393:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 350</span>
+350:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanParent</span>()
+351:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">parentInfo</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-ivar">@xml</span>,<span class="ruby-value str">&quot;dia:childnode&quot;</span>))
+352:           <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">parentInfo</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">&quot;parent&quot;</span>).<span class="ruby-identifier">value</span> ;
+353:         <span class="ruby-keyword kw">end</span>
+354:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

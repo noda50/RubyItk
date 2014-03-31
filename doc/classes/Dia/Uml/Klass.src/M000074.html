@@ -5,21 +5,26 @@
 
 <html>
 <head>
-  <title>checkAttributeOverride (Dia::Uml::Klass)</title>
+  <title>toRubyDefAttribute (Dia::Uml::Klass)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 501</span>
-501:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">checkAttributeOverride</span>(<span class="ruby-identifier">attribute</span>, <span class="ruby-identifier">inheritStack</span> = [])
-502:         <span class="ruby-identifier">inheritStack</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">pclass</span><span class="ruby-operator">|</span>
-503:           <span class="ruby-identifier">overridingAttr</span> = <span class="ruby-identifier">pclass</span>.<span class="ruby-identifier">umlAttributeTable</span>.<span class="ruby-identifier">get</span>(<span class="ruby-identifier">:name</span>, <span class="ruby-identifier">attribute</span>.<span class="ruby-identifier">name</span>) ;
-504:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">overridingAttr</span>) <span class="ruby-keyword kw">then</span>
-505:             <span class="ruby-identifier">overridingAttr</span>.<span class="ruby-identifier">overrideFrom</span> = <span class="ruby-identifier">attribute</span> ;
-506:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">overridingAttr</span> ;
-507:           <span class="ruby-keyword kw">end</span>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 496</span>
+496:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">toRubyDefAttribute</span>(<span class="ruby-identifier">expandp</span>, <span class="ruby-identifier">indent</span>, <span class="ruby-identifier">inheritStack</span> = [])
+497:         <span class="ruby-identifier">defstr</span> = <span class="ruby-value str">&quot;&quot;</span> ;
+498:         <span class="ruby-identifier">attrList</span> = <span class="ruby-identifier">collectAttributesWithOverride</span>(<span class="ruby-identifier">expandp</span>) ;
+499: 
+500:         <span class="ruby-identifier">preKlassName</span> = <span class="ruby-keyword kw">nil</span> ;
+501:         <span class="ruby-identifier">attrList</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">attrGroup</span><span class="ruby-operator">|</span>
+502:           <span class="ruby-identifier">klassName</span> = <span class="ruby-identifier">attrGroup</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">klass</span>.<span class="ruby-identifier">name</span> ;
+503:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">klassName</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">preKlassName</span>) <span class="ruby-keyword kw">then</span>
+504:             <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;\#\#\# inheried from #{klassName}&quot;</span> ;
+505:           <span class="ruby-keyword kw">end</span>
+506:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">attrGroup</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">toRubyDef</span>(<span class="ruby-identifier">indent</span>) ;
+507:           <span class="ruby-identifier">preKlassName</span> = <span class="ruby-identifier">klassName</span> ;
 508:         }
-509:         <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> ;
+509:         <span class="ruby-identifier">defstr</span> ;
 510:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

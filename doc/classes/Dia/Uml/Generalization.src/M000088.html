@@ -5,24 +5,28 @@
 
 <html>
 <head>
-  <title>scanSub (Dia::Uml::Generalization)</title>
+  <title>linkReferences (Dia::Uml::Generalization)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 572</span>
-572:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanSub</span>()
-573:         <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-ivar">@xml</span>,<span class="ruby-value str">&quot;dia:connections/dia:connection&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">connection</span><span class="ruby-operator">|</span>
-574:           <span class="ruby-identifier">handle</span> = <span class="ruby-identifier">connection</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">'handle'</span>).<span class="ruby-identifier">value</span>() ;
-575:           <span class="ruby-identifier">connectTo</span> = <span class="ruby-identifier">connection</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">'to'</span>).<span class="ruby-identifier">value</span>() ;
-576:           <span class="ruby-keyword kw">case</span>(<span class="ruby-identifier">handle</span>)
-577:           <span class="ruby-keyword kw">when</span>(<span class="ruby-value str">&quot;0&quot;</span>) ; <span class="ruby-ivar">@from</span> = <span class="ruby-identifier">connectTo</span> ;
-578:           <span class="ruby-keyword kw">when</span>(<span class="ruby-value str">&quot;1&quot;</span>) ; <span class="ruby-ivar">@to</span> = <span class="ruby-identifier">connectTo</span> ;
-579:           <span class="ruby-keyword kw">else</span>
-580:             <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;unknown connection handle:#{handle} in #{self}&quot;</span> ;
-581:           <span class="ruby-keyword kw">end</span>
-582:         }
-583: <span class="ruby-comment cmt">#        p [:generalization, @from, @to] ;</span>
-584:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 656</span>
+656:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>(<span class="ruby-identifier">umlDoc</span>)
+657:         <span class="ruby-keyword kw">super</span>(<span class="ruby-identifier">umlDoc</span>) ;
+658:         <span class="ruby-identifier">fromObj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@from</span>) ;
+659:         <span class="ruby-identifier">toObj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@to</span>) ;
+660:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">fromObj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Klass</span>))
+661:           <span class="ruby-ivar">@from</span> = <span class="ruby-identifier">fromObj</span> ;
+662:         <span class="ruby-keyword kw">else</span>
+663:           <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;generalization (#{@from}-&gt;#{@to}) refers non-Class object:#{fromObj} in from-link&quot;</span> ;
+664:         <span class="ruby-keyword kw">end</span>
+665:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">toObj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Klass</span>))
+666:           <span class="ruby-ivar">@to</span> = <span class="ruby-identifier">toObj</span> ;
+667:         <span class="ruby-keyword kw">else</span>
+668:           <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;generalization (#{@from}-&gt;#{@to}) refers non-Class object:#{fromObj} in from-link&quot;</span> ;
+669:         <span class="ruby-keyword kw">end</span>
+670: <span class="ruby-comment cmt">#        p [:link, gen.id, fromObj.name, toObj.name] ;</span>
+671:         <span class="ruby-identifier">toObj</span>.<span class="ruby-identifier">inheritClass</span>(<span class="ruby-identifier">fromObj</span>) ;
+672:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
