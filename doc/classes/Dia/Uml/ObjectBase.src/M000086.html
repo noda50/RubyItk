@@ -5,14 +5,16 @@
 
 <html>
 <head>
-  <title>getAttributeString (Dia::Uml::ObjectBase)</title>
+  <title>scanParent (Dia::Uml::ObjectBase)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 336</span>
-336:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getAttributeString</span>(<span class="ruby-identifier">name</span>)
-337:         <span class="ruby-identifier">getAttributeStringFromNode</span>(<span class="ruby-ivar">@xml</span>, <span class="ruby-identifier">name</span>) ;
-338:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 323</span>
+323:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanParent</span>()
+324:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">parentInfo</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-ivar">@xml</span>,<span class="ruby-value str">&quot;dia:childnode&quot;</span>))
+325:           <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">parentInfo</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">&quot;parent&quot;</span>).<span class="ruby-identifier">value</span> ;
+326:         <span class="ruby-keyword kw">end</span>
+327:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

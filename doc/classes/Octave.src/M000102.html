@@ -5,18 +5,18 @@
 
 <html>
 <head>
-  <title>findFullPathToCom (Octave)</title>
+  <title>evalCode (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Octave/Octave.rb, line 74</span>
-74:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">findFullPathToCom</span>(<span class="ruby-identifier">com</span>)
-75:     <span class="ruby-identifier">path</span> = <span class="ruby-keyword kw">nil</span> ;
-76:     <span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;| which #{com}&quot;</span>,<span class="ruby-value str">&quot;r&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">strm</span><span class="ruby-operator">|</span>
-77:       <span class="ruby-identifier">path</span> = <span class="ruby-identifier">strm</span>.<span class="ruby-identifier">gets</span> ;
-78:       <span class="ruby-identifier">path</span>.<span class="ruby-identifier">chomp!</span> <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">path</span>) ;
-79:     }
-80:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Octave/Octave.rb, line 87</span>
+87:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evalCode</span>(<span class="ruby-identifier">code</span>)
+88:     <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@strm</span>)
+89:       <span class="ruby-identifier">evalCodeOnStream</span>(<span class="ruby-identifier">code</span>)
+90:     <span class="ruby-keyword kw">else</span>
+91:       <span class="ruby-identifier">evalCodeOnCommand</span>(<span class="ruby-identifier">code</span>)
+92:     <span class="ruby-keyword kw">end</span>
+93:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

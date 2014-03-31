@@ -5,15 +5,15 @@
 
 <html>
 <head>
-  <title>trace (Octave)</title>
+  <title>multiply (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 316</span>
-316:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">trace</span>(<span class="ruby-identifier">mat</span>)
-317:     <span class="ruby-identifier">code</span> = <span class="ruby-node">&quot;trace(#{convMatrixToOctave(mat)})&quot;</span> ;
-318:     <span class="ruby-identifier">evalCodeForScalar</span>(<span class="ruby-identifier">code</span>) ;
-319:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 286</span>
+286:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">multiply</span>(<span class="ruby-identifier">mat0</span>, <span class="ruby-identifier">mat1</span>)
+287:     <span class="ruby-identifier">code</span> = <span class="ruby-node">&quot;#{convMatrixToOctave(mat0)} * #{convMatrixToOctave(mat1)}&quot;</span> ;
+288:     <span class="ruby-identifier">evalCodeForMatrix</span>(<span class="ruby-identifier">code</span>) ;
+289:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

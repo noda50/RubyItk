@@ -5,14 +5,18 @@
 
 <html>
 <head>
-  <title>inheritClass (Dia::Uml::Klass)</title>
+  <title>scanUmlAttributes (Dia::Uml::Klass)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 409</span>
-409:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">inheritClass</span>(<span class="ruby-identifier">parentClass</span>)
-410:         <span class="ruby-ivar">@parentClasses</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">parentClass</span>) ;
-411:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 428</span>
+428:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanUmlAttributes</span>()
+429:         <span class="ruby-identifier">scanEachComposite</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">comp</span><span class="ruby-operator">|</span>
+430:           <span class="ruby-identifier">attr</span> = <span class="ruby-constant">Attribute</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">comp</span>,<span class="ruby-keyword kw">self</span>) ;
+431:           <span class="ruby-ivar">@umlAttributeTable</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">attr</span>) ;
+432:         }
+433: <span class="ruby-comment cmt">#        p [:class, @name, @umlAttributeTable] ;</span>
+434:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

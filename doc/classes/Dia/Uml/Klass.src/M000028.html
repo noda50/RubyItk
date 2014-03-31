@@ -5,17 +5,26 @@
 
 <html>
 <head>
-  <title>scanSub (Dia::Uml::Klass)</title>
+  <title>toRubyDefAttribute (Dia::Uml::Klass)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 375</span>
-375:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanSub</span>()
-376:         <span class="ruby-ivar">@umlAttributeTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:name</span>]) ;
-377:         <span class="ruby-ivar">@comment</span> = <span class="ruby-identifier">getAttributeString</span>(<span class="ruby-value str">&quot;comment&quot;</span>) ;
-378:         <span class="ruby-identifier">scanUmlAttributes</span>() ;
-379:         <span class="ruby-ivar">@parentClasses</span> = [] ;
-380:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 464</span>
+464:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">toRubyDefAttribute</span>(<span class="ruby-identifier">expandp</span>, <span class="ruby-identifier">indent</span>, <span class="ruby-identifier">inheritStack</span> = [])
+465:         <span class="ruby-identifier">defstr</span> = <span class="ruby-value str">&quot;&quot;</span> ;
+466:         <span class="ruby-identifier">attrList</span> = <span class="ruby-identifier">collectAttributesWithOverride</span>(<span class="ruby-identifier">expandp</span>) ;
+467: 
+468:         <span class="ruby-identifier">preKlassName</span> = <span class="ruby-keyword kw">nil</span> ;
+469:         <span class="ruby-identifier">attrList</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">attrGroup</span><span class="ruby-operator">|</span>
+470:           <span class="ruby-identifier">klassName</span> = <span class="ruby-identifier">attrGroup</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">klass</span>.<span class="ruby-identifier">name</span> ;
+471:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">klassName</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">preKlassName</span>) <span class="ruby-keyword kw">then</span>
+472:             <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;\#\#\# inheried from #{klassName}&quot;</span> ;
+473:           <span class="ruby-keyword kw">end</span>
+474:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">attrGroup</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">toRubyDef</span>(<span class="ruby-identifier">indent</span>) ;
+475:           <span class="ruby-identifier">preKlassName</span> = <span class="ruby-identifier">klassName</span> ;
+476:         }
+477:         <span class="ruby-identifier">defstr</span> ;
+478:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

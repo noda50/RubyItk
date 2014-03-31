@@ -5,17 +5,17 @@
 
 <html>
 <head>
-  <title>new (Dia)</title>
+  <title>readFile (Dia)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/Dia.rb, line 232</span>
-232:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>()
-233:     <span class="ruby-ivar">@objectList</span> = [] ;
-234:     <span class="ruby-ivar">@objectTable</span> = {} ;
-235:     <span class="ruby-ivar">@typedList</span> = {} ;
-236:     <span class="ruby-ivar">@labeledList</span> = {} ;
-237:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 47</span>
+47:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">readFile</span>(<span class="ruby-identifier">filename</span>)
+48:     <span class="ruby-ivar">@srcFiles</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">filename</span>) ;
+49:     <span class="ruby-identifier">open</span>(<span class="ruby-identifier">filename</span>,<span class="ruby-value str">&quot;r&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">strm</span><span class="ruby-operator">|</span>
+50:       <span class="ruby-ivar">@doc</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">strm</span>) ;
+51:     }
+52:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

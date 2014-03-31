@@ -5,18 +5,18 @@
 
 <html>
 <head>
-  <title>test_c (TC_Maxima)</title>
+  <title>test_b (TC_Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 208</span>
-208:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_c</span>()
-209:       <span class="ruby-identifier">mx</span> = <span class="ruby-constant">Itk</span><span class="ruby-operator">::</span><span class="ruby-constant">Maxima</span>.<span class="ruby-identifier">new</span>() ;
-210:       <span class="ruby-identifier">x</span> = [[<span class="ruby-value">1.0</span>,<span class="ruby-value">2</span>,<span class="ruby-value">3</span>,<span class="ruby-value">4</span>],[<span class="ruby-value">4</span>,<span class="ruby-value">1</span>,<span class="ruby-value">2</span>,<span class="ruby-value">3</span>],[<span class="ruby-value">3</span>,<span class="ruby-value">1</span>,<span class="ruby-value">4</span>,<span class="ruby-value">2</span>],[<span class="ruby-value">1</span>,<span class="ruby-value">2</span>,<span class="ruby-value">1</span>,<span class="ruby-value">3</span>]] ;
-211:       <span class="ruby-identifier">pp</span> <span class="ruby-identifier">x</span> ;
-212: <span class="ruby-comment cmt">#      pp mx.eigenvalues(x) ;</span>
-213:       <span class="ruby-identifier">pp</span> <span class="ruby-identifier">mx</span>.<span class="ruby-identifier">trace</span>(<span class="ruby-identifier">x</span>) ;
-214:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 197</span>
+197:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_b</span>()
+198:       <span class="ruby-identifier">mx</span> = <span class="ruby-constant">Itk</span><span class="ruby-operator">::</span><span class="ruby-constant">Maxima</span>.<span class="ruby-identifier">new</span>() ;
+199:       <span class="ruby-identifier">x</span> = [[<span class="ruby-value">1.0</span>,<span class="ruby-value">2</span>,<span class="ruby-value">3</span>,<span class="ruby-value">4</span>],[<span class="ruby-value">4</span>,<span class="ruby-value">1</span>,<span class="ruby-value">2</span>,<span class="ruby-value">3</span>],[<span class="ruby-value">3</span>,<span class="ruby-value">1</span>,<span class="ruby-value">4</span>,<span class="ruby-value">2</span>],[<span class="ruby-value">1</span>,<span class="ruby-value">2</span>,<span class="ruby-value">1</span>,<span class="ruby-value">3</span>]] ;
+200:       <span class="ruby-identifier">pp</span> <span class="ruby-identifier">x</span> ;
+201:       <span class="ruby-identifier">pp</span> <span class="ruby-identifier">mx</span>.<span class="ruby-identifier">determinant</span>(<span class="ruby-identifier">x</span>) ;
+202:       <span class="ruby-identifier">pp</span> <span class="ruby-identifier">mx</span>.<span class="ruby-identifier">invert</span>(<span class="ruby-identifier">x</span>) ;
+203:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

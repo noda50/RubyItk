@@ -80,12 +80,12 @@
     <div id="diagram">
       <map id="map" name="map">
   <area shape="rect" coords="27,5,99,53"      href="../../REXML.html" alt="REXML" />
-  <area shape="rect" coords="123,101,195,149"      href="../../Dia.html" alt="Dia" />
-  <area shape="rect" coords="219,101,317,149"      href="../../HashedArray.html" alt="HashedArray" />
-  <area shape="rect" coords="360,101,432,149"      href="../../MyTest.html" alt="MyTest" />
-  <area shape="rect" coords="123,5,195,53"      href="../../Utility.html" alt="Utility" />
-  <area shape="rect" coords="232,5,304,53"      href="../../Array.html" alt="Array" />
-  <area shape="rect" coords="328,5,464,53"      href="../../Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="123,101,221,149"      href="../../HashedArray.html" alt="HashedArray" />
+  <area shape="rect" coords="264,101,336,149"      href="../../MyTest.html" alt="MyTest" />
+  <area shape="rect" coords="392,101,464,149"      href="../../Dia.html" alt="Dia" />
+  <area shape="rect" coords="136,5,208,53"      href="../../Array.html" alt="Array" />
+  <area shape="rect" coords="232,5,368,53"      href="../../Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="392,5,464,53"      href="../../Utility.html" alt="Utility" />
   <area shape="rect" coords="16,89,109,137"      href="../../XML.html" alt="XML" />
 </map>
 <img src="../../../dot/f_1.png" usemap="#map" border="0" alt="dot/f_1.png">
@@ -99,14 +99,14 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000078">getAttribute</a>&nbsp;&nbsp;
-      <a href="#M000079">getAttributeString</a>&nbsp;&nbsp;
-      <a href="#M000080">linkReferences</a>&nbsp;&nbsp;
-      <a href="#M000073">new</a>&nbsp;&nbsp;
-      <a href="#M000074">scan</a>&nbsp;&nbsp;
-      <a href="#M000077">scanName</a>&nbsp;&nbsp;
-      <a href="#M000076">scanParent</a>&nbsp;&nbsp;
-      <a href="#M000075">scanSub</a>&nbsp;&nbsp;
+      <a href="#M000107">getAttribute</a>&nbsp;&nbsp;
+      <a href="#M000108">getAttributeString</a>&nbsp;&nbsp;
+      <a href="#M000109">linkReferences</a>&nbsp;&nbsp;
+      <a href="#M000102">new</a>&nbsp;&nbsp;
+      <a href="#M000103">scan</a>&nbsp;&nbsp;
+      <a href="#M000106">scanName</a>&nbsp;&nbsp;
+      <a href="#M000105">scanParent</a>&nbsp;&nbsp;
+      <a href="#M000104">scanSub</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -136,27 +136,42 @@
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">document</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+link to a source document.
+
+</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">id</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+ID for this object.
+
+</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">name</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+name of the object.
+
+</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">parent</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+parent object.
+
+</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">xml</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+<a href="../../XML.html">XML</a> element for this object.
+
+</td>
         </tr>
         </table>
       </div>
@@ -168,117 +183,169 @@
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000073" class="method-detail">
-        <a name="M000073"></a>
+      <div id="method-M000102" class="method-detail">
+        <a name="M000102"></a>
 
         <div class="method-heading">
-          <a href="ObjectBase.src/M000073.html" target="Code" class="method-signature"
-            onclick="popupCode('ObjectBase.src/M000073.html');return false;">
+          <a href="ObjectBase.src/M000102.html" target="Code" class="method-signature"
+            onclick="popupCode('ObjectBase.src/M000102.html');return false;">
           <span class="method-name">new</span><span class="method-args">(object,doc = nil)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+create a <a href="../../Dia.html">Dia</a> UML object.
+</p>
+<table>
+<tr><td valign="top"><em>object</em>:</td><td>an <a href="../../XML.html">XML</a> element for this object.
+
+</td></tr>
+<tr><td valign="top"><em>doc</em>:</td><td>source document.
+
+</td></tr>
+</table>
         </div>
       </div>
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000078" class="method-detail">
-        <a name="M000078"></a>
+      <div id="method-M000107" class="method-detail">
+        <a name="M000107"></a>
 
         <div class="method-heading">
-          <a href="ObjectBase.src/M000078.html" target="Code" class="method-signature"
-            onclick="popupCode('ObjectBase.src/M000078.html');return false;">
+          <a href="ObjectBase.src/M000107.html" target="Code" class="method-signature"
+            onclick="popupCode('ObjectBase.src/M000107.html');return false;">
           <span class="method-name">getAttribute</span><span class="method-args">(name)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+pick up the attribute element inXML
+</p>
+<table>
+<tr><td valign="top"><em>name</em>:</td><td>the name of the attribute to find.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>attribute element
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000079" class="method-detail">
-        <a name="M000079"></a>
+      <div id="method-M000108" class="method-detail">
+        <a name="M000108"></a>
 
         <div class="method-heading">
-          <a href="ObjectBase.src/M000079.html" target="Code" class="method-signature"
-            onclick="popupCode('ObjectBase.src/M000079.html');return false;">
+          <a href="ObjectBase.src/M000108.html" target="Code" class="method-signature"
+            onclick="popupCode('ObjectBase.src/M000108.html');return false;">
           <span class="method-name">getAttributeString</span><span class="method-args">(name)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+pick up the value of the attribute.
+</p>
+<table>
+<tr><td valign="top"><em>name</em>:</td><td>the name of the attribute to find.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>A String value.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000080" class="method-detail">
-        <a name="M000080"></a>
+      <div id="method-M000109" class="method-detail">
+        <a name="M000109"></a>
 
         <div class="method-heading">
-          <a href="ObjectBase.src/M000080.html" target="Code" class="method-signature"
-            onclick="popupCode('ObjectBase.src/M000080.html');return false;">
+          <a href="ObjectBase.src/M000109.html" target="Code" class="method-signature"
+            onclick="popupCode('ObjectBase.src/M000109.html');return false;">
           <span class="method-name">linkReferences</span><span class="method-args">(umlDoc)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+link internal reference by name.
+</p>
         </div>
       </div>
 
-      <div id="method-M000074" class="method-detail">
-        <a name="M000074"></a>
+      <div id="method-M000103" class="method-detail">
+        <a name="M000103"></a>
 
         <div class="method-heading">
-          <a href="ObjectBase.src/M000074.html" target="Code" class="method-signature"
-            onclick="popupCode('ObjectBase.src/M000074.html');return false;">
+          <a href="ObjectBase.src/M000103.html" target="Code" class="method-signature"
+            onclick="popupCode('ObjectBase.src/M000103.html');return false;">
           <span class="method-name">scan</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+<a href="ObjectBase.html#M000103">scan</a> <a href="../../XML.html">XML</a>
+element.
+</p>
         </div>
       </div>
 
-      <div id="method-M000077" class="method-detail">
-        <a name="M000077"></a>
+      <div id="method-M000106" class="method-detail">
+        <a name="M000106"></a>
 
         <div class="method-heading">
-          <a href="ObjectBase.src/M000077.html" target="Code" class="method-signature"
-            onclick="popupCode('ObjectBase.src/M000077.html');return false;">
+          <a href="ObjectBase.src/M000106.html" target="Code" class="method-signature"
+            onclick="popupCode('ObjectBase.src/M000106.html');return false;">
           <span class="method-name">scanName</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+pick up the name of the object
+</p>
         </div>
       </div>
 
-      <div id="method-M000076" class="method-detail">
-        <a name="M000076"></a>
+      <div id="method-M000105" class="method-detail">
+        <a name="M000105"></a>
 
         <div class="method-heading">
-          <a href="ObjectBase.src/M000076.html" target="Code" class="method-signature"
-            onclick="popupCode('ObjectBase.src/M000076.html');return false;">
+          <a href="ObjectBase.src/M000105.html" target="Code" class="method-signature"
+            onclick="popupCode('ObjectBase.src/M000105.html');return false;">
           <span class="method-name">scanParent</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+pick up the name of parent object element in <a
+href="../../XML.html">XML</a>.
+</p>
         </div>
       </div>
 
-      <div id="method-M000075" class="method-detail">
-        <a name="M000075"></a>
+      <div id="method-M000104" class="method-detail">
+        <a name="M000104"></a>
 
         <div class="method-heading">
-          <a href="ObjectBase.src/M000075.html" target="Code" class="method-signature"
-            onclick="popupCode('ObjectBase.src/M000075.html');return false;">
+          <a href="ObjectBase.src/M000104.html" target="Code" class="method-signature"
+            onclick="popupCode('ObjectBase.src/M000104.html');return false;">
           <span class="method-name">scanSub</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+sub rountine of <a href="ObjectBase.html#M000103">scan</a>. This is called
+at the last of <tt><a href="ObjectBase.html#M000103">scan</a></tt> method.
+This is used to specify additional operation for each object class.
+</p>
         </div>
       </div>
 

@@ -74,17 +74,24 @@
     <div id="diagram">
       <map id="map" name="map">
   <area shape="rect" coords="27,5,99,53"      href="../REXML.html" alt="REXML" />
-  <area shape="rect" coords="123,101,195,149"      href="../Dia.html" alt="Dia" />
-  <area shape="rect" coords="219,101,317,149"      href="../HashedArray.html" alt="HashedArray" />
-  <area shape="rect" coords="360,101,432,149"      href="../MyTest.html" alt="MyTest" />
-  <area shape="rect" coords="123,5,195,53"      href="../Utility.html" alt="Utility" />
-  <area shape="rect" coords="232,5,304,53"      href="../Array.html" alt="Array" />
-  <area shape="rect" coords="328,5,464,53"      href="../Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="123,101,221,149"      href="../HashedArray.html" alt="HashedArray" />
+  <area shape="rect" coords="264,101,336,149"      href="../MyTest.html" alt="MyTest" />
+  <area shape="rect" coords="392,101,464,149"      href="../Dia.html" alt="Dia" />
+  <area shape="rect" coords="136,5,208,53"      href="../Array.html" alt="Array" />
+  <area shape="rect" coords="232,5,368,53"      href="../Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="392,5,464,53"      href="../Utility.html" alt="Utility" />
   <area shape="rect" coords="16,89,109,137"      href="../XML.html" alt="XML" />
 </map>
 <img src="../../dot/f_1.png" usemap="#map" border="0" alt="dot/f_1.png">
     </div>
 
+    <div id="description">
+      <p>
+A collection of <a href="Utility.html">Utility</a> for <a
+href="../Dia.html">Dia</a> processing
+</p>
+
+    </div>
 
 
    </div>
@@ -93,9 +100,9 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000048">addToTable</a>&nbsp;&nbsp;
-      <a href="#M000046">getAttributeFromNode</a>&nbsp;&nbsp;
-      <a href="#M000047">getAttributeStringFromNode</a>&nbsp;&nbsp;
+      <a href="#M000089">addToTable</a>&nbsp;&nbsp;
+      <a href="#M000087">getAttributeFromNode</a>&nbsp;&nbsp;
+      <a href="#M000088">getAttributeStringFromNode</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -117,45 +124,85 @@
     <div id="methods">
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000048" class="method-detail">
-        <a name="M000048"></a>
+      <div id="method-M000089" class="method-detail">
+        <a name="M000089"></a>
 
         <div class="method-heading">
-          <a href="Utility.src/M000048.html" target="Code" class="method-signature"
-            onclick="popupCode('Utility.src/M000048.html');return false;">
+          <a href="Utility.src/M000089.html" target="Code" class="method-signature"
+            onclick="popupCode('Utility.src/M000089.html');return false;">
           <span class="method-name">addToTable</span><span class="method-args">(table, object)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+wrapper for adding an object to a table.
+</p>
+<table>
+<tr><td valign="top"><em>table</em>:</td><td>an object table
+
+</td></tr>
+<tr><td valign="top"><em>object</em>:</td><td>an object to add to the table.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000046" class="method-detail">
-        <a name="M000046"></a>
+      <div id="method-M000087" class="method-detail">
+        <a name="M000087"></a>
 
         <div class="method-heading">
-          <a href="Utility.src/M000046.html" target="Code" class="method-signature"
-            onclick="popupCode('Utility.src/M000046.html');return false;">
+          <a href="Utility.src/M000087.html" target="Code" class="method-signature"
+            onclick="popupCode('Utility.src/M000087.html');return false;">
           <span class="method-name">getAttributeFromNode</span><span class="method-args">(node,name)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+get a &quot;dia:attribute&quot; element with a specifiled &quot;name&quot;
+attribute.
+</p>
+<table>
+<tr><td valign="top"><em>node</em>:</td><td>top node to start scan.
+
+</td></tr>
+<tr><td valign="top"><em>name</em>:</td><td>the value of &quot;name&quot; attribute of searching element.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>the first <a href="../XML.html">XML</a> element.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000047" class="method-detail">
-        <a name="M000047"></a>
+      <div id="method-M000088" class="method-detail">
+        <a name="M000088"></a>
 
         <div class="method-heading">
-          <a href="Utility.src/M000047.html" target="Code" class="method-signature"
-            onclick="popupCode('Utility.src/M000047.html');return false;">
+          <a href="Utility.src/M000088.html" target="Code" class="method-signature"
+            onclick="popupCode('Utility.src/M000088.html');return false;">
           <span class="method-name">getAttributeStringFromNode</span><span class="method-args">(node,name)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+get a &quot;dia:string&quot; value who has a specifield &quot;name&quot;.
+</p>
+<table>
+<tr><td valign="top"><em>node</em>:</td><td>top node to start scan.
+
+</td></tr>
+<tr><td valign="top"><em>name</em>:</td><td>the value of &quot;name&quot; attribute of searching element.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>a String value.
+
+</td></tr>
+</table>
         </div>
       </div>
 

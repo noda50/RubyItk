@@ -80,12 +80,12 @@
     <div id="diagram">
       <map id="map" name="map">
   <area shape="rect" coords="27,5,99,53"      href="REXML.html" alt="REXML" />
-  <area shape="rect" coords="123,101,195,149"      href="Dia.html" alt="Dia" />
-  <area shape="rect" coords="219,101,317,149"      href="HashedArray.html" alt="HashedArray" />
-  <area shape="rect" coords="360,101,432,149"      href="MyTest.html" alt="MyTest" />
-  <area shape="rect" coords="123,5,195,53"      href="Utility.html" alt="Utility" />
-  <area shape="rect" coords="232,5,304,53"      href="Array.html" alt="Array" />
-  <area shape="rect" coords="328,5,464,53"      href="Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="123,101,221,149"      href="HashedArray.html" alt="HashedArray" />
+  <area shape="rect" coords="264,101,336,149"      href="MyTest.html" alt="MyTest" />
+  <area shape="rect" coords="392,101,464,149"      href="Dia.html" alt="Dia" />
+  <area shape="rect" coords="136,5,208,53"      href="Array.html" alt="Array" />
+  <area shape="rect" coords="232,5,368,53"      href="Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="392,5,464,53"      href="Utility.html" alt="Utility" />
   <area shape="rect" coords="16,89,109,137"      href="XML.html" alt="XML" />
 </map>
 <img src="../dot/f_1.png" usemap="#map" border="0" alt="dot/f_1.png">
@@ -105,11 +105,11 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000096">get</a>&nbsp;&nbsp;
-      <a href="#M000095">include?</a>&nbsp;&nbsp;
-      <a href="#M000092">new</a>&nbsp;&nbsp;
-      <a href="#M000094">push</a>&nbsp;&nbsp;
-      <a href="#M000093">setupTable</a>&nbsp;&nbsp;
+      <a href="#M000038">get</a>&nbsp;&nbsp;
+      <a href="#M000037">include?</a>&nbsp;&nbsp;
+      <a href="#M000034">new</a>&nbsp;&nbsp;
+      <a href="#M000036">push</a>&nbsp;&nbsp;
+      <a href="#M000035">setupTable</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -133,19 +133,26 @@
           <td class="context-item-name">keyList</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
           <td class="context-item-desc">
-Table
+a list of keys that are used as indexes of keys.
 
 </td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">selfTable</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+a table of object indexed by the object itself.
+
+</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">tables</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+a list of tables. The key type of each table is specified by
+<tt>keyList</tt>
+
+</td>
         </tr>
         </table>
       </div>
@@ -157,12 +164,12 @@ Table
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000092" class="method-detail">
-        <a name="M000092"></a>
+      <div id="method-M000034" class="method-detail">
+        <a name="M000034"></a>
 
         <div class="method-heading">
-          <a href="HashedArray.src/M000092.html" target="Code" class="method-signature"
-            onclick="popupCode('HashedArray.src/M000092.html');return false;">
+          <a href="HashedArray.src/M000034.html" target="Code" class="method-signature"
+            onclick="popupCode('HashedArray.src/M000034.html');return false;">
           <span class="method-name">new</span><span class="method-args">(keyList = [:id])</span>
           </a>
         </div>
@@ -171,68 +178,98 @@ Table
           <p>
 初期化
 </p>
+<table>
+<tr><td valign="top"><em>keyList</em>:</td><td>an init. value for @keyList.
+
+</td></tr>
+</table>
         </div>
       </div>
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000096" class="method-detail">
-        <a name="M000096"></a>
+      <div id="method-M000038" class="method-detail">
+        <a name="M000038"></a>
 
         <div class="method-heading">
-          <a href="HashedArray.src/M000096.html" target="Code" class="method-signature"
-            onclick="popupCode('HashedArray.src/M000096.html');return false;">
+          <a href="HashedArray.src/M000038.html" target="Code" class="method-signature"
+            onclick="popupCode('HashedArray.src/M000038.html');return false;">
           <span class="method-name">get</span><span class="method-args">(keyType, key)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="HashedArray.html#M000096">get</a>
+<a href="HashedArray.html#M000038">get</a> an object specified by key as
+keyType
 </p>
+<table>
+<tr><td valign="top"><em>keyType</em>:</td><td>specify which key type is used.
+
+</td></tr>
+<tr><td valign="top"><em>key</em>:</td><td>the key value.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>a specified object.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000095" class="method-detail">
-        <a name="M000095"></a>
+      <div id="method-M000037" class="method-detail">
+        <a name="M000037"></a>
 
         <div class="method-heading">
-          <a href="HashedArray.src/M000095.html" target="Code" class="method-signature"
-            onclick="popupCode('HashedArray.src/M000095.html');return false;">
+          <a href="HashedArray.src/M000037.html" target="Code" class="method-signature"
+            onclick="popupCode('HashedArray.src/M000037.html');return false;">
           <span class="method-name">include?</span><span class="method-args">(entry)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="HashedArray.html#M000094">push</a> 置き換え
+存在チェック
 </p>
+<table>
+<tr><td valign="top"><em>entry</em>:</td><td>the object to be checked.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>true if the <em>entry</em> exists in the table. Otherwise, false.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000094" class="method-detail">
-        <a name="M000094"></a>
+      <div id="method-M000036" class="method-detail">
+        <a name="M000036"></a>
 
         <div class="method-heading">
-          <a href="HashedArray.src/M000094.html" target="Code" class="method-signature"
-            onclick="popupCode('HashedArray.src/M000094.html');return false;">
+          <a href="HashedArray.src/M000036.html" target="Code" class="method-signature"
+            onclick="popupCode('HashedArray.src/M000036.html');return false;">
           <span class="method-name">push</span><span class="method-args">(entry)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="HashedArray.html#M000094">push</a> 置き換え
+<a href="HashedArray.html#M000036">push</a> 置き換え
 </p>
+<table>
+<tr><td valign="top"><em>entry</em>:</td><td>add entry for each table.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000093" class="method-detail">
-        <a name="M000093"></a>
+      <div id="method-M000035" class="method-detail">
+        <a name="M000035"></a>
 
         <div class="method-heading">
-          <a href="HashedArray.src/M000093.html" target="Code" class="method-signature"
-            onclick="popupCode('HashedArray.src/M000093.html');return false;">
+          <a href="HashedArray.src/M000035.html" target="Code" class="method-signature"
+            onclick="popupCode('HashedArray.src/M000035.html');return false;">
           <span class="method-name">setupTable</span><span class="method-args">()</span>
           </a>
         </div>

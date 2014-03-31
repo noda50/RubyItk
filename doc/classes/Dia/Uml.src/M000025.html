@@ -5,20 +5,16 @@
 
 <html>
 <head>
-  <title>new (Dia::Uml)</title>
+  <title>linkReferences (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 145</span>
-145:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">srcFile</span>)
-146:       <span class="ruby-keyword kw">super</span>
-147:       <span class="ruby-ivar">@classTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>,<span class="ruby-identifier">:name</span>]) ;
-148:       <span class="ruby-ivar">@generalizationTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>]) ;
-149:       <span class="ruby-ivar">@packageTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>,<span class="ruby-identifier">:name</span>]) ;
-150:       <span class="ruby-ivar">@associationTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>]) ;
-151: 
-152:       <span class="ruby-identifier">scan</span>() ;
-153:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 210</span>
+210:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>()
+211:       <span class="ruby-identifier">eachObject</span>(){<span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span>
+212:         <span class="ruby-identifier">object</span>.<span class="ruby-identifier">linkReferences</span>(<span class="ruby-keyword kw">self</span>) ;
+213:       }
+214:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

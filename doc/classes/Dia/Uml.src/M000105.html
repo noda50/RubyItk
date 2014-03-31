@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 260</span>
-260:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eachAssociation</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-261:       <span class="ruby-ivar">@associationTable</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">assoc</span><span class="ruby-operator">|</span>
-262:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">assoc</span>) ;
-263:       }
-264:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 289</span>
+289:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eachAssociation</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: association</span>
+290:       <span class="ruby-ivar">@associationTable</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">assoc</span><span class="ruby-operator">|</span>
+291:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">assoc</span>) ;
+292:       }
+293:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

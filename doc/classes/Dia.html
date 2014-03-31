@@ -80,12 +80,12 @@
     <div id="diagram">
       <map id="map" name="map">
   <area shape="rect" coords="27,5,99,53"      href="REXML.html" alt="REXML" />
-  <area shape="rect" coords="123,101,195,149"      href="Dia.html" alt="Dia" />
-  <area shape="rect" coords="219,101,317,149"      href="HashedArray.html" alt="HashedArray" />
-  <area shape="rect" coords="360,101,432,149"      href="MyTest.html" alt="MyTest" />
-  <area shape="rect" coords="123,5,195,53"      href="Utility.html" alt="Utility" />
-  <area shape="rect" coords="232,5,304,53"      href="Array.html" alt="Array" />
-  <area shape="rect" coords="328,5,464,53"      href="Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="123,101,221,149"      href="HashedArray.html" alt="HashedArray" />
+  <area shape="rect" coords="264,101,336,149"      href="MyTest.html" alt="MyTest" />
+  <area shape="rect" coords="392,101,464,149"      href="Dia.html" alt="Dia" />
+  <area shape="rect" coords="136,5,208,53"      href="Array.html" alt="Array" />
+  <area shape="rect" coords="232,5,368,53"      href="Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="392,5,464,53"      href="Utility.html" alt="Utility" />
   <area shape="rect" coords="16,89,109,137"      href="XML.html" alt="XML" />
 </map>
 <img src="../dot/f_1.png" usemap="#map" border="0" alt="dot/f_1.png">
@@ -105,13 +105,13 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000043">addObject</a>&nbsp;&nbsp;
-      <a href="#M000044">eachObject</a>&nbsp;&nbsp;
-      <a href="#M000045">getObject</a>&nbsp;&nbsp;
-      <a href="#M000039">new</a>&nbsp;&nbsp;
-      <a href="#M000040">readFile</a>&nbsp;&nbsp;
-      <a href="#M000041">scanEachLayer</a>&nbsp;&nbsp;
-      <a href="#M000042">scanEachObject</a>&nbsp;&nbsp;
+      <a href="#M000084">addObject</a>&nbsp;&nbsp;
+      <a href="#M000085">eachObject</a>&nbsp;&nbsp;
+      <a href="#M000086">getObject</a>&nbsp;&nbsp;
+      <a href="#M000080">new</a>&nbsp;&nbsp;
+      <a href="#M000081">readFile</a>&nbsp;&nbsp;
+      <a href="#M000082">scanEachLayer</a>&nbsp;&nbsp;
+      <a href="#M000083">scanEachObject</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -187,103 +187,156 @@ source file
     <div id="methods">
       <h3 class="section-bar">Public Class methods</h3>
 
-      <div id="method-M000039" class="method-detail">
-        <a name="M000039"></a>
+      <div id="method-M000080" class="method-detail">
+        <a name="M000080"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000039.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000039.html');return false;">
+          <a href="Dia.src/M000080.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000080.html');return false;">
           <span class="method-name">new</span><span class="method-args">(srcFile = nil)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+initialize
+</p>
+<table>
+<tr><td valign="top"><em>srcFile</em>:</td><td>a <a href="Dia.html">Dia</a> file path.
+
+</td></tr>
+</table>
+<pre>
+          If specified, the file is read at the initializatoin.
+</pre>
         </div>
       </div>
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000043" class="method-detail">
-        <a name="M000043"></a>
+      <div id="method-M000084" class="method-detail">
+        <a name="M000084"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000043.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000043.html');return false;">
+          <a href="Dia.src/M000084.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000084.html');return false;">
           <span class="method-name">addObject</span><span class="method-args">(object)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+add an Object to the object table.
+</p>
+<table>
+<tr><td valign="top"><em>object</em>:</td><td>an Object to add.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000044" class="method-detail">
-        <a name="M000044"></a>
+      <div id="method-M000085" class="method-detail">
+        <a name="M000085"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000044.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000044.html');return false;">
-          <span class="method-name">eachObject</span><span class="method-args">(&amp;block)</span>
+          <a href="Dia.src/M000085.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000085.html');return false;">
+          <span class="method-name">eachObject</span><span class="method-args">() {|object| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+pick up each object in the object table and execute a given block
+</p>
         </div>
       </div>
 
-      <div id="method-M000045" class="method-detail">
-        <a name="M000045"></a>
+      <div id="method-M000086" class="method-detail">
+        <a name="M000086"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000045.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000045.html');return false;">
+          <a href="Dia.src/M000086.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000086.html');return false;">
           <span class="method-name">getObject</span><span class="method-args">(id)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+pink up an object by an given <em>id</em>.
+</p>
+<table>
+<tr><td valign="top"><em>id</em>:</td><td>an ID for the object.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>the object, or nil if not find.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000040" class="method-detail">
-        <a name="M000040"></a>
+      <div id="method-M000081" class="method-detail">
+        <a name="M000081"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000040.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000040.html');return false;">
+          <a href="Dia.src/M000081.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000081.html');return false;">
           <span class="method-name">readFile</span><span class="method-args">(filename)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+open and read a <a href="Dia.html">Dia</a> file into <a
+href="XML.html">XML</a> document. the document is set to +@doc+.
+</p>
+<table>
+<tr><td valign="top"><em>filename</em>:</td><td>a <a href="Dia.html">Dia</a> file
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>a <a href="XML.html">XML</a> document.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000041" class="method-detail">
-        <a name="M000041"></a>
+      <div id="method-M000082" class="method-detail">
+        <a name="M000082"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000041.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000041.html');return false;">
-          <span class="method-name">scanEachLayer</span><span class="method-args">(&amp;block)</span>
+          <a href="Dia.src/M000082.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000082.html');return false;">
+          <span class="method-name">scanEachLayer</span><span class="method-args">() {|layer| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+pick up each layer <a href="XML.html">XML</a> element and execute a given
+block. the block is passed each layer element.
+</p>
         </div>
       </div>
 
-      <div id="method-M000042" class="method-detail">
-        <a name="M000042"></a>
+      <div id="method-M000083" class="method-detail">
+        <a name="M000083"></a>
 
         <div class="method-heading">
-          <a href="Dia.src/M000042.html" target="Code" class="method-signature"
-            onclick="popupCode('Dia.src/M000042.html');return false;">
-          <span class="method-name">scanEachObject</span><span class="method-args">(&amp;block)</span>
+          <a href="Dia.src/M000083.html" target="Code" class="method-signature"
+            onclick="popupCode('Dia.src/M000083.html');return false;">
+          <span class="method-name">scanEachObject</span><span class="method-args">() {|object| ...}</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+pick up each object <a href="XML.html">XML</a> element and execute a given
+block. the block is passed each object element.
+</p>
         </div>
       </div>
 

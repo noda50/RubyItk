@@ -5,16 +5,14 @@
 
 <html>
 <head>
-  <title>new (HashedArray)</title>
+  <title>include? (HashedArray)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 663</span>
-663:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">keyList</span> = [<span class="ruby-identifier">:id</span>])
-664:     <span class="ruby-keyword kw">super</span>() ;
-665:     <span class="ruby-ivar">@keyList</span> = <span class="ruby-identifier">keyList</span> ;
-666:     <span class="ruby-identifier">setupTable</span>() ;
-667:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 735</span>
+735:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">include?</span>(<span class="ruby-identifier">entry</span>)
+736:     <span class="ruby-ivar">@selfTable</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">entry</span>) ;
+737:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

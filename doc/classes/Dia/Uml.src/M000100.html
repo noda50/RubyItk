@@ -5,16 +5,16 @@
 
 <html>
 <head>
-  <title>addLargePackage (Dia::Uml)</title>
+  <title>eachPackage (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 215</span>
-215:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addLargePackage</span>(<span class="ruby-identifier">object</span>)
-216:       <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">object</span>) ;
-217:       <span class="ruby-identifier">addObject</span>(<span class="ruby-identifier">package</span>) ;
-218:       <span class="ruby-identifier">addToTable</span>(<span class="ruby-ivar">@packageTable</span>,<span class="ruby-identifier">package</span>) ;
-219:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 280</span>
+280:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eachPackage</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: package</span>
+281:       <span class="ruby-ivar">@packageTable</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">package</span><span class="ruby-operator">|</span>
+282:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">package</span>) ;
+283:       }
+284:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

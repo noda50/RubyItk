@@ -1,20 +1,20 @@
 digraph TopLevel {
-    compound = true
     fontname = Arial
+    compound = true
+    fontsize = 8
     label = "TopLevel"
     bgcolor = lightcyan1
-    fontsize = 8
     node [
-        color = black,
         fontname = Arial,
+        color = black,
         fontsize = 8
     ]
 
     subgraph cluster_XML {
-        color = blue
-        style = filled
-        URL = "classes/XML.html"
         fontname = Arial
+        color = blue
+        URL = "classes/XML.html"
+        style = filled
         label = "XML"
         fillcolor = palegreen1
         XML [
@@ -27,8 +27,8 @@ digraph TopLevel {
     }
 
     REXML [
-        URL = "classes/REXML.html",
         shape = box,
+        URL = "classes/REXML.html",
         label = "REXML"
     ]
 
@@ -36,41 +36,31 @@ digraph TopLevel {
         lhead = cluster_XML
     ]
 
-    Dia [
-        color = palegoldenrod,
-        style = filled,
-        fontcolor = black,
-        URL = "classes/Dia.html",
-        shape = ellipse,
-        label = "Dia"
-    ]
-
     HashedArray [
-        color = palegoldenrod,
-        style = filled,
-        fontcolor = black,
-        URL = "classes/HashedArray.html",
         shape = ellipse,
+        fontcolor = black,
+        color = palegoldenrod,
+        URL = "classes/HashedArray.html",
+        style = filled,
         label = "HashedArray"
     ]
 
     MyTest [
-        color = palegoldenrod,
-        style = filled,
-        fontcolor = black,
-        URL = "classes/MyTest.html",
         shape = ellipse,
+        fontcolor = black,
+        color = palegoldenrod,
+        URL = "classes/MyTest.html",
+        style = filled,
         label = "MyTest"
     ]
 
-    Utility [
-        URL = "classes/Utility.html",
-        shape = box,
-        label = "Utility"
-    ]
-
-    Utility -> Dia [
-
+    Dia [
+        shape = ellipse,
+        fontcolor = black,
+        color = palegoldenrod,
+        URL = "classes/Dia.html",
+        style = filled,
+        label = "Dia"
     ]
 
     Array [
@@ -88,6 +78,16 @@ digraph TopLevel {
     ]
 
     Test__Unit__TestCase -> MyTest [
+
+    ]
+
+    Utility [
+        shape = box,
+        URL = "classes/Utility.html",
+        label = "Utility"
+    ]
+
+    Utility -> Dia [
 
     ]
 

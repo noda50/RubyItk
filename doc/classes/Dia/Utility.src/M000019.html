@@ -5,21 +5,14 @@
 
 <html>
 <head>
-  <title>getAttributeStringFromNode (Dia::Utility)</title>
+  <title>getAttributeFromNode (Dia::Utility)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 109</span>
-109:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getAttributeStringFromNode</span>(<span class="ruby-identifier">node</span>,<span class="ruby-identifier">name</span>)
-110:       <span class="ruby-identifier">attrNode</span> = <span class="ruby-identifier">getAttributeFromNode</span>(<span class="ruby-identifier">node</span>,<span class="ruby-identifier">name</span>) ;
-111:       <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">attrNode</span>)
-112:         <span class="ruby-identifier">value</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">attrNode</span>,<span class="ruby-value str">&quot;dia:string&quot;</span>).<span class="ruby-identifier">texts</span>.<span class="ruby-identifier">to_s</span> ;
-113:         <span class="ruby-identifier">value</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/^\#(.*)\#$/</span><span class="ruby-identifier">m</span>,<span class="ruby-value str">&quot;\\1&quot;</span>) ;
-114:         <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">value</span> ;
-115:       <span class="ruby-keyword kw">else</span>
-116:         <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> ;
-117:       <span class="ruby-keyword kw">end</span>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 116</span>
+116:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getAttributeFromNode</span>(<span class="ruby-identifier">node</span>,<span class="ruby-identifier">name</span>)
+117:       <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">node</span>,<span class="ruby-node">&quot;dia:attribute[@name='#{name}']&quot;</span>) ;
 118:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

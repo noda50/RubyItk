@@ -5,34 +5,18 @@
 
 <html>
 <head>
-  <title>collectAttributesWithOverride (Dia::Uml::Klass)</title>
+  <title>scanUmlAttributes (Dia::Uml::Klass)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 467</span>
-467:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">collectAttributesWithOverride</span>(<span class="ruby-identifier">expandp</span>, <span class="ruby-identifier">attrList</span> = [])
-468:         <span class="ruby-comment cmt"># collect attributes in parent klasses</span>
-469:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">expandp</span>)
-470:           <span class="ruby-ivar">@parentClasses</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">klass</span><span class="ruby-operator">|</span>
-471:             <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">collectAttributesWithOverride</span>(<span class="ruby-identifier">expandp</span>, <span class="ruby-identifier">attrList</span>) ;
-472:           }
-473:         <span class="ruby-keyword kw">end</span>
-474:         <span class="ruby-ivar">@umlAttributeTable</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">attr</span><span class="ruby-operator">|</span>
-475:           <span class="ruby-identifier">group</span> = <span class="ruby-keyword kw">nil</span> ;
-476:           <span class="ruby-identifier">attrList</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">attrGroup</span><span class="ruby-operator">|</span>
-477:             <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">attrGroup</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">attr</span>.<span class="ruby-identifier">name</span>) <span class="ruby-keyword kw">then</span>
-478:               <span class="ruby-identifier">group</span> = <span class="ruby-identifier">attrGroup</span> ;
-479:               <span class="ruby-keyword kw">break</span> ;
-480:             <span class="ruby-keyword kw">end</span>
-481:           }
-482:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">group</span>) <span class="ruby-keyword kw">then</span>
-483:             <span class="ruby-identifier">group</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">attr</span>) ;
-484:           <span class="ruby-keyword kw">else</span>
-485:             <span class="ruby-identifier">attrList</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">attr</span>]) ;
-486:           <span class="ruby-keyword kw">end</span>
-487:         }
-488:         <span class="ruby-identifier">attrList</span> ;
-489:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 428</span>
+428:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanUmlAttributes</span>()
+429:         <span class="ruby-identifier">scanEachComposite</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">comp</span><span class="ruby-operator">|</span>
+430:           <span class="ruby-identifier">attr</span> = <span class="ruby-constant">Attribute</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">comp</span>,<span class="ruby-keyword kw">self</span>) ;
+431:           <span class="ruby-ivar">@umlAttributeTable</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">attr</span>) ;
+432:         }
+433: <span class="ruby-comment cmt">#        p [:class, @name, @umlAttributeTable] ;</span>
+434:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

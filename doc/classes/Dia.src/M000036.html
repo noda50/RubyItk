@@ -5,18 +5,14 @@
 
 <html>
 <head>
-  <title>scanEachObject (Dia)</title>
+  <title>getObject (Dia)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 61</span>
-61:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanEachObject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-62:     <span class="ruby-identifier">scanEachLayer</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">layer</span><span class="ruby-operator">|</span>
-63:       <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">layer</span>,<span class="ruby-value str">&quot;//dia:object&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span>
-64:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">object</span>) ;
-65:       }
-66:     }
-67:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 98</span>
+ 98:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getObject</span>(<span class="ruby-identifier">id</span>) ;
+ 99:     <span class="ruby-ivar">@objectTable</span>.<span class="ruby-identifier">get</span>(<span class="ruby-identifier">:id</span>, <span class="ruby-identifier">id</span>) ;
+100:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

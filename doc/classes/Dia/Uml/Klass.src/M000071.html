@@ -5,18 +5,36 @@
 
 <html>
 <head>
-  <title>scanUmlAttributes (Dia::Uml::Klass)</title>
+  <title>toRubyDef (Dia::Uml::Klass)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 385</span>
-385:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanUmlAttributes</span>()
-386:         <span class="ruby-identifier">scanEachComposite</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">comp</span><span class="ruby-operator">|</span>
-387:           <span class="ruby-identifier">attr</span> = <span class="ruby-constant">Attribute</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">comp</span>,<span class="ruby-keyword kw">self</span>) ;
-388:           <span class="ruby-ivar">@umlAttributeTable</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">attr</span>) ;
-389:         }
-390: <span class="ruby-comment cmt">#        p [:class, @name, @umlAttributeTable] ;</span>
-391:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 423</span>
+423:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">toRubyDef</span>(<span class="ruby-identifier">expandp</span> = <span class="ruby-keyword kw">false</span>, <span class="ruby-identifier">indent</span> = <span class="ruby-value str">&quot;&quot;</span>)
+424:         <span class="ruby-identifier">tab</span> = <span class="ruby-value str">&quot;  &quot;</span> ;
+425:         <span class="ruby-identifier">ind0</span> = <span class="ruby-value str">&quot;\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">indent</span> ;
+426:         <span class="ruby-identifier">ind1</span> = <span class="ruby-identifier">ind0</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">tab</span> ;
+427:         <span class="ruby-identifier">defstr</span> = <span class="ruby-value str">&quot;&quot;</span> ;
+428:         <span class="ruby-comment cmt">## comment (in RDoc style)</span>
+429:         <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">ind0</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">'##'</span> ;
+430:         <span class="ruby-ivar">@comment</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">com</span><span class="ruby-operator">|</span>
+431:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">ind0</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">'#'</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">com</span> ;
+432:         }
+433:         <span class="ruby-comment cmt">## start class definition</span>
+434:         <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">ind0</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;class #{@name}&quot;</span> ;
+435:         <span class="ruby-comment cmt">## inherited classes</span>
+436:         <span class="ruby-keyword kw">if</span>(<span class="ruby-operator">!</span><span class="ruby-identifier">expandp</span>) <span class="ruby-keyword kw">then</span>
+437:           <span class="ruby-ivar">@parentClasses</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">pclass</span><span class="ruby-operator">|</span> 
+438:             <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot; &lt; #{pclass.name}&quot;</span> ;
+439:           }
+440:         <span class="ruby-keyword kw">end</span>
+441:         <span class="ruby-comment cmt">## parent attributes</span>
+442:         <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">toRubyDefAttribute</span>(<span class="ruby-identifier">expandp</span>, <span class="ruby-identifier">ind1</span>) ;
+443:         <span class="ruby-comment cmt">## ending</span>
+444:         <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">ind0</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;end&quot;</span> ;
+445:         <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;\n&quot;</span> ;
+446:         <span class="ruby-identifier">defstr</span> ;
+447:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

@@ -5,16 +5,16 @@
 
 <html>
 <head>
-  <title>linkReferences (Dia::Uml)</title>
+  <title>eachClass (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 188</span>
-188:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>()
-189:       <span class="ruby-identifier">eachObject</span>(){<span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span>
-190:         <span class="ruby-identifier">object</span>.<span class="ruby-identifier">linkReferences</span>(<span class="ruby-keyword kw">self</span>) ;
-191:       }
-192:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 262</span>
+262:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eachClass</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: klass</span>
+263:       <span class="ruby-ivar">@classTable</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">klass</span><span class="ruby-operator">|</span>
+264:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">klass</span>) ;
+265:       }
+266:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

@@ -5,16 +5,26 @@
 
 <html>
 <head>
-  <title>test_b (TC_Foo)</title>
+  <title>test_f (TC_Foo)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 395</span>
-395:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_b</span>
-396:       <span class="ruby-identifier">oct</span> = <span class="ruby-constant">Octave</span>.<span class="ruby-identifier">new</span>() ;
-397:       <span class="ruby-identifier">ans</span> = <span class="ruby-identifier">oct</span>.<span class="ruby-identifier">evalCodeOnCommand</span>(<span class="ruby-value str">&quot;[1,2;3,4]^(-1)&quot;</span>) ;
-398:       <span class="ruby-identifier">puts</span> <span class="ruby-identifier">ans</span> ;
-399:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 470</span>
+470:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_f</span>
+471:       <span class="ruby-constant">Octave</span>.<span class="ruby-identifier">new</span>(){<span class="ruby-operator">|</span><span class="ruby-identifier">oct</span><span class="ruby-operator">|</span>
+472:         <span class="ruby-identifier">n</span> = <span class="ruby-value">3</span> ;
+473:         <span class="ruby-identifier">x</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">n</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">n</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span> <span class="ruby-identifier">rand</span>()}} ;
+474:         <span class="ruby-identifier">y</span> = <span class="ruby-identifier">z</span> = <span class="ruby-identifier">w</span> = <span class="ruby-keyword kw">nil</span> ;
+475:         <span class="ruby-identifier">td</span> = <span class="ruby-constant">TimeDuration</span>.<span class="ruby-identifier">new</span>() {
+476:           <span class="ruby-identifier">y</span> = <span class="ruby-identifier">oct</span>.<span class="ruby-identifier">determinant</span>(<span class="ruby-identifier">x</span>) ;
+477:           <span class="ruby-identifier">z</span> = <span class="ruby-identifier">oct</span>.<span class="ruby-identifier">trace</span>(<span class="ruby-identifier">x</span>) ;
+478:           <span class="ruby-identifier">w</span> = <span class="ruby-identifier">oct</span>.<span class="ruby-identifier">transpose</span>(<span class="ruby-identifier">x</span>) ;
+479:         }
+480:         <span class="ruby-identifier">pp</span> [<span class="ruby-identifier">x</span>,<span class="ruby-identifier">w</span>] ;
+481:         <span class="ruby-identifier">pp</span> [<span class="ruby-identifier">y</span>,<span class="ruby-identifier">z</span>] ;
+482:         <span class="ruby-identifier">pp</span> [<span class="ruby-identifier">n</span>, <span class="ruby-identifier">td</span>] ;
+483:       }
+484:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

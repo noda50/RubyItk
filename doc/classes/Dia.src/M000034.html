@@ -5,17 +5,14 @@
 
 <html>
 <head>
-  <title>readFile (Dia)</title>
+  <title>addObject (Dia)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 42</span>
-42:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">readFile</span>(<span class="ruby-identifier">filename</span>)
-43:     <span class="ruby-ivar">@srcFiles</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">filename</span>) ;
-44:     <span class="ruby-identifier">open</span>(<span class="ruby-identifier">filename</span>,<span class="ruby-value str">&quot;r&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">strm</span><span class="ruby-operator">|</span>
-45:       <span class="ruby-ivar">@doc</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">strm</span>) ;
-46:     }
-47:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 80</span>
+80:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addObject</span>(<span class="ruby-identifier">object</span>)
+81:     <span class="ruby-identifier">addToTable</span>(<span class="ruby-ivar">@objectTable</span>, <span class="ruby-identifier">object</span>) ;
+82:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

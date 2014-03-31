@@ -5,18 +5,34 @@
 
 <html>
 <head>
-  <title>scanUmlAttributes (Dia::Uml::Klass)</title>
+  <title>collectAttributesWithOverride (Dia::Uml::Klass)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 385</span>
-385:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanUmlAttributes</span>()
-386:         <span class="ruby-identifier">scanEachComposite</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">comp</span><span class="ruby-operator">|</span>
-387:           <span class="ruby-identifier">attr</span> = <span class="ruby-constant">Attribute</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">comp</span>,<span class="ruby-keyword kw">self</span>) ;
-388:           <span class="ruby-ivar">@umlAttributeTable</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">attr</span>) ;
-389:         }
-390: <span class="ruby-comment cmt">#        p [:class, @name, @umlAttributeTable] ;</span>
-391:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 486</span>
+486:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">collectAttributesWithOverride</span>(<span class="ruby-identifier">expandp</span>, <span class="ruby-identifier">attrList</span> = [])
+487:         <span class="ruby-comment cmt"># collect attributes in parent klasses</span>
+488:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">expandp</span>)
+489:           <span class="ruby-ivar">@parentClasses</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">klass</span><span class="ruby-operator">|</span>
+490:             <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">collectAttributesWithOverride</span>(<span class="ruby-identifier">expandp</span>, <span class="ruby-identifier">attrList</span>) ;
+491:           }
+492:         <span class="ruby-keyword kw">end</span>
+493:         <span class="ruby-ivar">@umlAttributeTable</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">attr</span><span class="ruby-operator">|</span>
+494:           <span class="ruby-identifier">group</span> = <span class="ruby-keyword kw">nil</span> ;
+495:           <span class="ruby-identifier">attrList</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">attrGroup</span><span class="ruby-operator">|</span>
+496:             <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">attrGroup</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">attr</span>.<span class="ruby-identifier">name</span>) <span class="ruby-keyword kw">then</span>
+497:               <span class="ruby-identifier">group</span> = <span class="ruby-identifier">attrGroup</span> ;
+498:               <span class="ruby-keyword kw">break</span> ;
+499:             <span class="ruby-keyword kw">end</span>
+500:           }
+501:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">group</span>) <span class="ruby-keyword kw">then</span>
+502:             <span class="ruby-identifier">group</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">attr</span>) ;
+503:           <span class="ruby-keyword kw">else</span>
+504:             <span class="ruby-identifier">attrList</span>.<span class="ruby-identifier">push</span>([<span class="ruby-identifier">attr</span>]) ;
+505:           <span class="ruby-keyword kw">end</span>
+506:         }
+507:         <span class="ruby-identifier">attrList</span> ;
+508:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

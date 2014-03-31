@@ -5,14 +5,15 @@
 
 <html>
 <head>
-  <title>setSizeByParam (MyCanvas)</title>
+  <title>drawImage (MyCanvas)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Canvas/myCanvas.rb, line 112</span>
-112:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setSizeByParam</span>(<span class="ruby-identifier">param</span>) 
-113:     <span class="ruby-ivar">@device</span>.<span class="ruby-identifier">setSizeByParam</span>(<span class="ruby-identifier">param</span>) ;
-114:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Canvas/myCanvas.rb, line 318</span>
+318:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">drawImage</span>(<span class="ruby-identifier">xdest</span>, <span class="ruby-identifier">ydest</span>, <span class="ruby-identifier">src</span>, 
+319:                 <span class="ruby-identifier">xsrc</span> = <span class="ruby-value">0</span>, <span class="ruby-identifier">ysrc</span> = <span class="ruby-value">0</span>, <span class="ruby-identifier">width</span> = <span class="ruby-value">-1</span>, <span class="ruby-identifier">height</span> = <span class="ruby-value">-1</span>)
+320:     <span class="ruby-ivar">@device</span>.<span class="ruby-identifier">drawImage</span>(<span class="ruby-identifier">xdest</span>,<span class="ruby-identifier">ydest</span>,<span class="ruby-identifier">src</span>, <span class="ruby-identifier">xsrc</span>, <span class="ruby-identifier">ysrc</span>, <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span>) ;
+321:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

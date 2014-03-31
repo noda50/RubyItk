@@ -5,20 +5,17 @@
 
 <html>
 <head>
-  <title>scanXml (Dia)</title>
+  <title>readFile (Dia)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/Dia.rb, line 252</span>
-252:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanXml</span>(<span class="ruby-identifier">xml</span>)
-253:     <span class="ruby-ivar">@doc</span> = <span class="ruby-identifier">xml</span> ;
-254:     <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-ivar">@doc</span>.<span class="ruby-identifier">root</span>, <span class="ruby-value str">&quot;//dia:object&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">objXml</span><span class="ruby-operator">|</span>
-255:       <span class="ruby-identifier">obj</span> = <span class="ruby-constant">Dia</span><span class="ruby-operator">::</span><span class="ruby-constant">Object</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">objXml</span>) ;
-256:       <span class="ruby-identifier">addObject</span>(<span class="ruby-identifier">obj</span>) ;
-257:     }
-258:     <span class="ruby-identifier">assignAllConnections</span>() ;
-259:     <span class="ruby-identifier">assignAllLabels</span>() ;
-260:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 47</span>
+47:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">readFile</span>(<span class="ruby-identifier">filename</span>)
+48:     <span class="ruby-ivar">@srcFiles</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">filename</span>) ;
+49:     <span class="ruby-identifier">open</span>(<span class="ruby-identifier">filename</span>,<span class="ruby-value str">&quot;r&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">strm</span><span class="ruby-operator">|</span>
+50:       <span class="ruby-ivar">@doc</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">strm</span>) ;
+51:     }
+52:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

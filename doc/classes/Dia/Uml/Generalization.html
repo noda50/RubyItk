@@ -82,17 +82,23 @@
     <div id="diagram">
       <map id="map" name="map">
   <area shape="rect" coords="27,5,99,53"      href="../../REXML.html" alt="REXML" />
-  <area shape="rect" coords="123,101,195,149"      href="../../Dia.html" alt="Dia" />
-  <area shape="rect" coords="219,101,317,149"      href="../../HashedArray.html" alt="HashedArray" />
-  <area shape="rect" coords="360,101,432,149"      href="../../MyTest.html" alt="MyTest" />
-  <area shape="rect" coords="123,5,195,53"      href="../../Utility.html" alt="Utility" />
-  <area shape="rect" coords="232,5,304,53"      href="../../Array.html" alt="Array" />
-  <area shape="rect" coords="328,5,464,53"      href="../../Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="123,101,221,149"      href="../../HashedArray.html" alt="HashedArray" />
+  <area shape="rect" coords="264,101,336,149"      href="../../MyTest.html" alt="MyTest" />
+  <area shape="rect" coords="392,101,464,149"      href="../../Dia.html" alt="Dia" />
+  <area shape="rect" coords="136,5,208,53"      href="../../Array.html" alt="Array" />
+  <area shape="rect" coords="232,5,368,53"      href="../../Test/Unit/TestCase.html" alt="Test::Unit::TestCase" />
+  <area shape="rect" coords="392,5,464,53"      href="../../Utility.html" alt="Utility" />
   <area shape="rect" coords="16,89,109,137"      href="../../XML.html" alt="XML" />
 </map>
 <img src="../../../dot/f_1.png" usemap="#map" border="0" alt="dot/f_1.png">
     </div>
 
+    <div id="description">
+      <p>
+generalization (inherit) relation between classes.
+</p>
+
+    </div>
 
 
    </div>
@@ -101,8 +107,8 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000062">linkReferences</a>&nbsp;&nbsp;
-      <a href="#M000061">scanSub</a>&nbsp;&nbsp;
+      <a href="#M000121">linkReferences</a>&nbsp;&nbsp;
+      <a href="#M000120">scanSub</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -125,12 +131,18 @@
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">from</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+inheriting class
+
+</td>
         </tr>
         <tr class="top-aligned-row context-row">
           <td class="context-item-name">to</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc"></td>
+          <td class="context-item-desc">
+inherited class
+
+</td>
         </tr>
         </table>
       </div>
@@ -142,31 +154,43 @@
     <div id="methods">
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000062" class="method-detail">
-        <a name="M000062"></a>
+      <div id="method-M000121" class="method-detail">
+        <a name="M000121"></a>
 
         <div class="method-heading">
-          <a href="Generalization.src/M000062.html" target="Code" class="method-signature"
-            onclick="popupCode('Generalization.src/M000062.html');return false;">
+          <a href="Generalization.src/M000121.html" target="Code" class="method-signature"
+            onclick="popupCode('Generalization.src/M000121.html');return false;">
           <span class="method-name">linkReferences</span><span class="method-args">(umlDoc)</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+link actual class object from its name recorded in <tt>from</tt> and
+<tt>to</tt>.
+</p>
+<table>
+<tr><td valign="top"><em>umlDoc</em>:</td><td>a UML document that the generalization belongs to.
+
+</td></tr>
+</table>
         </div>
       </div>
 
-      <div id="method-M000061" class="method-detail">
-        <a name="M000061"></a>
+      <div id="method-M000120" class="method-detail">
+        <a name="M000120"></a>
 
         <div class="method-heading">
-          <a href="Generalization.src/M000061.html" target="Code" class="method-signature"
-            onclick="popupCode('Generalization.src/M000061.html');return false;">
+          <a href="Generalization.src/M000120.html" target="Code" class="method-signature"
+            onclick="popupCode('Generalization.src/M000120.html');return false;">
           <span class="method-name">scanSub</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
+          <p>
+scan each connection to find <tt>from</tt> and <tt>to</tt>.
+</p>
         </div>
       </div>
 

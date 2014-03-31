@@ -5,17 +5,16 @@
 
 <html>
 <head>
-  <title>new (Dia::Uml::ObjectBase)</title>
+  <title>scanParent (Dia::Uml::ObjectBase)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 288</span>
-288:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">object</span>,<span class="ruby-identifier">doc</span> = <span class="ruby-keyword kw">nil</span>)
-289:         <span class="ruby-ivar">@document</span> = <span class="ruby-identifier">doc</span> ;
-290:         <span class="ruby-ivar">@xml</span> = <span class="ruby-identifier">object</span> ;
-291:         <span class="ruby-ivar">@id</span> = <span class="ruby-identifier">object</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">'id'</span>).<span class="ruby-identifier">value</span> ;
-292:         <span class="ruby-identifier">scan</span>() ;
-293:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 335</span>
+335:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanParent</span>()
+336:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">parentInfo</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-ivar">@xml</span>,<span class="ruby-value str">&quot;dia:childnode&quot;</span>))
+337:           <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">parentInfo</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">&quot;parent&quot;</span>).<span class="ruby-identifier">value</span> ;
+338:         <span class="ruby-keyword kw">end</span>
+339:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
