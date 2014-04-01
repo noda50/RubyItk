@@ -5,35 +5,14 @@
 
 <html>
 <head>
-  <title>hsv2rgb (MyCanvas)</title>
+  <title>addStatusInfoEntry (MyCanvas)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Canvas/myCanvas.rb, line 387</span>
-387:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">hsv2rgb</span>(<span class="ruby-identifier">h</span>,<span class="ruby-identifier">s</span>,<span class="ruby-identifier">v</span>) <span class="ruby-comment cmt"># h in [0,1], s in [0,1], v in [0,1]</span>
-388:     <span class="ruby-identifier">r</span> = <span class="ruby-identifier">g</span> = <span class="ruby-identifier">b</span> = <span class="ruby-value">0</span><span class="ruby-value">.0</span> ;
-389: 
-390:     <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">s</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span><span class="ruby-value">.0</span>) <span class="ruby-keyword kw">then</span>
-391:       <span class="ruby-identifier">r</span> = <span class="ruby-identifier">g</span> = <span class="ruby-identifier">b</span> = <span class="ruby-identifier">v</span> ;
-392:     <span class="ruby-keyword kw">else</span>
-393:       <span class="ruby-identifier">hv</span> = <span class="ruby-value">360</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">h</span> ;
-394:       <span class="ruby-identifier">hi</span> = ((<span class="ruby-identifier">hv</span> <span class="ruby-operator">/</span> <span class="ruby-value">60</span>).<span class="ruby-identifier">to_i</span>) <span class="ruby-operator">%</span> <span class="ruby-value">6</span> ;
-395:       <span class="ruby-identifier">f</span> = (<span class="ruby-identifier">hv</span><span class="ruby-operator">/</span><span class="ruby-value">60</span>) <span class="ruby-operator">-</span> <span class="ruby-identifier">hi</span> ;
-396:       <span class="ruby-identifier">p</span> = <span class="ruby-identifier">v</span> <span class="ruby-operator">*</span> (<span class="ruby-value">1</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">s</span>) ;
-397:       <span class="ruby-identifier">q</span> = <span class="ruby-identifier">v</span> <span class="ruby-operator">*</span> (<span class="ruby-value">1</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">f</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">s</span>) ;
-398:       <span class="ruby-identifier">t</span> = <span class="ruby-identifier">v</span> <span class="ruby-operator">*</span> (<span class="ruby-value">1</span> <span class="ruby-operator">-</span> (<span class="ruby-value">1</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">f</span>) <span class="ruby-operator">*</span> <span class="ruby-identifier">s</span>) ;
-399:       <span class="ruby-keyword kw">case</span>(<span class="ruby-identifier">hi</span>)
-400:       <span class="ruby-keyword kw">when</span> <span class="ruby-value">0</span> ; <span class="ruby-identifier">r</span> = <span class="ruby-identifier">v</span> ; <span class="ruby-identifier">g</span> = <span class="ruby-identifier">t</span> ; <span class="ruby-identifier">b</span> = <span class="ruby-identifier">p</span> ;
-401:       <span class="ruby-keyword kw">when</span> <span class="ruby-value">1</span> ; <span class="ruby-identifier">r</span> = <span class="ruby-identifier">q</span> ; <span class="ruby-identifier">g</span> = <span class="ruby-identifier">v</span> ; <span class="ruby-identifier">b</span> = <span class="ruby-identifier">p</span> ;
-402:       <span class="ruby-keyword kw">when</span> <span class="ruby-value">2</span> ; <span class="ruby-identifier">r</span> = <span class="ruby-identifier">p</span> ; <span class="ruby-identifier">g</span> = <span class="ruby-identifier">v</span> ; <span class="ruby-identifier">b</span> = <span class="ruby-identifier">t</span> ;
-403:       <span class="ruby-keyword kw">when</span> <span class="ruby-value">3</span> ; <span class="ruby-identifier">r</span> = <span class="ruby-identifier">p</span> ; <span class="ruby-identifier">g</span> = <span class="ruby-identifier">q</span> ; <span class="ruby-identifier">b</span> = <span class="ruby-identifier">v</span> ;
-404:       <span class="ruby-keyword kw">when</span> <span class="ruby-value">4</span> ; <span class="ruby-identifier">r</span> = <span class="ruby-identifier">t</span> ; <span class="ruby-identifier">g</span> = <span class="ruby-identifier">p</span> ; <span class="ruby-identifier">b</span> = <span class="ruby-identifier">v</span> ;
-405:       <span class="ruby-keyword kw">when</span> <span class="ruby-value">5</span> ; <span class="ruby-identifier">r</span> = <span class="ruby-identifier">v</span> ; <span class="ruby-identifier">g</span> = <span class="ruby-identifier">p</span> ; <span class="ruby-identifier">b</span> = <span class="ruby-identifier">q</span> ;
-406:       <span class="ruby-keyword kw">else</span> ; <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;HSV value is out of range : H=#{h}, S=#{s}, V=#{v}&quot;</span> ;
-407:       <span class="ruby-keyword kw">end</span>
-408:     <span class="ruby-keyword kw">end</span>
-409:     <span class="ruby-keyword kw">return</span> [<span class="ruby-identifier">r</span>,<span class="ruby-identifier">g</span>,<span class="ruby-identifier">b</span>] ;
-410:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Canvas/myCanvas.rb, line 343</span>
+343:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addStatusInfoEntry</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span> = <span class="ruby-value str">&quot;&quot;</span>)
+344:     <span class="ruby-ivar">@device</span>.<span class="ruby-identifier">addStatusInfoEntry</span>(<span class="ruby-identifier">name</span>,<span class="ruby-identifier">value</span>) ;
+345:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

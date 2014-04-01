@@ -5,18 +5,22 @@
 
 <html>
 <head>
-  <title>new (Octave)</title>
+  <title>evalCodeOnCommand (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Octave/Octave.rb, line 61</span>
-61:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">com</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">optStr</span> = <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-62:     <span class="ruby-ivar">@command</span> = <span class="ruby-identifier">findFullPathToCom</span>((<span class="ruby-identifier">com</span> <span class="ruby-operator">||</span> <span class="ruby-constant">DefaultCom</span>)) ;
-63:     <span class="ruby-ivar">@comOption</span> = [<span class="ruby-constant">DefaultComOption</span>, <span class="ruby-identifier">optStr</span>].<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot; &quot;</span>) ;
-64:     <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">block</span>) <span class="ruby-keyword kw">then</span>
-65:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-66:     <span class="ruby-keyword kw">end</span>
-67:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 100</span>
+100:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evalCodeOnCommand</span>(<span class="ruby-identifier">code</span>)
+101:     <span class="ruby-identifier">ans</span> = <span class="ruby-value str">&quot;&quot;</span> ;
+102:     <span class="ruby-identifier">com</span> = <span class="ruby-node">&quot;#{@command} #{@comOption} --eval '#{code}'&quot;</span> ;
+103: <span class="ruby-comment cmt">#    p com ;</span>
+104:     <span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;| #{com}&quot;</span>, <span class="ruby-value str">&quot;r&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">strm</span><span class="ruby-operator">|</span>
+105:       <span class="ruby-keyword kw">while</span>(<span class="ruby-identifier">line</span> = <span class="ruby-identifier">strm</span>.<span class="ruby-identifier">gets</span>)
+106:         <span class="ruby-identifier">ans</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">line</span> ;
+107:       <span class="ruby-keyword kw">end</span>
+108:     }
+109:     <span class="ruby-identifier">ans</span>
+110:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

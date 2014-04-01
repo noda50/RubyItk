@@ -5,22 +5,21 @@
 
 <html>
 <head>
-  <title>evalCodeOnCommand (Octave)</title>
+  <title>final (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 100</span>
-100:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evalCodeOnCommand</span>(<span class="ruby-identifier">code</span>)
-101:     <span class="ruby-identifier">ans</span> = <span class="ruby-value str">&quot;&quot;</span> ;
-102:     <span class="ruby-identifier">com</span> = <span class="ruby-node">&quot;#{@command} #{@comOption} --eval '#{code}'&quot;</span> ;
-103: <span class="ruby-comment cmt">#    p com ;</span>
-104:     <span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;| #{com}&quot;</span>, <span class="ruby-value str">&quot;r&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">strm</span><span class="ruby-operator">|</span>
-105:       <span class="ruby-keyword kw">while</span>(<span class="ruby-identifier">line</span> = <span class="ruby-identifier">strm</span>.<span class="ruby-identifier">gets</span>)
-106:         <span class="ruby-identifier">ans</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">line</span> ;
-107:       <span class="ruby-keyword kw">end</span>
-108:     }
-109:     <span class="ruby-identifier">ans</span>
-110:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 150</span>
+150:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">final</span>()
+151:     <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@strm</span>)
+152:       <span class="ruby-identifier">evalCode</span>(<span class="ruby-value str">&quot;quit&quot;</span>) ;
+153:       <span class="ruby-ivar">@strm</span>.<span class="ruby-identifier">close</span>() ;
+154:       <span class="ruby-ivar">@strm</span> = <span class="ruby-keyword kw">nil</span> ;
+155:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span> ;
+156:     <span class="ruby-keyword kw">else</span>
+157:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span> ;
+158:     <span class="ruby-keyword kw">end</span>
+159:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

@@ -5,16 +5,16 @@
 
 <html>
 <head>
-  <title>test_c (TC_Foo)</title>
+  <title>setup (TC_Foo)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 404</span>
-404:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_c</span>
-405:       <span class="ruby-identifier">oct</span> = <span class="ruby-constant">Octave</span>.<span class="ruby-identifier">new</span>() ;
-406:       <span class="ruby-identifier">pp</span> <span class="ruby-identifier">oct</span>.<span class="ruby-identifier">convMatrixToOctave</span>([[<span class="ruby-value">1</span>,<span class="ruby-value">2</span>],[<span class="ruby-value">3</span>,<span class="ruby-value">4</span>]]) ;
-407:       <span class="ruby-identifier">pp</span> <span class="ruby-identifier">oct</span>.<span class="ruby-identifier">convCsvToMatrix</span>(<span class="ruby-value str">&quot;1,2\n3,4&quot;</span>) ;
-408:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 376</span>
+376:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setup</span>
+377:       <span class="ruby-identifier">name</span> = <span class="ruby-node">&quot;#{(@method_name||@__name__)}(#{self.class.name})&quot;</span> ;
+378:       <span class="ruby-identifier">puts</span> (<span class="ruby-value str">'*'</span> <span class="ruby-operator">*</span> <span class="ruby-value">5</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">' '</span> <span class="ruby-operator">+</span> [<span class="ruby-identifier">:eval</span>, <span class="ruby-identifier">name</span>].<span class="ruby-identifier">inspect</span> <span class="ruby-operator">+</span> <span class="ruby-value str">' '</span> <span class="ruby-operator">+</span> (<span class="ruby-value str">'*'</span> <span class="ruby-operator">*</span> <span class="ruby-value">5</span>) ;
+379:       <span class="ruby-keyword kw">super</span>
+380:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

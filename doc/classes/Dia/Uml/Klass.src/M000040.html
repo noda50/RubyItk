@@ -10,16 +10,16 @@
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 549</span>
-549:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">checkAttributeOverride</span>(<span class="ruby-identifier">attribute</span>, <span class="ruby-identifier">inheritStack</span> = [])
-550:         <span class="ruby-identifier">inheritStack</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">pclass</span><span class="ruby-operator">|</span>
-551:           <span class="ruby-identifier">overridingAttr</span> = <span class="ruby-identifier">pclass</span>.<span class="ruby-identifier">umlAttributeTable</span>.<span class="ruby-identifier">get</span>(<span class="ruby-identifier">:name</span>, <span class="ruby-identifier">attribute</span>.<span class="ruby-identifier">name</span>) ;
-552:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">overridingAttr</span>) <span class="ruby-keyword kw">then</span>
-553:             <span class="ruby-identifier">overridingAttr</span>.<span class="ruby-identifier">overrideFrom</span> = <span class="ruby-identifier">attribute</span> ;
-554:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">overridingAttr</span> ;
-555:           <span class="ruby-keyword kw">end</span>
-556:         }
-557:         <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> ;
-558:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 551</span>
+551:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">checkAttributeOverride</span>(<span class="ruby-identifier">attribute</span>, <span class="ruby-identifier">inheritStack</span> = [])
+552:         <span class="ruby-identifier">inheritStack</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">pclass</span><span class="ruby-operator">|</span>
+553:           <span class="ruby-identifier">overridingAttr</span> = <span class="ruby-identifier">pclass</span>.<span class="ruby-identifier">umlAttributeTable</span>.<span class="ruby-identifier">get</span>(<span class="ruby-identifier">:name</span>, <span class="ruby-identifier">attribute</span>.<span class="ruby-identifier">name</span>) ;
+554:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">overridingAttr</span>) <span class="ruby-keyword kw">then</span>
+555:             <span class="ruby-identifier">overridingAttr</span>.<span class="ruby-identifier">overrideFrom</span> = <span class="ruby-identifier">attribute</span> ;
+556:             <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">overridingAttr</span> ;
+557:           <span class="ruby-keyword kw">end</span>
+558:         }
+559:         <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> ;
+560:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

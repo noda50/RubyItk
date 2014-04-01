@@ -10,13 +10,13 @@
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 61</span>
-61:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanEachObject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
-62:     <span class="ruby-identifier">scanEachLayer</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">layer</span><span class="ruby-operator">|</span>
-63:       <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">layer</span>,<span class="ruby-value str">&quot;//dia:object&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span>
-64:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">object</span>) ;
-65:       }
-66:     }
-67:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 68</span>
+68:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanEachObject</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: object</span>
+69:     <span class="ruby-identifier">scanEachLayer</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">layer</span><span class="ruby-operator">|</span>
+70:       <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">each</span>(<span class="ruby-identifier">layer</span>,<span class="ruby-value str">&quot;//dia:object&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span>
+71:         <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">object</span>) ;
+72:       }
+73:     }
+74:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

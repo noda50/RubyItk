@@ -1,25 +1,25 @@
 digraph TopLevel {
-    fontsize = 8
-    compound = true
     label = "TopLevel"
     bgcolor = lightcyan1
+    fontsize = 8
     fontname = Arial
+    compound = true
     node [
         fontsize = 8,
-        fontname = Arial,
-        color = black
+        color = black,
+        fontname = Arial
     ]
 
     subgraph cluster_XML {
-        fillcolor = palegreen1
         label = "XML"
-        URL = "classes/XML.html"
-        fontname = Arial
         style = filled
+        URL = "classes/XML.html"
         color = blue
+        fontname = Arial
+        fillcolor = palegreen1
         XML [
-            shape = plaintext,
             width = 0.75,
+            shape = plaintext,
             height = 0.01,
             label = ""
         ]
@@ -27,8 +27,8 @@ digraph TopLevel {
     }
 
     REXML [
-        shape = box,
         URL = "classes/REXML.html",
+        shape = box,
         label = "REXML"
     ]
 
@@ -36,39 +36,40 @@ digraph TopLevel {
         lhead = cluster_XML
     ]
 
-    MyTest [
-        fontcolor = black,
-        shape = ellipse,
-        URL = "classes/MyTest.html",
-        style = filled,
-        color = palegoldenrod,
-        label = "MyTest"
-    ]
-
-    HashedArray [
-        fontcolor = black,
-        shape = ellipse,
-        URL = "classes/HashedArray.html",
-        style = filled,
-        color = palegoldenrod,
-        label = "HashedArray"
-    ]
-
     Dia [
-        fontcolor = black,
-        shape = ellipse,
-        URL = "classes/Dia.html",
         style = filled,
+        URL = "classes/Dia.html",
         color = palegoldenrod,
+        shape = ellipse,
+        fontcolor = black,
         label = "Dia"
     ]
 
-    Test__Unit__TestCase [
-        URL = "classes/Test/Unit/TestCase.html",
-        label = "Test::Unit::TestCase"
+    HashedArray [
+        style = filled,
+        URL = "classes/HashedArray.html",
+        color = palegoldenrod,
+        shape = ellipse,
+        fontcolor = black,
+        label = "HashedArray"
     ]
 
-    Test__Unit__TestCase -> MyTest [
+    MyTest [
+        style = filled,
+        URL = "classes/MyTest.html",
+        color = palegoldenrod,
+        shape = ellipse,
+        fontcolor = black,
+        label = "MyTest"
+    ]
+
+    Utility [
+        URL = "classes/Utility.html",
+        shape = box,
+        label = "Utility"
+    ]
+
+    Utility -> Dia [
 
     ]
 
@@ -81,13 +82,12 @@ digraph TopLevel {
 
     ]
 
-    Utility [
-        shape = box,
-        URL = "classes/Utility.html",
-        label = "Utility"
+    Test__Unit__TestCase [
+        URL = "classes/Test/Unit/TestCase.html",
+        label = "Test::Unit::TestCase"
     ]
 
-    Utility -> Dia [
+    Test__Unit__TestCase -> MyTest [
 
     ]
 

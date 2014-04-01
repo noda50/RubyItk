@@ -5,17 +5,21 @@
 
 <html>
 <head>
-  <title>convRowVectorToOctave (Octave)</title>
+  <title>convCsvToMatrix (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 187</span>
-187:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">convRowVectorToOctave</span>(<span class="ruby-identifier">vec</span>)
-188:     <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;[&quot;</span> ;
-189:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">vec</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;,&quot;</span>) ;
-190:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;]&quot;</span> ;
-191:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
-192:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 226</span>
+226:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">convCsvToMatrix</span>(<span class="ruby-identifier">csv</span>)
+227:     <span class="ruby-identifier">mat</span> = <span class="ruby-identifier">csv</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">rawstr</span><span class="ruby-operator">|</span>
+228:       <span class="ruby-identifier">rawstr</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;,&quot;</span>).<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_f</span>} ;
+229:     }
+230:     <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">mat</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">size</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span>) <span class="ruby-keyword kw">then</span>
+231:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">mat</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v</span>[<span class="ruby-value">0</span>]} ;
+232:     <span class="ruby-keyword kw">else</span>
+233:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">mat</span> ;
+234:     <span class="ruby-keyword kw">end</span>
+235:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
