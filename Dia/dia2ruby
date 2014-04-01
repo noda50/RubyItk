@@ -1,26 +1,35 @@
 #! /usr/bin/env ruby
 ## -*- mode: ruby -*-
+##= dia2ruby
+# == Usage
+#     :include: USAGE.dia2ruby
 
 require 'optparse';
 require 'ostruct' ;
 
 require './DiaUml.rb';
 
-##======================================================================
+##--======================================================================
 $conf = 
   OpenStruct.new({
+                   :expand => false,
                  }) ;
 
-##======================================================================
+##--======================================================================
 $op = OptionParser.new() {|op|
   op.banner = <<_END_
-  Usage: #{$0} [Options]* dia_file
+  Usage: #{$0} [Options]* <DiaFile> [<OutFile>]
+    If <OutFile> is not given, output to standard output.
 _END_
 
   op.separator("Options:") ;
   op.set_summary_indent("") ;
   op.set_summary_width(60) ;
   sep = "\n\t\t" ;
+
+  op.on("--expand", sep + "expand parent classes.") {
+    $conf.expand = true ;
+  }
 
   op.on_tail("--help", sep + "show this message.") { |h|
     puts(op)
@@ -35,11 +44,19 @@ $op.parse!(ARGV) ;
 ########################################################################
 
 $infile = ARGV[0] ;
+$outfile = ARGV[1] ;
 
 dia = Dia::Uml.new($infile) ;
-dia.eachClass(){|klass|
-  puts klass.toRubyDef() ;
-}
+
+begin
+  strm = ($outfile ? open($outfile,"w") : $stdout) ;
+  dia.eachClass(){|klass|
+    strm.puts klass.toRubyDef($conf.expand) ;
+  }
+ensure
+  strm.close if(strm != $stdout) ;
+end
+
 
 
 

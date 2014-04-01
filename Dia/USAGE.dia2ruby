@@ -1,0 +1,7 @@
+  Usage: ./dia2ruby [Options]* <DiaFile> [<OutFile>]
+    If <OutFile> is not given, output to standard output.
+Options:
+    --expand                                                 
+		expand parent classes.
+    --help                                                   
+		show this message.

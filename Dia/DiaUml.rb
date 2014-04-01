@@ -466,6 +466,8 @@ class Dia
         ind1 = ind0 + tab ;
         defstr = "" ;
         ## comment (in RDoc style)
+        defstr << ind0 << '#--' << '=' * 50 ;
+        defstr << ind0 << '#++' ;
         defstr << ind0 << '##' ;
         @comment.split("\n").each{|com|
           defstr << ind0 << '#' << com ;
@@ -500,8 +502,8 @@ class Dia
         preKlassName = nil ;
         attrList.each{|attrGroup|
           klassName = attrGroup.first.klass.name ;
-          if(klassName != preKlassName) then
-            defstr << indent << "\#\#\# inheried from #{klassName}" ;
+          if(expandp && (klassName != preKlassName)) then
+            defstr << indent << "\#\#=== inheritted from #{klassName}" ;
           end
           defstr << attrGroup.last.toRubyDef(indent) ;
           preKlassName = klassName ;
@@ -584,7 +586,7 @@ class Dia
         attr :klass, true ;
         ## overrided attribute if the attribute override inherited definition.
         attr :overrideFrom, true ;
-        
+
         #----------------------
         #++
         # create an Attribute.
@@ -605,8 +607,8 @@ class Dia
         # *return*:: declaration text string.
         def toRubyDef(indent = "")
           defstr = "" ;
-          defstr << indent << "\#\# #{@name}:: type: #{@type}" ;
-          defstr << "; value=#{@value}" if(@value.length>0) ;
+          defstr << indent << "\#\#*type* :: #{@type}." ;
+          defstr << indent << "\#\#*value* :: #{@value}" if(@value.length>0) ;
           @comment.to_s.split("\n").each{|com|
               defstr << indent << "\# " << com
           }
