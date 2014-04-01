@@ -1,26 +1,26 @@
 digraph TopLevel {
-    fontsize = 8
     label = "TopLevel"
-    fontname = Arial
-    bgcolor = lightcyan1
     compound = true
+    fontname = Arial
+    fontsize = 8
+    bgcolor = lightcyan1
     node [
-        fontsize = 8,
+        color = black,
         fontname = Arial,
-        color = black
+        fontsize = 8
     ]
 
     subgraph cluster_XML {
         fillcolor = palegreen1
         label = "XML"
-        URL = "classes/XML.html"
-        style = filled
-        fontname = Arial
         color = blue
+        fontname = Arial
+        style = filled
+        URL = "classes/XML.html"
         XML [
+            height = 0.01,
             shape = plaintext,
             width = 0.75,
-            height = 0.01,
             label = ""
         ]
 
@@ -37,30 +37,30 @@ digraph TopLevel {
     ]
 
     MyTest [
-        shape = ellipse,
-        fontcolor = black,
-        URL = "classes/MyTest.html",
-        style = filled,
         color = palegoldenrod,
+        style = filled,
+        shape = ellipse,
+        URL = "classes/MyTest.html",
+        fontcolor = black,
         label = "MyTest"
     ]
 
-    Dia [
-        shape = ellipse,
-        fontcolor = black,
-        URL = "classes/Dia.html",
-        style = filled,
+    HashedArray [
         color = palegoldenrod,
-        label = "Dia"
+        style = filled,
+        shape = ellipse,
+        URL = "classes/HashedArray.html",
+        fontcolor = black,
+        label = "HashedArray"
     ]
 
-    HashedArray [
-        shape = ellipse,
-        fontcolor = black,
-        URL = "classes/HashedArray.html",
-        style = filled,
+    Dia [
         color = palegoldenrod,
-        label = "HashedArray"
+        style = filled,
+        shape = ellipse,
+        URL = "classes/Dia.html",
+        fontcolor = black,
+        label = "Dia"
     ]
 
     Test__Unit__TestCase [
@@ -72,6 +72,15 @@ digraph TopLevel {
 
     ]
 
+    Array [
+        URL = "classes/Array.html",
+        label = "Array"
+    ]
+
+    Array -> HashedArray [
+
+    ]
+
     Utility [
         shape = box,
         URL = "classes/Utility.html",
@@ -79,15 +88,6 @@ digraph TopLevel {
     ]
 
     Utility -> Dia [
-
-    ]
-
-    Array [
-        URL = "classes/Array.html",
-        label = "Array"
-    ]
-
-    Array -> HashedArray [
 
     ]
 

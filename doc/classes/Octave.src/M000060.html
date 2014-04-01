@@ -5,17 +5,15 @@
 
 <html>
 <head>
-  <title>evalCodeForMatrix (Octave)</title>
+  <title>determinant (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 251</span>
-251:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evalCodeForMatrix</span>(<span class="ruby-identifier">code</span>,<span class="ruby-identifier">preCode</span>=<span class="ruby-keyword kw">nil</span>)
-252:     <span class="ruby-identifier">fullcode</span> = (<span class="ruby-identifier">preCode</span> <span class="ruby-value">? </span><span class="ruby-identifier">preCode</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;;&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-value str">&quot;&quot;</span>) ;
-253:     <span class="ruby-identifier">fullcode</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;csvwrite(stdout(),#{code})&quot;</span> ;
-254:     <span class="ruby-identifier">matrixCsv</span> = <span class="ruby-identifier">evalCode</span>(<span class="ruby-identifier">fullcode</span>) ;
-255:     <span class="ruby-identifier">convCsvToMatrix</span>(<span class="ruby-identifier">matrixCsv</span>) ;
-256:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 306</span>
+306:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">determinant</span>(<span class="ruby-identifier">mat</span>)
+307:     <span class="ruby-identifier">code</span> = <span class="ruby-node">&quot;det(#{convMatrixToOctave(mat)})&quot;</span> ;
+308:     <span class="ruby-identifier">evalCodeForScalar</span>(<span class="ruby-identifier">code</span>) ;
+309:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

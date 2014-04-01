@@ -2,7 +2,7 @@
 ## -*- mode: ruby -*-
 ##= dia2ruby
 # == Usage
-#     :include: USAGE.dia2ruby
+#     :include: Dia/USAGE.dia2ruby
 
 require 'optparse';
 require 'ostruct' ;
