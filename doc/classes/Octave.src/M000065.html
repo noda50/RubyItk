@@ -5,15 +5,23 @@
 
 <html>
 <head>
-  <title>determinant (Octave)</title>
+  <title>convMatrixToOctave (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 306</span>
-306:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">determinant</span>(<span class="ruby-identifier">mat</span>)
-307:     <span class="ruby-identifier">code</span> = <span class="ruby-node">&quot;det(#{convMatrixToOctave(mat)})&quot;</span> ;
-308:     <span class="ruby-identifier">evalCodeForScalar</span>(<span class="ruby-identifier">code</span>) ;
-309:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 169</span>
+169:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">convMatrixToOctave</span>(<span class="ruby-identifier">mat</span>)
+170:     <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;[&quot;</span> ;
+171:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">mat</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">raw</span><span class="ruby-operator">|</span> 
+172:       <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">raw</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)) <span class="ruby-keyword kw">then</span>
+173:         <span class="ruby-identifier">raw</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;,&quot;</span>) ;
+174:       <span class="ruby-keyword kw">else</span>
+175:         <span class="ruby-identifier">raw</span>.<span class="ruby-identifier">to_f</span> ;
+176:       <span class="ruby-keyword kw">end</span>
+177:     }.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;;&quot;</span>) ;
+178:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;]&quot;</span> ;
+179:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
+180:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

@@ -5,17 +5,21 @@
 
 <html>
 <head>
-  <title>convColVectorToOctave (Octave)</title>
+  <title>final (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 199</span>
-199:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">convColVectorToOctave</span>(<span class="ruby-identifier">vec</span>)
-200:     <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;[&quot;</span> ;
-201:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">vec</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;;&quot;</span>) ;
-202:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;]&quot;</span> ;
-203:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
-204:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 150</span>
+150:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">final</span>()
+151:     <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@strm</span>)
+152:       <span class="ruby-identifier">evalCode</span>(<span class="ruby-value str">&quot;quit&quot;</span>) ;
+153:       <span class="ruby-ivar">@strm</span>.<span class="ruby-identifier">close</span>() ;
+154:       <span class="ruby-ivar">@strm</span> = <span class="ruby-keyword kw">nil</span> ;
+155:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span> ;
+156:     <span class="ruby-keyword kw">else</span>
+157:       <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span> ;
+158:     <span class="ruby-keyword kw">end</span>
+159:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

@@ -1,12 +1,12 @@
 digraph TopLevel {
-    fontsize = 8
-    label = "TopLevel"
     fontname = Arial
     bgcolor = lightcyan1
+    label = "TopLevel"
+    fontsize = 8
     compound = true
     node [
-        fontsize = 8,
         fontname = Arial,
+        fontsize = 8,
         color = black
     ]
 

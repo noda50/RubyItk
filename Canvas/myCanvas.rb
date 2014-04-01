@@ -77,19 +77,27 @@ require "myCanvasGtk.rb" ;
 ## require "myCanvasTk.rb" ;
 
 
+#--======================================================================
+#++
+## top level facility of Canvas.
 class MyCanvas < MyCanvasDevBase
+
+  #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  #++
+  ## device to handle MyCanvas. 
+  ## should be one of MyCanvasGtk, Gtk2, Tgif, and Tk.
   attr :device, true ;
 
-  ##----------------------------------------
-  ## setSize by param table
-
+  #--------------------------------------------------------------
+  #++
+  # setSize by param table
   def initialize(devtype,param)
     setupDevice(devtype,param) ;
   end
 
-  ##----------------------------------------
-  ## setSize by param table
-
+  #--------------------------------------------------------------
+  #++
+  # setSize by param table
   def setupDevice(devtype,param) 
     case devtype
     when 'gtk'
@@ -106,252 +114,273 @@ class MyCanvas < MyCanvasDevBase
     end
   end
 
-  ##----------------------------------------
-  ## setSize by param table
-
+  #--------------------------------------------------------------
+  #++
+  # set size by param table
   def setSizeByParam(param) 
     @device.setSizeByParam(param) ;
   end
 
-  ##----------------------------------------
-  ## setSize
-
+  #--------------------------------------------------------------
+  #++
+  # set XY size.
   def setSize(szX,szY,scale,centerp=FALSE)
     @device.setSize(szX,szY,scale,centerp) ;
   end
 
-  ##----------------------------------------
-  ## setShift
-
+  #--------------------------------------------------------------
+  #++
+  # set shift size
   def setShift(sx,sy) 
     @device.setShift(sx,sy) 
   end
 
-  ##----------------------------------------
-  ## setScale
-
+  #--------------------------------------------------------------
+  #++
+  # set scale
   def setScale(scale)
     @device.setScale(scale)
   end
 
-  ##----------------------------------------
-  ## setScaleShift by boundary box
-
+  #--------------------------------------------------------------
+  #++
+  # set scale and shift parameter by boundary box
   def setScaleShiftByBoundaryBox(x0,y0,x1,y1)
     @device.setScaleShiftByBoundaryBox(x0,y0,x1,y1) ;
   end
 
-  ##----------------------------------------------------------------------
-  ## access
-  ##
-
+  #--------------------------------------------------------------
+  #++
+  # size of X axis
   def sizeX()
     return @device.sizeX() ;
   end
 
+  #--------------------------------------------------------------
+  #++
+  # size of Y axis
   def sizeY()
     return @device.sizeY() ;
   end
 
-  ##--------------------
-  ## getScaleX
-
+  #--------------------------------------------------------------
+  #++
+  # get scale of X axis
   def getScaleX()
     return @device.getScaleX() ;
   end
 
-  ##--------------------
-  ## getScaleY
-
+  #--------------------------------------------------------------
+  #++
+  # get scale of Y axis
   def getScaleY()
     return @device.getScaleY() ;
   end
 
-  ##--------------------
-  ## get original X/Y position
-
+  #--------------------------------------------------------------
+  #++
+  # get original X position
   def orgX(x)
     return @device.orgX(x) ;
   end
 
+  #--------------------------------------------------------------
+  #++
+  # get original Y position
   def orgY(y)
     return @device.orgY(y) ;
   end
 
+  #--------------------------------------------------------------
+  #++
+  # reverse get original X position
   def unscaleX(x)
     return @device.unscaleX(x) ;
   end
 
+  #--------------------------------------------------------------
+  #++
+  # reverse get original Y position
   def unscaleY(y)
     return @device.unscaleY(y) ;
   end
 
-  ##----------------------------------------------------------------------
-  ## toplevel
-  ##
-
-  ##----------------------------------------
-  ## run [!!! should be defined in subclass!!!] 
-
+  
+  #--------------------------------------------------------------
+  # :category: Top Level
+  #++
+  # run device.
+  # [!!! should be defined in subclass!!!] 
   def run()
     @device.run() ;
   end
 
-  ##----------------------------------------
-  ## runP [!!! should be defined in subclass!!!] 
-
+  #--------------------------------------------------------------
+  # :category: Top Level
+  #++
+  # check run or not.
+  # [!!! should be defined in subclass!!!] 
   def runP()
     @device.runP() ;
   end
 
-  ##----------------------------------------
-  ## finish
-
+  #--------------------------------------------------------------
+  # :category: Top Level
+  #++
+  # finish device
   def finish()
     @device.finish() ;
   end
 
-  ##----------------------------------------
-  ## waitQuit()
-
+  #--------------------------------------------------------------
+  # :category: Top Level
+  #++
+  # wait Quit() of device
   def waitQuit()
     @device.waitQuit() ;
   end
 
-  ##----------------------------------------
-  ## noExitWhenQuit()
-
+  #--------------------------------------------------------------
+  # :category: Top Level
+  #++
+  # noExitWhenQuit()
   def noExitWhenQuit(flag = true)
     @device.noExitWhenQuit(flag) ;
   end
 
-  ##----------------------------------------
-  ## flush
-
+  #--------------------------------------------------------------
+  # :category: Top Level
+  #++
+  # flush device
   def flush()
     @device.flush() ;
   end
 
-  ##----------------------------------------
-  ## begin/end Page [!!! should be defined in subclass!!!] 
-
+  #--------------------------------------------------------------
+  # :category: Top Level
+  #++
+  # begin a page 
+  # [!!! should be defined in subclass!!!] 
   def beginPage(color="white") 
     @device.beginPage(color) ;
   end
 
+  #--------------------------------------------------------------
+  # :category: Top Level
+  #++
+  # end a page 
+  # [!!! should be defined in subclass!!!] 
   def endPage()
     @device.endPage() ;
   end
 
-  ##----------------------------------------------------------------------
-  ## draw facility
-  ##
-
-  ##----------------------------------------
-  ## draw line
-
-  ##--------------------
-  ## dashed line [!!! should be defined in subclass!!!] 
-
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # draw dashed line.
+  # [!!! should be defined in subclass!!!] 
   def drawDashedLine(x0,y0,x1,y1,thickness=1,color="grey") ;
     @device.drawDashedLine(x0,y0,x1,y1,thickness,color) ;
   end
 
-  ##--------------------
-  ## solid line [!!! should be defined in subclass!!!] 
-
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # draw solid line
+  # [!!! should be defined in subclass!!!] 
   def drawSolidLine(x0,y0,x1,y1,thickness=1,color="black") ;
     @device.drawSolidLine(x0,y0,x1,y1,thickness,color) ;
   end
 
-  ##----------------------------------------
-  ## draw circle
-
-  ##--------------------
-  ## draw circle body [!!! should be defined in subclass!!!] 
-
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # draw circle body
+  # [!!! should be defined in subclass!!!] 
   def drawCircle(x,y,r,fillp=false,color="black")
     @device.drawCircle(x,y,r,fillp,color) ;
   end
 
-  ##--------------------
-  ## draw circle body [!!! should be defined in subclass!!!] 
-
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # draw circle body 
+  # [!!! should be defined in subclass!!!] 
   def drawEllipse(x,y,rx,ry,fillp=false,color="black")
     @device.drawEllipse(x,y,rx,ry,fillp,color) ;
   end
 
-  ##----------------------------------------
-  ## draw rectangle
-  ##
-  
-  ##--------------------
-  ## draw rectangle body [!!! should be defined in subclass!!!] 
-
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # draw rectangle body.
+  # [!!! should be defined in subclass!!!] 
   def drawRectangle(x,y,w,h,fillp=false,color="black")
     @device.drawRectangle(x,y,w,h,fillp,color) ;
   end
 
-  ##----------------------------------------
-  ## draw polygon
-  ##
-  
-  ##--------------------
-  ## draw polygon body [!!! should be defined in subclass!!!] 
-
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # draw polygon body.
+  # [!!! should be defined in subclass!!!] 
   def drawPolygon(pointList, fillp=false, color="black")
     @device.drawPolygon(pointList, fillp, color) ;
   end
 
-  ##----------------------------------------
-  ## draw text
-  ##
-  
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # draw text
   def drawText(x,y,text,fontSize = 14, fontFamily = :times, color = "black") 
     @device.drawText(x,y,text,fontSize, fontFamily, color) ;
   end
 
-  ##----------------------------------------
-  ## draw image
-  ##
-  
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # draw image
   def drawImage(xdest, ydest, src, 
                 xsrc = 0, ysrc = 0, width = -1, height = -1)
     @device.drawImage(xdest,ydest,src, xsrc, ysrc, width, height) ;
   end
 
-  ##----------------------------------------
-  ## get image from file
-  ##
-
-  def getImageFromFile(file) 
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # get image from file
+  def getImageFromFile(file)
     @device.getImageFromFile(file) ;
   end
 
-  ##----------------------------------------
-  ## clear page
-  ##
+  #--------------------------------------------------------------
+  # :category: draw facility
+  #++
+  # clear page
   def clearPage(color="white")
     return @device.clearPage(color) ;
   end
 
-  
-  ##----------------------------------------------------------------------
-  ## show status info
-  ##
-
+  #--------------------------------------------------------------
+  # :category: misc
+  #++
+  # add status info
   def addStatusInfoEntry(name, value = "")
     @device.addStatusInfoEntry(name,value) ;
   end
 
+  #--------------------------------------------------------------
+  # :category: misc
+  #++
+  # set status info
   def setStatusInfo(name, value)
     @device.setStatusInfo(name,value) ;
   end
 
-  ##----------------------------------------------------------------------
-  ## thermal color scale
-  ##
-
+  #--------------------------------------------------------------
+  # :category: misc
+  #++
+  # thermal color scale
   def getThermalColor(level, s = 0.8, v = 1.0) # level should be in [0.0,1.0]
     h = ((1.0 - level) ** 1.4) *0.67;
     rgb = hsv2rgb(h,s,v) ;
@@ -363,10 +392,10 @@ class MyCanvas < MyCanvasDevBase
     return name ;
   end
 
-  ##----------------------------------------------------------------------
-  ## saturation color scale
-  ##
-
+  #--------------------------------------------------------------
+  # :category: misc
+  #++
+  # saturation color scale
   def getSaturationColor(level, h = 0.0, v = 1.0) # level should be in [-1.0,1.0]
     s = (level > 0.0 ? level : -level) ;
     h = (level > 0.0 ? h : h+0.5) ;
@@ -381,9 +410,10 @@ class MyCanvas < MyCanvasDevBase
     return name ;
   end
 
-  ##----------------------------------------------------------------------
-  ## HSV to RGB
-  ##
+  #--------------------------------------------------------------
+  # :category: misc
+  #++
+  # HSV to RGB
   def hsv2rgb(h,s,v) # h in [0,1], s in [0,1], v in [0,1]
     r = g = b = 0.0 ;
 

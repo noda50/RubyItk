@@ -1,25 +1,25 @@
 digraph TopLevel {
-    fontsize = 8
-    label = "TopLevel"
     fontname = Arial
     bgcolor = lightcyan1
+    label = "TopLevel"
+    fontsize = 8
     compound = true
     node [
-        fontsize = 8,
         fontname = Arial,
+        fontsize = 8,
         color = black
     ]
 
     subgraph cluster_XML {
+        fontname = Arial
         fillcolor = palegreen1
-        label = "XML"
         URL = "classes/XML.html"
         style = filled
-        fontname = Arial
+        label = "XML"
         color = blue
         XML [
-            shape = plaintext,
             width = 0.75,
+            shape = plaintext,
             height = 0.01,
             label = ""
         ]
@@ -27,8 +27,8 @@ digraph TopLevel {
     }
 
     REXML [
-        shape = box,
         URL = "classes/REXML.html",
+        shape = box,
         label = "REXML"
     ]
 
@@ -36,31 +36,40 @@ digraph TopLevel {
         lhead = cluster_XML
     ]
 
-    MyTest [
-        shape = ellipse,
+    HashedArray [
+        URL = "classes/HashedArray.html",
+        style = filled,
         fontcolor = black,
+        color = palegoldenrod,
+        shape = ellipse,
+        label = "HashedArray"
+    ]
+
+    MyTest [
         URL = "classes/MyTest.html",
         style = filled,
+        fontcolor = black,
         color = palegoldenrod,
+        shape = ellipse,
         label = "MyTest"
     ]
 
     Dia [
-        shape = ellipse,
-        fontcolor = black,
         URL = "classes/Dia.html",
         style = filled,
+        fontcolor = black,
         color = palegoldenrod,
+        shape = ellipse,
         label = "Dia"
     ]
 
-    HashedArray [
-        shape = ellipse,
-        fontcolor = black,
-        URL = "classes/HashedArray.html",
-        style = filled,
-        color = palegoldenrod,
-        label = "HashedArray"
+    Array [
+        URL = "classes/Array.html",
+        label = "Array"
+    ]
+
+    Array -> HashedArray [
+
     ]
 
     Test__Unit__TestCase [
@@ -73,21 +82,12 @@ digraph TopLevel {
     ]
 
     Utility [
-        shape = box,
         URL = "classes/Utility.html",
+        shape = box,
         label = "Utility"
     ]
 
     Utility -> Dia [
-
-    ]
-
-    Array [
-        URL = "classes/Array.html",
-        label = "Array"
-    ]
-
-    Array -> HashedArray [
 
     ]
 

@@ -10,23 +10,23 @@
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 589</span>
-589:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>(<span class="ruby-identifier">umlDoc</span>)
-590:         <span class="ruby-keyword kw">super</span>(<span class="ruby-identifier">umlDoc</span>) ;
-591:         <span class="ruby-identifier">fromObj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@from</span>) ;
-592:         <span class="ruby-identifier">toObj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@to</span>) ;
-593:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">fromObj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Klass</span>))
-594:           <span class="ruby-ivar">@from</span> = <span class="ruby-identifier">fromObj</span> ;
-595:         <span class="ruby-keyword kw">else</span>
-596:           <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;generalization (#{@from}-&gt;#{@to}) refers non-Class object:#{fromObj} in from-link&quot;</span> ;
-597:         <span class="ruby-keyword kw">end</span>
-598:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">toObj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Klass</span>))
-599:           <span class="ruby-ivar">@to</span> = <span class="ruby-identifier">toObj</span> ;
-600:         <span class="ruby-keyword kw">else</span>
-601:           <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;generalization (#{@from}-&gt;#{@to}) refers non-Class object:#{fromObj} in from-link&quot;</span> ;
-602:         <span class="ruby-keyword kw">end</span>
-603: <span class="ruby-comment cmt">#        p [:link, gen.id, fromObj.name, toObj.name] ;</span>
-604:         <span class="ruby-identifier">toObj</span>.<span class="ruby-identifier">inheritClass</span>(<span class="ruby-identifier">fromObj</span>) ;
-605:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 658</span>
+658:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>(<span class="ruby-identifier">umlDoc</span>)
+659:         <span class="ruby-keyword kw">super</span>(<span class="ruby-identifier">umlDoc</span>) ;
+660:         <span class="ruby-identifier">fromObj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@from</span>) ;
+661:         <span class="ruby-identifier">toObj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@to</span>) ;
+662:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">fromObj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Klass</span>))
+663:           <span class="ruby-ivar">@from</span> = <span class="ruby-identifier">fromObj</span> ;
+664:         <span class="ruby-keyword kw">else</span>
+665:           <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;generalization (#{@from}-&gt;#{@to}) refers non-Class object:#{fromObj} in from-link&quot;</span> ;
+666:         <span class="ruby-keyword kw">end</span>
+667:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">toObj</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Klass</span>))
+668:           <span class="ruby-ivar">@to</span> = <span class="ruby-identifier">toObj</span> ;
+669:         <span class="ruby-keyword kw">else</span>
+670:           <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;generalization (#{@from}-&gt;#{@to}) refers non-Class object:#{fromObj} in from-link&quot;</span> ;
+671:         <span class="ruby-keyword kw">end</span>
+672: <span class="ruby-comment cmt">#        p [:link, gen.id, fromObj.name, toObj.name] ;</span>
+673:         <span class="ruby-identifier">toObj</span>.<span class="ruby-identifier">inheritClass</span>(<span class="ruby-identifier">fromObj</span>) ;
+674:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

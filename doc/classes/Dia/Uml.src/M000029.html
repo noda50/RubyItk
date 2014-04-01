@@ -5,16 +5,16 @@
 
 <html>
 <head>
-  <title>addAssociation (Dia::Uml)</title>
+  <title>linkReferences (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 246</span>
-246:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addAssociation</span>(<span class="ruby-identifier">object</span>)
-247:       <span class="ruby-identifier">assoc</span> = <span class="ruby-constant">Association</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">object</span>) ;
-248:       <span class="ruby-identifier">addObject</span>(<span class="ruby-identifier">assoc</span>) ;
-249:       <span class="ruby-identifier">addToTable</span>(<span class="ruby-ivar">@associationTable</span>,<span class="ruby-identifier">assoc</span>) ;
-250:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 214</span>
+214:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>()
+215:       <span class="ruby-identifier">eachObject</span>(){<span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span>
+216:         <span class="ruby-identifier">object</span>.<span class="ruby-identifier">linkReferences</span>(<span class="ruby-keyword kw">self</span>) ;
+217:       }
+218:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

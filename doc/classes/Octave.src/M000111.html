@@ -5,25 +5,15 @@
 
 <html>
 <head>
-  <title>eigen (Octave)</title>
+  <title>determinant (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 338</span>
-338:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eigen</span>(<span class="ruby-identifier">mat</span>)
-339:     <span class="ruby-identifier">preCode</span> = <span class="ruby-node">&quot;[V,L] = eig(#{convMatrixToOctave(mat)})&quot;</span> ;
-340:     <span class="ruby-identifier">code</span> = <span class="ruby-value str">&quot;[V;L]&quot;</span> ;
-341:     <span class="ruby-identifier">ans</span> = <span class="ruby-identifier">evalCodeForMatrix</span>(<span class="ruby-identifier">code</span>,<span class="ruby-identifier">preCode</span>) ;
-342:     <span class="ruby-identifier">n</span> = <span class="ruby-identifier">ans</span>.<span class="ruby-identifier">size</span><span class="ruby-operator">/</span><span class="ruby-value">2</span> ;
-343:     <span class="ruby-identifier">eigenValues</span> = [] ;
-344:     <span class="ruby-identifier">eigenVectors</span> = [] ;
-345:     (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">n</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
-346:       <span class="ruby-identifier">eigenValues</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">ans</span>[<span class="ruby-identifier">i</span><span class="ruby-operator">+</span><span class="ruby-identifier">n</span>][<span class="ruby-identifier">i</span>]) ;
-347:       <span class="ruby-identifier">eVec</span> = (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">n</span>).<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">j</span><span class="ruby-operator">|</span> <span class="ruby-identifier">ans</span>[<span class="ruby-identifier">j</span>][<span class="ruby-identifier">i</span>]}
-348:       <span class="ruby-identifier">eigenVectors</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">eVec</span>) ;
-349:     }
-350:     <span class="ruby-keyword kw">return</span> [<span class="ruby-identifier">eigenValues</span>, <span class="ruby-identifier">eigenVectors</span>] ;
-351:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 306</span>
+306:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">determinant</span>(<span class="ruby-identifier">mat</span>)
+307:     <span class="ruby-identifier">code</span> = <span class="ruby-node">&quot;det(#{convMatrixToOctave(mat)})&quot;</span> ;
+308:     <span class="ruby-identifier">evalCodeForScalar</span>(<span class="ruby-identifier">code</span>) ;
+309:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

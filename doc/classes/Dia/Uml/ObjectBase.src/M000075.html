@@ -5,17 +5,14 @@
 
 <html>
 <head>
-  <title>new (Dia::Uml::ObjectBase)</title>
+  <title>getAttribute (Dia::Uml::ObjectBase)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 323</span>
-323:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">object</span>,<span class="ruby-identifier">doc</span> = <span class="ruby-keyword kw">nil</span>)
-324:         <span class="ruby-ivar">@document</span> = <span class="ruby-identifier">doc</span> ;
-325:         <span class="ruby-ivar">@xml</span> = <span class="ruby-identifier">object</span> ;
-326:         <span class="ruby-ivar">@id</span> = <span class="ruby-identifier">object</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">'id'</span>).<span class="ruby-identifier">value</span> ;
-327:         <span class="ruby-identifier">scan</span>() ;
-328:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 368</span>
+368:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getAttribute</span>(<span class="ruby-identifier">name</span>)
+369:         <span class="ruby-identifier">getAttributeFromNode</span>(<span class="ruby-ivar">@xml</span>,<span class="ruby-identifier">name</span>) ;
+370:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
