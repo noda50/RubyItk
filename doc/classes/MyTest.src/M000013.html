@@ -10,14 +10,14 @@
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 734</span>
-734:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_a</span>()
-735:       <span class="ruby-identifier">dia</span> = <span class="ruby-constant">Dia</span><span class="ruby-operator">::</span><span class="ruby-constant">Uml</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">SampleDia</span>) ;
-736:       <span class="ruby-identifier">dia</span>.<span class="ruby-identifier">eachClass</span>(){<span class="ruby-operator">|</span><span class="ruby-identifier">klass</span><span class="ruby-operator">|</span>
-737: <span class="ruby-comment cmt">#        p [:klass, klass.id, klass.name,</span>
-738: <span class="ruby-comment cmt">#           klass.parentClasses.map{|c| c.name}] ;</span>
-739:         <span class="ruby-identifier">puts</span> <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">toRubyDef</span>() ;
-740:       }
-741:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 812</span>
+812:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">test_a</span>()
+813:       <span class="ruby-identifier">dia</span> = <span class="ruby-constant">Dia</span><span class="ruby-operator">::</span><span class="ruby-constant">Uml</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">SampleDia</span>) ;
+814:       <span class="ruby-identifier">dia</span>.<span class="ruby-identifier">eachClass</span>(){<span class="ruby-operator">|</span><span class="ruby-identifier">klass</span><span class="ruby-operator">|</span>
+815: <span class="ruby-comment cmt">#        p [:klass, klass.id, klass.name,</span>
+816: <span class="ruby-comment cmt">#           klass.parentClasses.map{|c| c.name}] ;</span>
+817:         <span class="ruby-identifier">puts</span> <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">toRubyDef</span>() ;
+818:       }
+819:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

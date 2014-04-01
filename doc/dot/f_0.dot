@@ -1,8 +1,8 @@
 digraph TopLevel {
-    label = "TopLevel"
-    bgcolor = lightcyan1
     fontsize = 8
     compound = true
+    label = "TopLevel"
+    bgcolor = lightcyan1
     fontname = Arial
     node [
         fontsize = 8,
@@ -12,18 +12,18 @@ digraph TopLevel {
 
     TC_Foo [
         fontcolor = black,
+        shape = ellipse,
         URL = "classes/TC_Foo.html",
         style = filled,
-        shape = ellipse,
         color = palegoldenrod,
         label = "TC_Foo"
     ]
 
     Octave [
         fontcolor = black,
+        shape = ellipse,
         URL = "classes/Octave.html",
         style = filled,
-        shape = ellipse,
         color = palegoldenrod,
         label = "Octave"
     ]

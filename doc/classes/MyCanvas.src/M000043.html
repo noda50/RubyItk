@@ -5,26 +5,14 @@
 
 <html>
 <head>
-  <title>setupDevice (MyCanvas)</title>
+  <title>noExitWhenQuit (MyCanvas)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Canvas/myCanvas.rb, line 93</span>
- 93:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setupDevice</span>(<span class="ruby-identifier">devtype</span>,<span class="ruby-identifier">param</span>) 
- 94:     <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">devtype</span>
- 95:     <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'gtk'</span>
- 96:       <span class="ruby-ivar">@device</span> = <span class="ruby-constant">MyCanvasGtk</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">param</span>) ;
- 97: <span class="ruby-comment cmt">##    when 'gtk2'</span>
- 98: <span class="ruby-comment cmt">##      @device = MyCanvasGtk2.new(param) ;</span>
- 99:     <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'tgif'</span>
-100:       <span class="ruby-ivar">@device</span> = <span class="ruby-constant">MyCanvasTgif</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">param</span>) ;
-101:     <span class="ruby-keyword kw">when</span> <span class="ruby-value str">'tk'</span>
-102:       <span class="ruby-ivar">@device</span> = <span class="ruby-constant">MyCanvasTk</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">param</span>) ;
-103:     <span class="ruby-keyword kw">else</span>
-104:       <span class="ruby-ivar">@stderr</span>.<span class="ruby-identifier">printf</span>(<span class="ruby-value str">&quot;Error:unknown device type : %s\n&quot;</span>,<span class="ruby-identifier">devtype</span>.<span class="ruby-identifier">to_s</span>) ;
-105:       <span class="ruby-identifier">fail</span> ;
-106:     <span class="ruby-keyword kw">end</span>
-107:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Canvas/myCanvas.rb, line 224</span>
+224:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">noExitWhenQuit</span>(<span class="ruby-identifier">flag</span> = <span class="ruby-keyword kw">true</span>)
+225:     <span class="ruby-ivar">@device</span>.<span class="ruby-identifier">noExitWhenQuit</span>(<span class="ruby-identifier">flag</span>) ;
+226:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
