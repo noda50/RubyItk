@@ -11,6 +11,8 @@ rdoc : dia2ruby
 dia2ruby :
 	(cd Dia ; ./dia2ruby --help > USAGE.dia2ruby || echo)
 
+push: publish
+
 publish :
 	git push
 	git co gh-pages
