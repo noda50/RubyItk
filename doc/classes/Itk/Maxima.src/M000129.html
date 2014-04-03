@@ -5,18 +5,19 @@
 
 <html>
 <head>
-  <title>readAfterSkip (Itk::Maxima)</title>
+  <title>call (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 54</span>
-54:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">readAfterSkip</span>()
-55:       <span class="ruby-identifier">r</span> = <span class="ruby-keyword kw">nil</span> ;
-56:       <span class="ruby-keyword kw">while</span>(<span class="ruby-identifier">r</span> = <span class="ruby-ivar">@strm</span>.<span class="ruby-identifier">gets</span>())
-57:         <span class="ruby-keyword kw">break</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-operator">!</span>(<span class="ruby-identifier">r</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/errors/</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">r</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/warnings/</span>)) ;
-58:       <span class="ruby-keyword kw">end</span>
-59:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">r</span> ;
-60:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 66</span>
+66:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">form</span>)
+67: <span class="ruby-comment cmt">#      p [:inp, form] ;</span>
+68:       <span class="ruby-ivar">@strm</span>.<span class="ruby-identifier">puts</span>(<span class="ruby-identifier">form</span>) ;
+69: <span class="ruby-comment cmt">#      r = @strm.gets() ;</span>
+70:       <span class="ruby-identifier">r</span> = <span class="ruby-identifier">readAfterSkip</span>() ;
+71: <span class="ruby-comment cmt">#      p [:ret, r] ;</span>
+72:       <span class="ruby-identifier">r</span>
+73:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

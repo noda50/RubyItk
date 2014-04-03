@@ -10,9 +10,11 @@
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 25</span>
-25:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>()
-26:       <span class="ruby-identifier">setup</span>() ;
-27:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 32</span>
+32:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>()
+33:       <span class="ruby-ivar">@commandPath</span> = <span class="ruby-identifier">findFullPathToCom</span>(<span class="ruby-constant">CommandName</span>) ;
+34:       <span class="ruby-ivar">@commandOpts</span> = <span class="ruby-constant">CommandOpts</span> ;
+35:       <span class="ruby-identifier">setup</span>() ;
+36:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

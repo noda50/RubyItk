@@ -5,16 +5,18 @@
 
 <html>
 <head>
-  <title>setup (Itk::Maxima)</title>
+  <title>findFullPathToCom (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 32</span>
-32:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setup</span>()
-33:       <span class="ruby-ivar">@strm</span> = <span class="ruby-constant">IO</span><span class="ruby-operator">::</span><span class="ruby-identifier">popen</span>(<span class="ruby-node">&quot;#{CommandPath} #{CommandOpts}&quot;</span>,<span class="ruby-value str">'r+'</span>) ;
-34:       <span class="ruby-identifier">call</span>(<span class="ruby-value str">&quot;display2d:false;&quot;</span>)
-35:       <span class="ruby-identifier">call</span>(<span class="ruby-value str">&quot;linel:1000000000;&quot;</span>)
-36:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 43</span>
+43:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">findFullPathToCom</span>(<span class="ruby-identifier">com</span>)
+44:       <span class="ruby-identifier">path</span> = <span class="ruby-keyword kw">nil</span> ;
+45:       <span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;| which #{com}&quot;</span>,<span class="ruby-value str">&quot;r&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">strm</span><span class="ruby-operator">|</span>
+46:         <span class="ruby-identifier">path</span> = <span class="ruby-identifier">strm</span>.<span class="ruby-identifier">gets</span> ;
+47:         <span class="ruby-identifier">path</span>.<span class="ruby-identifier">chomp!</span> <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">path</span>) ;
+48:       }
+49:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

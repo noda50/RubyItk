@@ -10,35 +10,59 @@ module Itk
   class Maxima
     #--::::::::::::::::::::::::::::::::::::::::::::::::::
     #++
-    ## path to maxima
-    CommandPath = '/usr/bin/maxima'
+    ## maxima command
+    CommandName = 'maxima' ;
+    #CommandPath = '/usr/bin/maxima'
+
+    ## command line option
     CommandOpts = '--very-quiet'
 
     #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     #++
-    ## a pipe process of Maxima
+    ## [String] full path for maxima command.
+    attr :commandPath, true ;
+    ## [String] command line option.
+    attr :commandOpts, true ;
+    ## [IO] a pipe process of Maxima.
     attr :strm, true ;
 
     #----------------------------------------------------
     #++
     ## initialization
     def initialize()
+      @commandPath = findFullPathToCom(CommandName) ;
+      @commandOpts = CommandOpts ;
       setup() ;
+    end
+
+    #--------------------------------------------------------------
+    #++
+    ## find full path using "which" command.
+    ## _com_:: [a String] command name.
+    ## *return*:: [a String] full path or nil.
+    def findFullPathToCom(com)
+      path = nil ;
+      open("| which #{com}","r"){|strm|
+        path = strm.gets ;
+        path.chomp! if(path) ;
+      }
     end
 
     #----------------------------------------------------
     #++
     ## setup pipe and suppress 2d display
     def setup()
-      @strm = IO::popen("#{CommandPath} #{CommandOpts}",'r+') ;
+      @strm = IO::popen("#{@commandPath} #{@commandOpts}",'r+') ;
       call("display2d:false;")
       call("linel:1000000000;")
     end
 
     #----------------------------------------------------
     #++
-    ## simple call
-    ## from String to String
+    ## simple call.
+    ## From String to String.
+    ## _form_:: [String] form to send to Maxima.
+    ## *return*:: [String] answer from Maxima.
     def call(form)
 #      p [:inp, form] ;
       @strm.puts(form) ;
@@ -51,6 +75,7 @@ module Itk
     #----------------------------------------------------
     #++
     ## read after skip errors/warnings
+    ## *return*:: [String] read answer form from Maxima.
     def readAfterSkip()
       r = nil ;
       while(r = @strm.gets())
@@ -62,7 +87,8 @@ module Itk
     #----------------------------------------------------
     #++
     ## reform Maxima form for Ruby
-    ## form:: Maxima form
+    ## _form_:: [String] Maxima's anser form.
+    ## *return*:: [String] String that can be parse as a Ruby object.
     def reformForRuby(form)
       # "-.123.." -> "-0.123"
 #      form.gsub!(/\-\./,'-0.') ;
@@ -74,15 +100,17 @@ module Itk
     #----------------------------------------------------
     #++
     ## scan Maxima form for Ruby
-    ## form:: Maxima form
+    ## _form_:: [String] Maxima form.
+    ## *return*:: [Object] Ruby object.
     def scan(form)
       self.instance_eval(reformForRuby(form)) ;
     end
 
     #----------------------------------------------------
     #++
-    ## calc determinant
-    ## matrix:: Array of Array of Numeric
+    ## calc determinant of a given matrix
+    ## _matrix_:: [Array of Array of Numeric]
+    ## *return*:: [Float] a determinant of the _matrix_.
     def determinant(matrix)
       form = "determinant(#{matrix2maxima(matrix)});" ;
       reply = call(form) ;
@@ -92,7 +120,7 @@ module Itk
     #----------------------------------------------------
     #++
     ## calc invert matrix
-    ## matrix:: Array of Array of Numeric
+    ## _matrix_:: Array of Array of Numeric
     def invert(matrix)
       form = "invert(#{matrix2maxima(matrix)});" ;
       reply = call(form) ;
@@ -101,10 +129,11 @@ module Itk
 
     #----------------------------------------------------
     #++
+    #--
+    ## *** Maxima の返り値が実数ではないため、対応できず。 ***
     ## calc eigen values of matrix
-    ## matrix:: Array of Array of Numeric
-    ## return:: An Array of eigen values
-    ## Maxima の返り値が実数ではないため、対応できず。
+    ## _matrix_:: [Array of Array of Numeric]
+    ## *return*:: [Float] An Array of eigen values
     def eigenvalues_not_work(matrix)
       form = "eigenvalues(#{matrix2maxima(matrix)});" ;
       reply = call(form) ;
@@ -121,8 +150,8 @@ module Itk
     #----------------------------------------------------
     #++
     ## calc trace of matrix
-    ## matrix:: Array of Array of Numeric
-    ## return:: the trace value
+    ## _matrix_:: [Array of Array of Numeric]
+    ## *return*:: [Float] the trace value
     def trace(matrix)
       form = "mat_trace(#{matrix2maxima(matrix)});" ;
       reply = call(form) ;
@@ -132,7 +161,8 @@ module Itk
     #----------------------------------------------------
     #++
     ## converter from Ruby Matrix to Maxima form
-    ## matrix:: Array of Array of Numeric
+    ## _matrix_:: [Array of Array of Numeric]
+    ## *return*:: [String] a Maxima matrix.
     def matrix2maxima(matrix)
       str = "matrix(" ;
       matrix.each{|vector|
@@ -146,7 +176,8 @@ module Itk
     #----------------------------------------------------
     #++
     ## converter from Ruby Float to Maxima Float
-    ## value:: Float
+    ## _value_:: [Float]
+    ## *return*:: [String] a Maxima float value.
     def float2maxima(value)
       str = value.to_s ;
       str.gsub!(/^0\./,'.') ;
@@ -157,7 +188,8 @@ module Itk
     #----------------------------------------------------
     #++
     ## converter from Maxima form to Ruby Matrix
-    ## arrays:: list of Array of Numeric
+    ## *_arrays_:: list of Array of Numeric
+    ## *return*:: [Array of Array]
     def matrix(*arrays)
       Array.new(arrays.size){|i| arrays[i]} ;
     end

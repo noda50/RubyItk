@@ -5,20 +5,16 @@
 
 <html>
 <head>
-  <title>matrix2maxima (Itk::Maxima)</title>
+  <title>trace (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 136</span>
-136:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">matrix2maxima</span>(<span class="ruby-identifier">matrix</span>)
-137:       <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;matrix(&quot;</span> ;
-138:       <span class="ruby-identifier">matrix</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">vector</span><span class="ruby-operator">|</span>
-139:         <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;[&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">vector</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">float2maxima</span>(<span class="ruby-identifier">v</span>)}.<span class="ruby-identifier">join</span>(<span class="ruby-value str">','</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;],&quot;</span> ;
-140:       }
-141:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">chop!</span>() ; <span class="ruby-comment cmt">## remove last &quot;,&quot;</span>
-142:       <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;)&quot;</span> ;
-143:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
-144:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 155</span>
+155:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">trace</span>(<span class="ruby-identifier">matrix</span>)
+156:       <span class="ruby-identifier">form</span> = <span class="ruby-node">&quot;mat_trace(#{matrix2maxima(matrix)});&quot;</span> ;
+157:       <span class="ruby-identifier">reply</span> = <span class="ruby-identifier">call</span>(<span class="ruby-identifier">form</span>) ;
+158:       <span class="ruby-identifier">scan</span>(<span class="ruby-identifier">reply</span>) ;
+159:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

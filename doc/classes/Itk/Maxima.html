@@ -99,19 +99,20 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000128">call</a>&nbsp;&nbsp;
-      <a href="#M000132">determinant</a>&nbsp;&nbsp;
-      <a href="#M000134">eigenvalues_not_work</a>&nbsp;&nbsp;
-      <a href="#M000137">float2maxima</a>&nbsp;&nbsp;
-      <a href="#M000133">invert</a>&nbsp;&nbsp;
-      <a href="#M000138">matrix</a>&nbsp;&nbsp;
-      <a href="#M000136">matrix2maxima</a>&nbsp;&nbsp;
+      <a href="#M000129">call</a>&nbsp;&nbsp;
+      <a href="#M000133">determinant</a>&nbsp;&nbsp;
+      <a href="#M000135">eigenvalues_not_work</a>&nbsp;&nbsp;
+      <a href="#M000127">findFullPathToCom</a>&nbsp;&nbsp;
+      <a href="#M000138">float2maxima</a>&nbsp;&nbsp;
+      <a href="#M000134">invert</a>&nbsp;&nbsp;
+      <a href="#M000139">matrix</a>&nbsp;&nbsp;
+      <a href="#M000137">matrix2maxima</a>&nbsp;&nbsp;
       <a href="#M000126">new</a>&nbsp;&nbsp;
-      <a href="#M000129">readAfterSkip</a>&nbsp;&nbsp;
-      <a href="#M000130">reformForRuby</a>&nbsp;&nbsp;
-      <a href="#M000131">scan</a>&nbsp;&nbsp;
-      <a href="#M000127">setup</a>&nbsp;&nbsp;
-      <a href="#M000135">trace</a>&nbsp;&nbsp;
+      <a href="#M000130">readAfterSkip</a>&nbsp;&nbsp;
+      <a href="#M000131">reformForRuby</a>&nbsp;&nbsp;
+      <a href="#M000132">scan</a>&nbsp;&nbsp;
+      <a href="#M000128">setup</a>&nbsp;&nbsp;
+      <a href="#M000136">trace</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -129,12 +130,12 @@
       <div class="name-list">
         <table summary="Constants">
         <tr class="top-aligned-row context-row">
-          <td class="context-item-name">CommandPath</td>
+          <td class="context-item-name">CommandName</td>
           <td>=</td>
-          <td class="context-item-value">'/usr/bin/maxima'</td>
+          <td class="context-item-value">'maxima' ;</td>
           <td width="3em">&nbsp;</td>
           <td class="context-item-desc">
-path to maxima
+maxima command
 
 </td>
         </tr>
@@ -142,6 +143,11 @@ path to maxima
           <td class="context-item-name">CommandOpts</td>
           <td>=</td>
           <td class="context-item-value">'--very-quiet'</td>
+          <td width="3em">&nbsp;</td>
+          <td class="context-item-desc">
+command line option
+
+</td>
         </tr>
         </table>
       </div>
@@ -155,11 +161,33 @@ path to maxima
       <div class="name-list">
         <table>
         <tr class="top-aligned-row context-row">
+          <td class="context-item-name">commandOpts</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"><dl>
+<dt>String</dt><dd>command line option.
+
+</dd>
+</dl>
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">commandPath</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"><dl>
+<dt>String</dt><dd>full path for maxima command.
+
+</dd>
+</dl>
+</td>
+        </tr>
+        <tr class="top-aligned-row context-row">
           <td class="context-item-name">strm</td>
           <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
-          <td class="context-item-desc">
-a pipe process of <a href="Maxima.html">Maxima</a>
+          <td class="context-item-desc"><dl>
+<dt>IO</dt><dd>a pipe process of <a href="Maxima.html">Maxima</a>.
 
+</dd>
+</dl>
 </td>
         </tr>
         </table>
@@ -191,90 +219,25 @@ initialization
 
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000128" class="method-detail">
-        <a name="M000128"></a>
+      <div id="method-M000129" class="method-detail">
+        <a name="M000129"></a>
 
         <div class="method-heading">
-          <a href="Maxima.src/M000128.html" target="Code" class="method-signature"
-            onclick="popupCode('Maxima.src/M000128.html');return false;">
+          <a href="Maxima.src/M000129.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000129.html');return false;">
           <span class="method-name">call</span><span class="method-args">(form)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-simple <a href="Maxima.html#M000128">call</a> from String to String
-</p>
-        </div>
-      </div>
-
-      <div id="method-M000132" class="method-detail">
-        <a name="M000132"></a>
-
-        <div class="method-heading">
-          <a href="Maxima.src/M000132.html" target="Code" class="method-signature"
-            onclick="popupCode('Maxima.src/M000132.html');return false;">
-          <span class="method-name">determinant</span><span class="method-args">(matrix)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-calc <a href="Maxima.html#M000132">determinant</a>
+simple <a href="Maxima.html#M000129">call</a>. From String to String.
 </p>
 <table>
-<tr><td valign="top"><a href="Maxima.html#M000138">matrix</a>:</td><td>Array of Array of Numeric
+<tr><td valign="top"><em>form</em>:</td><td>[String] form to send to <a href="Maxima.html">Maxima</a>.
 
 </td></tr>
-</table>
-        </div>
-      </div>
-
-      <div id="method-M000134" class="method-detail">
-        <a name="M000134"></a>
-
-        <div class="method-heading">
-          <a href="Maxima.src/M000134.html" target="Code" class="method-signature"
-            onclick="popupCode('Maxima.src/M000134.html');return false;">
-          <span class="method-name">eigenvalues_not_work</span><span class="method-args">(matrix)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-calc eigen values of <a href="Maxima.html#M000138">matrix</a>
-</p>
-<table>
-<tr><td valign="top"><a href="Maxima.html#M000138">matrix</a>:</td><td>Array of Array of Numeric
-
-</td></tr>
-<tr><td valign="top">return:</td><td>An Array of eigen values
-
-</td></tr>
-</table>
-<p>
-<a href="Maxima.html">Maxima</a>
-の返り値が実数ではないため、対応できず。
-</p>
-        </div>
-      </div>
-
-      <div id="method-M000137" class="method-detail">
-        <a name="M000137"></a>
-
-        <div class="method-heading">
-          <a href="Maxima.src/M000137.html" target="Code" class="method-signature"
-            onclick="popupCode('Maxima.src/M000137.html');return false;">
-          <span class="method-name">float2maxima</span><span class="method-args">(value)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-converter from Ruby Float to <a href="Maxima.html">Maxima</a> Float
-</p>
-<table>
-<tr><td valign="top">value:</td><td>Float
+<tr><td valign="top"><b>return</b>:</td><td>[String] answer from <a href="Maxima.html">Maxima</a>.
 
 </td></tr>
 </table>
@@ -287,17 +250,60 @@ converter from Ruby Float to <a href="Maxima.html">Maxima</a> Float
         <div class="method-heading">
           <a href="Maxima.src/M000133.html" target="Code" class="method-signature"
             onclick="popupCode('Maxima.src/M000133.html');return false;">
-          <span class="method-name">invert</span><span class="method-args">(matrix)</span>
+          <span class="method-name">determinant</span><span class="method-args">(matrix)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-calc <a href="Maxima.html#M000133">invert</a> <a
-href="Maxima.html#M000138">matrix</a>
+calc <a href="Maxima.html#M000133">determinant</a> of a given <a
+href="Maxima.html#M000139">matrix</a>
 </p>
 <table>
-<tr><td valign="top"><a href="Maxima.html#M000138">matrix</a>:</td><td>Array of Array of Numeric
+<tr><td valign="top"><em><a href="Maxima.html#M000139">matrix</a></em>:</td><td>[Array of Array of Numeric]
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>[Float] a <a href="Maxima.html#M000133">determinant</a> of the <em><a
+href="Maxima.html#M000139">matrix</a></em>.
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000135" class="method-detail">
+        <a name="M000135"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000135.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000135.html');return false;">
+          <span class="method-name">eigenvalues_not_work</span><span class="method-args">(matrix)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000127" class="method-detail">
+        <a name="M000127"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000127.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000127.html');return false;">
+          <span class="method-name">findFullPathToCom</span><span class="method-args">(com)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+find full path using &quot;which&quot; command.
+</p>
+<table>
+<tr><td valign="top"><em>com</em>:</td><td>[a String] command name.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>[a String] full path or nil.
 
 </td></tr>
 </table>
@@ -310,6 +316,54 @@ href="Maxima.html#M000138">matrix</a>
         <div class="method-heading">
           <a href="Maxima.src/M000138.html" target="Code" class="method-signature"
             onclick="popupCode('Maxima.src/M000138.html');return false;">
+          <span class="method-name">float2maxima</span><span class="method-args">(value)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+converter from Ruby Float to <a href="Maxima.html">Maxima</a> Float
+</p>
+<table>
+<tr><td valign="top"><em>value</em>:</td><td>[Float]
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>[String] a <a href="Maxima.html">Maxima</a> float value.
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000134" class="method-detail">
+        <a name="M000134"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000134.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000134.html');return false;">
+          <span class="method-name">invert</span><span class="method-args">(matrix)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+calc <a href="Maxima.html#M000134">invert</a> <a
+href="Maxima.html#M000139">matrix</a>
+</p>
+<table>
+<tr><td valign="top"><em><a href="Maxima.html#M000139">matrix</a></em>:</td><td>Array of Array of Numeric
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000139" class="method-detail">
+        <a name="M000139"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000139.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000139.html');return false;">
           <span class="method-name">matrix</span><span class="method-args">(*arrays)</span>
           </a>
         </div>
@@ -319,19 +373,22 @@ href="Maxima.html#M000138">matrix</a>
 converter from <a href="Maxima.html">Maxima</a> form to Ruby Matrix
 </p>
 <table>
-<tr><td valign="top">arrays:</td><td>list of Array of Numeric
+<tr><td valign="top">*<em>arrays</em>:</td><td>list of Array of Numeric
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>[Array of Array]
 
 </td></tr>
 </table>
         </div>
       </div>
 
-      <div id="method-M000136" class="method-detail">
-        <a name="M000136"></a>
+      <div id="method-M000137" class="method-detail">
+        <a name="M000137"></a>
 
         <div class="method-heading">
-          <a href="Maxima.src/M000136.html" target="Code" class="method-signature"
-            onclick="popupCode('Maxima.src/M000136.html');return false;">
+          <a href="Maxima.src/M000137.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000137.html');return false;">
           <span class="method-name">matrix2maxima</span><span class="method-args">(matrix)</span>
           </a>
         </div>
@@ -341,27 +398,14 @@ converter from <a href="Maxima.html">Maxima</a> form to Ruby Matrix
 converter from Ruby Matrix to <a href="Maxima.html">Maxima</a> form
 </p>
 <table>
-<tr><td valign="top"><a href="Maxima.html#M000138">matrix</a>:</td><td>Array of Array of Numeric
+<tr><td valign="top"><em><a href="Maxima.html#M000139">matrix</a></em>:</td><td>[Array of Array of Numeric]
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>[String] a <a href="Maxima.html">Maxima</a> <a
+href="Maxima.html#M000139">matrix</a>.
 
 </td></tr>
 </table>
-        </div>
-      </div>
-
-      <div id="method-M000129" class="method-detail">
-        <a name="M000129"></a>
-
-        <div class="method-heading">
-          <a href="Maxima.src/M000129.html" target="Code" class="method-signature"
-            onclick="popupCode('Maxima.src/M000129.html');return false;">
-          <span class="method-name">readAfterSkip</span><span class="method-args">()</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-read after skip errors/warnings
-</p>
         </div>
       </div>
 
@@ -371,16 +415,16 @@ read after skip errors/warnings
         <div class="method-heading">
           <a href="Maxima.src/M000130.html" target="Code" class="method-signature"
             onclick="popupCode('Maxima.src/M000130.html');return false;">
-          <span class="method-name">reformForRuby</span><span class="method-args">(form)</span>
+          <span class="method-name">readAfterSkip</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-reform <a href="Maxima.html">Maxima</a> form for Ruby
+read after skip errors/warnings
 </p>
 <table>
-<tr><td valign="top">form:</td><td><a href="Maxima.html">Maxima</a> form
+<tr><td valign="top"><b>return</b>:</td><td>[String] read answer form from <a href="Maxima.html">Maxima</a>.
 
 </td></tr>
 </table>
@@ -393,60 +437,88 @@ reform <a href="Maxima.html">Maxima</a> form for Ruby
         <div class="method-heading">
           <a href="Maxima.src/M000131.html" target="Code" class="method-signature"
             onclick="popupCode('Maxima.src/M000131.html');return false;">
-          <span class="method-name">scan</span><span class="method-args">(form)</span>
+          <span class="method-name">reformForRuby</span><span class="method-args">(form)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="Maxima.html#M000131">scan</a> <a href="Maxima.html">Maxima</a>
-form for Ruby
+reform <a href="Maxima.html">Maxima</a> form for Ruby
 </p>
 <table>
-<tr><td valign="top">form:</td><td><a href="Maxima.html">Maxima</a> form
+<tr><td valign="top"><em>form</em>:</td><td>[String] <a href="Maxima.html">Maxima</a>&#8216;s anser form.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>[String] String that can be parse as a Ruby object.
 
 </td></tr>
 </table>
         </div>
       </div>
 
-      <div id="method-M000127" class="method-detail">
-        <a name="M000127"></a>
+      <div id="method-M000132" class="method-detail">
+        <a name="M000132"></a>
 
         <div class="method-heading">
-          <a href="Maxima.src/M000127.html" target="Code" class="method-signature"
-            onclick="popupCode('Maxima.src/M000127.html');return false;">
+          <a href="Maxima.src/M000132.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000132.html');return false;">
+          <span class="method-name">scan</span><span class="method-args">(form)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="Maxima.html#M000132">scan</a> <a href="Maxima.html">Maxima</a>
+form for Ruby
+</p>
+<table>
+<tr><td valign="top"><em>form</em>:</td><td>[String] <a href="Maxima.html">Maxima</a> form.
+
+</td></tr>
+<tr><td valign="top"><b>return</b>:</td><td>[Object] Ruby object.
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000128" class="method-detail">
+        <a name="M000128"></a>
+
+        <div class="method-heading">
+          <a href="Maxima.src/M000128.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000128.html');return false;">
           <span class="method-name">setup</span><span class="method-args">()</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-<a href="Maxima.html#M000127">setup</a> pipe and suppress 2d display
+<a href="Maxima.html#M000128">setup</a> pipe and suppress 2d display
 </p>
         </div>
       </div>
 
-      <div id="method-M000135" class="method-detail">
-        <a name="M000135"></a>
+      <div id="method-M000136" class="method-detail">
+        <a name="M000136"></a>
 
         <div class="method-heading">
-          <a href="Maxima.src/M000135.html" target="Code" class="method-signature"
-            onclick="popupCode('Maxima.src/M000135.html');return false;">
+          <a href="Maxima.src/M000136.html" target="Code" class="method-signature"
+            onclick="popupCode('Maxima.src/M000136.html');return false;">
           <span class="method-name">trace</span><span class="method-args">(matrix)</span>
           </a>
         </div>
       
         <div class="method-description">
           <p>
-calc <a href="Maxima.html#M000135">trace</a> of <a
-href="Maxima.html#M000138">matrix</a>
+calc <a href="Maxima.html#M000136">trace</a> of <a
+href="Maxima.html#M000139">matrix</a>
 </p>
 <table>
-<tr><td valign="top"><a href="Maxima.html#M000138">matrix</a>:</td><td>Array of Array of Numeric
+<tr><td valign="top"><em><a href="Maxima.html#M000139">matrix</a></em>:</td><td>[Array of Array of Numeric]
 
 </td></tr>
-<tr><td valign="top">return:</td><td>the <a href="Maxima.html#M000135">trace</a> value
+<tr><td valign="top"><b>return</b>:</td><td>[Float] the <a href="Maxima.html#M000136">trace</a> value
 
 </td></tr>
 </table>

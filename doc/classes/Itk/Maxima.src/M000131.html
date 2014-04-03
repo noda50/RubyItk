@@ -5,14 +5,18 @@
 
 <html>
 <head>
-  <title>scan (Itk::Maxima)</title>
+  <title>reformForRuby (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 78</span>
-78:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scan</span>(<span class="ruby-identifier">form</span>)
-79:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">instance_eval</span>(<span class="ruby-identifier">reformForRuby</span>(<span class="ruby-identifier">form</span>)) ;
-80:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 92</span>
+92:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reformForRuby</span>(<span class="ruby-identifier">form</span>)
+93:       <span class="ruby-comment cmt"># &quot;-.123..&quot; -&gt; &quot;-0.123&quot;</span>
+94: <span class="ruby-comment cmt">#      form.gsub!(/\-\./,'-0.') ;</span>
+95:       <span class="ruby-identifier">form</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/([^0-9])\./</span>,<span class="ruby-value str">&quot;\\10.&quot;</span>) ;
+96:       <span class="ruby-identifier">form</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/^\./</span>,<span class="ruby-value str">&quot;0.&quot;</span>) ;
+97:       <span class="ruby-identifier">form</span> ;
+98:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

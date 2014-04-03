@@ -5,23 +5,17 @@
 
 <html>
 <head>
-  <title>convMatrixToOctave (Octave)</title>
+  <title>evalCodeForScalar (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 169</span>
-169:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">convMatrixToOctave</span>(<span class="ruby-identifier">mat</span>)
-170:     <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;[&quot;</span> ;
-171:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">mat</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">raw</span><span class="ruby-operator">|</span> 
-172:       <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">raw</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)) <span class="ruby-keyword kw">then</span>
-173:         <span class="ruby-identifier">raw</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;,&quot;</span>) ;
-174:       <span class="ruby-keyword kw">else</span>
-175:         <span class="ruby-identifier">raw</span>.<span class="ruby-identifier">to_f</span> ;
-176:       <span class="ruby-keyword kw">end</span>
-177:     }.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;;&quot;</span>) ;
-178:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;]&quot;</span> ;
-179:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
-180:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 263</span>
+263:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evalCodeForScalar</span>(<span class="ruby-identifier">code</span>,<span class="ruby-identifier">preCode</span>=<span class="ruby-keyword kw">nil</span>)
+264:     <span class="ruby-identifier">fullcode</span> = (<span class="ruby-identifier">preCode</span> <span class="ruby-value">? </span><span class="ruby-identifier">preCode</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;;&quot;</span> <span class="ruby-operator">:</span>  <span class="ruby-value str">&quot;&quot;</span>)
+265:     <span class="ruby-identifier">fullcode</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;disp(#{code})&quot;</span> ;
+266:     <span class="ruby-identifier">scalarStr</span> = <span class="ruby-identifier">evalCode</span>(<span class="ruby-identifier">fullcode</span>) ;
+267:     <span class="ruby-identifier">convScalarToFloat</span>(<span class="ruby-identifier">scalarStr</span>) ;
+268:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

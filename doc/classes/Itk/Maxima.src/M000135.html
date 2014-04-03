@@ -5,16 +5,23 @@
 
 <html>
 <head>
-  <title>trace (Itk::Maxima)</title>
+  <title>eigenvalues_not_work (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 126</span>
-126:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">trace</span>(<span class="ruby-identifier">matrix</span>)
-127:       <span class="ruby-identifier">form</span> = <span class="ruby-node">&quot;mat_trace(#{matrix2maxima(matrix)});&quot;</span> ;
-128:       <span class="ruby-identifier">reply</span> = <span class="ruby-identifier">call</span>(<span class="ruby-identifier">form</span>) ;
-129:       <span class="ruby-identifier">scan</span>(<span class="ruby-identifier">reply</span>) ;
-130:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 137</span>
+137:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">eigenvalues_not_work</span>(<span class="ruby-identifier">matrix</span>)
+138:       <span class="ruby-identifier">form</span> = <span class="ruby-node">&quot;eigenvalues(#{matrix2maxima(matrix)});&quot;</span> ;
+139:       <span class="ruby-identifier">reply</span> = <span class="ruby-identifier">call</span>(<span class="ruby-identifier">form</span>) ;
+140:       <span class="ruby-identifier">eValMaxima</span> = <span class="ruby-identifier">scan</span>(<span class="ruby-identifier">reply</span>) ;
+141:       <span class="ruby-identifier">eVal</span> = [] ;
+142:       (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">eValMaxima</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">size</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+143:         <span class="ruby-identifier">ev</span> = <span class="ruby-identifier">eValMaxima</span>[<span class="ruby-value">0</span>][<span class="ruby-identifier">i</span>] ;
+144:         <span class="ruby-identifier">n</span> = <span class="ruby-identifier">eValMaxima</span>[<span class="ruby-value">1</span>][<span class="ruby-identifier">i</span>] ;
+145:         <span class="ruby-identifier">n</span>.<span class="ruby-identifier">times</span>{ <span class="ruby-identifier">eVal</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">ev</span>)} ;
+146:       }
+147:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">eVal</span> ;
+148:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

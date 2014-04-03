@@ -5,17 +5,20 @@
 
 <html>
 <head>
-  <title>float2maxima (Itk::Maxima)</title>
+  <title>matrix2maxima (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 150</span>
-150:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">float2maxima</span>(<span class="ruby-identifier">value</span>)
-151:       <span class="ruby-identifier">str</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span> ;
-152:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/^0\./</span>,<span class="ruby-value str">'.'</span>) ;
-153:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/^-0\./</span>,<span class="ruby-value str">'-.'</span>) ;
-154:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
-155:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 166</span>
+166:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">matrix2maxima</span>(<span class="ruby-identifier">matrix</span>)
+167:       <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;matrix(&quot;</span> ;
+168:       <span class="ruby-identifier">matrix</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">vector</span><span class="ruby-operator">|</span>
+169:         <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;[&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">vector</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">float2maxima</span>(<span class="ruby-identifier">v</span>)}.<span class="ruby-identifier">join</span>(<span class="ruby-value str">','</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;],&quot;</span> ;
+170:       }
+171:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">chop!</span>() ; <span class="ruby-comment cmt">## remove last &quot;,&quot;</span>
+172:       <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;)&quot;</span> ;
+173:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
+174:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

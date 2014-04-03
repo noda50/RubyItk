@@ -5,14 +5,17 @@
 
 <html>
 <head>
-  <title>matrix (Itk::Maxima)</title>
+  <title>float2maxima (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 161</span>
-161:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">matrix</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">arrays</span>)
-162:       <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">arrays</span>.<span class="ruby-identifier">size</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span> <span class="ruby-identifier">arrays</span>[<span class="ruby-identifier">i</span>]} ;
-163:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 181</span>
+181:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">float2maxima</span>(<span class="ruby-identifier">value</span>)
+182:       <span class="ruby-identifier">str</span> = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span> ;
+183:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/^0\./</span>,<span class="ruby-value str">'.'</span>) ;
+184:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">gsub!</span>(<span class="ruby-regexp re">/^-0\./</span>,<span class="ruby-value str">'-.'</span>) ;
+185:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
+186:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
