@@ -463,6 +463,8 @@ module ItkXml
       #++
       ## pattern
       attr :pattern, true ;
+      ## condition for attribute (a hash)
+      attr :attrCond, true ;
       ## buffer for this filter
       attr :buffer, true ;
       ## procedure
@@ -471,17 +473,24 @@ module ItkXml
       #------------------------------------------
       #++
       ## initialize
-      def initialize(pattern, &proc)
+      def initialize(pattern, attrCond = nil, &proc)
         @pattern = pattern ;
         @proc = proc ;
+        @attrCond = attrCond ;
         @buffer = "" ;
       end
 
       #------------------------------------------
       #++
       ## pattern match
-      def matchQName(qname)
-        @pattern === qname ;
+      def matchQName(qname, attr = nil)
+        ret = (@pattern === qname) ;
+        if(ret && attr && @attrCond.is_a?(Hash)) then
+          @attrCond.each{|key, cond|
+            ret &&= (cond === attr[key]) ;
+          }
+        end
+        return ret ;
       end
 
       #------------------------------------------
@@ -504,8 +513,8 @@ module ItkXml
       #++
       ## scan and call procedure
       def scanCall()
-        xml = scanXml(false) ;
-        r = @proc.call(xml,@buffer) ;
+        xmldoc = scanXml(false) ;
+        r = @proc.call(xmldoc.root,@buffer) ;
         @buffer = "" ;
         return r ;
       end
@@ -533,16 +542,16 @@ module ItkXml
     ## listen qualified name
     ## _qnamePattern_:: pattern of qualified name to filter
     ## _block_:: procedure to call for filtered element.
-    def listenQName(qnamePattern,&block)
+    def listenQName(qnamePattern, attrCond = nil, &block)
       # generate filter
-      newFilter = FilterEntry.new(qnamePattern, &block) ;
+      newFilter = FilterEntry.new(qnamePattern, attrCond, &block) ;
       @filterList.push(newFilter) ;
 
       # add start_element filter
       self.listen(:start_element){|uri, lname, qname, attrs|
         # check pattern-matching of each filter
         @filterList.each{|filter|
-          @filterStack.push(filter) if(filter.matchQName(qname)) ;
+          @filterStack.push(filter) if(filter.matchQName(qname, attrs)) ;
         }
         # re-generate the start element
         elm = "<#{qname}" ;
@@ -680,11 +689,19 @@ if ($0 == __FILE__)
     #++
     ## Element Filter test
     def test_d()
+      btime = Time.now() ;
+      count = 0
       fparser = ItkXml::FilterParser.new(File.new(SampleXmlFile)) ;
-      fparser.listenQName("edge"){|xml, str|
-        ItkXml::ppp(xml) ;
+#      fparser.listenQName("edge"){|xml, str|
+      fparser.listenQName("edge", {"function" => nil}){|xml, str|
+#        if(xml.attribute("function").to_s != "internal") ;
+          #ItkXml::ppp(xml) ;
+          count += 1 ;
+#        end
       }
       fparser.parse ;
+      etime = Time.now() ;
+      pp [count, etime - btime] ;
     end
 
   end
