@@ -13,6 +13,7 @@
 $LOAD_PATH.push("~/lib/ruby") ;
 
 require 'rexml/document' ;
+require 'rexml/parsers/sax2parser' ;
 module XML
   include REXML
 end
@@ -450,6 +451,134 @@ module ItkXml
     strm << "\n" ;
   end
 
+  #--======================================================================
+  #++
+  ## FilterParser
+  class FilterParser < XML::Parsers::SAX2Parser
+    #--============================================================
+    #++
+    ## Filter Entry
+    class FilterEntry
+      #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+      #++
+      ## pattern
+      attr :pattern, true ;
+      ## buffer for this filter
+      attr :buffer, true ;
+      ## procedure
+      attr :proc, true ;
+
+      #------------------------------------------
+      #++
+      ## initialize
+      def initialize(pattern, &proc)
+        @pattern = pattern ;
+        @proc = proc ;
+        @buffer = "" ;
+      end
+
+      #------------------------------------------
+      #++
+      ## pattern match
+      def matchQName(qname)
+        @pattern === qname ;
+      end
+
+      #------------------------------------------
+      #++
+      ## add a string to buffer
+      def addToBuffer(str)
+        @buffer << str ;
+      end
+
+      #------------------------------------------
+      #++
+      ## generate XML
+      def scanXml(clear = false)
+        xml = XML::Document.new(@buffer);
+        @buffer = "" if(clear) ;
+        return xml ;
+      end
+
+      #------------------------------------------
+      #++
+      ## scan and call procedure
+      def scanCall()
+        xml = scanXml(false) ;
+        r = @proc.call(xml,@buffer) ;
+        @buffer = "" ;
+        return r ;
+      end
+
+    end # class FilterEntry
+    
+    #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    #++
+    ## element filter list
+    attr :filterList, true ;
+    ## filtering stack
+    attr :filterStack, true ;
+
+    #--------------------------------------------------------------
+    #++
+    ## initialize
+    def initialize(*args)
+      super
+      @filterList = [] ;
+      @filterStack = [] ;
+    end
+
+    #--------------------------------------------------------------
+    #++
+    ## listen qualified name
+    ## _qnamePattern_:: pattern of qualified name to filter
+    ## _block_:: procedure to call for filtered element.
+    def listenQName(qnamePattern,&block)
+      # generate filter
+      newFilter = FilterEntry.new(qnamePattern, &block) ;
+      @filterList.push(newFilter) ;
+
+      # add start_element filter
+      self.listen(:start_element){|uri, lname, qname, attrs|
+        # check pattern-matching of each filter
+        @filterList.each{|filter|
+          @filterStack.push(filter) if(filter.matchQName(qname)) ;
+        }
+        # re-generate the start element
+        elm = "<#{qname}" ;
+        attrs.each{|key, value| elm << " #{key}='#{value}'" ; }
+        elm << ">" ;
+        # add to buffer for each filtering.
+        @filterStack.each{|filter|
+          filter.addToBuffer(elm) ;
+        }
+      }
+      # add end_element filter
+      self.listen(:end_element){|uri, lname, qname|
+        # add to buffer for each filtering.
+        elm = "</#{qname}>" ;
+        @filterStack.each{|filter|
+          filter.addToBuffer(elm) ;
+        }
+        # finalize filter
+        filter = @filterStack.last ;
+        if(filter) then
+          if(filter.matchQName(qname)) then
+            filter.scanCall() ;
+            @filterStack.pop ;
+          end
+        end
+      }
+      # add text filter
+      self.listen(:text){|text|
+        @filterStack.each{|filter|
+          filter.addToBuffer(text) ;
+        }
+      }
+    end
+
+  end
+
 end
 
 #--======================================================================
@@ -458,6 +587,7 @@ class << ItkXml
   extend ItkXml ;
   include ItkXml ;
 end
+
 
 ##======================================================================
 ##======================================================================
@@ -506,6 +636,55 @@ if ($0 == __FILE__)
       pp(data) ;
       xml = ItkXml.to_Xml(data) ;
       ItkXml::ppp(xml) ;
+    end
+
+    #----------------------------------------------------
+    #++
+    ## SAX test
+    SampleXmlFile = "/home/noda/work/Titech/BitBucket/NodaLab/2013.Miyachi/sumo/MycSumoDemBus/net.net.xml" ;
+    def test_c ()
+      parser = XML::Parsers::SAX2Parser.new(File.new(SampleXmlFile)) ;
+#      parser.listen(:start_element){|uri, localname, qname, attributes|
+#        pp [uri, localname, qname, attributes] ;
+#      }
+      reading = false ;
+      buffer = "" ;
+      xml = nil ;
+      parser.listen(:start_element){|uri,lname,qname,attr|
+        reading = true if(qname == "edge") ;
+        if(reading) then
+          buffer << "<#{qname}" ;
+          attr.each{|key,value| buffer << " #{key}='#{value}'" ; }
+          buffer << ">" ;
+        end
+      }
+      parser.listen(:end_element){|uri,lname,qname|
+        if(reading) then
+          buffer << "</#{qname}>" ;
+        end
+        if(qname == "edge") then
+          reading = false ;
+          xml = XML::Document.new(buffer) ;
+          pp buffer ;
+          ItkXml::ppp(xml) ;
+          buffer = "" ;
+        end
+      }
+      parser.listen(:text){|text|
+        buffer << text if(reading) ;
+      }
+      parser.parse ;
+    end
+
+    #----------------------------------------------------
+    #++
+    ## Element Filter test
+    def test_d()
+      fparser = ItkXml::FilterParser.new(File.new(SampleXmlFile)) ;
+      fparser.listenQName("edge"){|xml, str|
+        ItkXml::ppp(xml) ;
+      }
+      fparser.parse ;
     end
 
   end
