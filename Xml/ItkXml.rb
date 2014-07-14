@@ -1,5 +1,14 @@
 #! /usr/bin/env ruby
 ## -*- Mode: ruby -*-
+## = Itk XML library
+## Author:: Itsuki Noda
+## Version:: 0.1 2014/07/14 I.Noda
+##
+## === History
+## * [before 2014/07/14]: build this from scratch
+## * [2014/07/14]: reform comments
+## == Usage
+## * ...
 
 $LOAD_PATH.push("~/lib/ruby") ;
 
@@ -10,11 +19,16 @@ end
 
 require 'Geo2DGml.rb' ;
 
+#--======================================================================
+#++
+## Utility Module for Itk's XML library
 module ItkXml
 
-  ##----------------------------------------------------------------------
+  #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  #++
   ## namespace utility
 
+  ## namespace table
   NameSpaceTable = {
     :soap  => ['SOAP-ENV','http://schemas.xmlsoap.org/soap/envelope/'],
     :gml   => ['gml',     'http://www.opengis.net/gml'],
@@ -29,11 +43,17 @@ module ItkXml
     NameSpaceHash[prefix] = uri;
   }
 
+  #--------------------------------------------------------------
+  #++
+  ## access method to namespace table
   def defaultNameSpaceTable
     return NameSpaceTable ;
   end
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## copy namespace table
+  ## (?) same as dup"
   def copyNameSpace(table = NameSpaceTable)
     newTable = {} ;
     table.each{|key, value|
@@ -41,19 +61,25 @@ module ItkXml
     }
   end
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## register namespace
   def putNameSpaceEntry(key, prefix, uri, table = NameSpaceTable)
     table[key] = [prefix, uri] ;
   end
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## retrieve namespace entry
   def getNameSpaceEntry(key, errorP = true, table = NameSpaceTable)
     entry = table[key] ;
     raise("Unknown namespace key:" + key.to_s) if(entry.nil? && errorP)
     entry ; 
   end
   
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## retrieve namespace prefix
   def getNameSpacePrefix(key, errorP = true, table = NameSpaceTable)
     r = getNameSpaceEntry(key, errorP, table) ;
     if(r.nil?)
@@ -63,7 +89,9 @@ module ItkXml
     end
   end
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## retrieve namespace URI
   def getNameSpaceUri(key, errorP = true, table = NameSpaceTable)
     r = getNameSpaceEntry(key, errorP, table) ;
     if(r.nil?)
@@ -73,10 +101,13 @@ module ItkXml
     end
   end
   
-  ##----------------------------------------------------------------------
+  #--======================================================================
+  #++
   ## general XML utility
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## create new XML element
   def newElement(name,text=nil, table = NameSpaceTable)  
     # name = fullname | [ namespace, localname, [attrName, attrValue]* ]
 
@@ -125,7 +156,9 @@ module ItkXml
     elm ;
   end
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## add namespace info to an element
   def addNameSpace(elm, name, uri = nil)
     if(uri.nil?)  # suppose name is a key in NameSpaceTable
       nsEntry = getNameSpaceEntry(name) ;
@@ -140,12 +173,16 @@ module ItkXml
     elm ;
   end
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## add default namespace
   def addNameSpaceAsDefault(elm, key)
     addNameSpace(elm, nil, getNameSpaceUri(key)) ;
   end
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## add namespace info by list
   def addNameSpaceList(elm, nsList) 
     nsList.each{|namespace|
       if(namespace.is_a?(Array))
@@ -158,7 +195,8 @@ module ItkXml
     elm ;
   end
 
-  ##----------------------------------------------------------------------
+  #--------------------------------------------------------------
+  #++
   ## Array to XML utility
   ##   <Form> ::= <Text> | <XML> | <Struct>
   ##   <Text> ::= any_string_or_atoms
@@ -171,7 +209,6 @@ module ItkXml
   ##   <Attribute> ::= '[' <AttrName> <AttrValue> ']' | <RubyHash>
   ##   <AttrName> ::= any_string_or_atoms
   ##   <AttrValue> ::= any_string_or_atoms
-
   def to_Xml(form, nsTable = NameSpaceTable)
     if    (form.is_a?(XML::Element) || form.is_a?(XML::Text))
       return form ;
@@ -190,7 +227,8 @@ module ItkXml
     end
   end
 
-  ##----------------------------------------------------------------------
+  #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  #++
   ## Array to XML Schema
   ##  <Text> ::= :integer | :float | :string | :geo | :any
   ##  <AttrValue> ::= :integer | :float | :string
@@ -203,7 +241,9 @@ module ItkXml
     :any     => 'AnyXML',
     nil => nil} ;
 
-  ##--------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ## generate XML schema
   def to_XmlSchema(form, uri, nsTable = NameSpaceTable)
     formstr = form.inspect.gsub('"',"") ;
 
@@ -226,7 +266,9 @@ module ItkXml
     schema ;
   end
 
-  ##--------------------------------------------------
+  #------------------------------------------
+  #++
+  ## body part of generate schema
   def to_XmlSchemaBodyTop(form, schema, nsTable, usedNs)
     (elementDef,hasSubDefP, typename) = 
       to_XmlSchemaBodyElement(form, nsTable, usedNs) ;
@@ -240,7 +282,9 @@ module ItkXml
     schema ;
   end
 
-  ##--------------------------------------------------
+  #------------------------------------------
+  #++
+  ## 
   def to_XmlSchemaBodyElement(form, nsTable, usedNs)
     tag = form[0] ;
 
@@ -272,7 +316,9 @@ module ItkXml
     return elementDef, hasSubDefP, typename ;
   end
 
-  ##--------------------------------------------------
+  #------------------------------------------
+  #++
+  ##
   def to_XmlSchemaBodyTypeDef(form, typename, schema, nsTable, usedNs)
     nElement = form.length ;
     elementList = [[:xsd, 'sequence']] ;
@@ -309,10 +355,10 @@ module ItkXml
     schema ;
   end
 
-  ##----------------------------------------------------------------------
+  #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  #++
   ## header and tailer strings
 
-  ##--------------------------------------------------
   ## genHeaderTailerString(form)
   ##  <Text> ::= <SpecialTag> | <Text>
   ##  <SpecialTag> ::= :body
@@ -321,6 +367,9 @@ module ItkXml
   MagicTagForCR = '@@@HereIsCR@@@' ;
   DefaultSpecialBodyTag = :body ;
 
+  #--------------------------------------------------------------
+  #++
+  ##
   def genHeaderTailerString(form, nsList = [], specialBodyTag = DefaultSpecialBodyTag)
     form = substTagToText(form, specialBodyTag, MagicTagForBody) ;
 
@@ -330,12 +379,18 @@ module ItkXml
     return splitHeaderTailerString(xml, MagicTagForBody) ;
   end
 
+  #------------------------------------------
+  #++
+  ##
   def splitHeaderTailerAt(node, point)
     point.add(XML::Text::new(MagicTagForBody)) ;
 
     return splitHeaderTailerString(node, MagicTagForBody) ;
   end
 
+  #------------------------------------------
+  #++
+  ##
   def splitHeaderTailerString(xml, splitTag)
     str = '' ;
     ppp(xml,str) ;
@@ -352,7 +407,9 @@ module ItkXml
     return header,tailer ;
   end
 
-  ##--------------------------------------------------
+  #------------------------------------------
+  #++
+  ##
   def substTagToText(form, tag, text)
     if(form == tag)
       return text ;
@@ -366,17 +423,23 @@ module ItkXml
     end
   end
 
-  ##--------------------------------------------------
+  #------------------------------------------
+  #++
+  ##
   def genCollectionHeaderTailer(nsList = [], soapP = false)
     genHeaderTailerString(['collection', :body],nsList.push(:gml)) ;
   end
 
-  ##--------------------------------------------------
+  #------------------------------------------
+  #++
+  ##
   def genUniversalName(namespace, localname)
     return ("{%s}%s" % [namespace,localname]) ;
   end
     
-  ##----------------------------------------------------------------------
+  #--------------------------------------------------------------
+  #++
+  ##
   def ppp(xml, strm = $stdout)
     if(REXML::Version <= "3.1.4") then
       xml.write(strm,0) ;
@@ -389,6 +452,8 @@ module ItkXml
 
 end
 
+#--======================================================================
+#++
 class << ItkXml
   extend ItkXml ;
   include ItkXml ;
@@ -401,20 +466,49 @@ if ($0 == __FILE__)
 
   require 'pp.rb' ;
 
-  ##--------------------------------------------------
-  def test1 ()
-    data = [:foo, [:bar, 1], ['baz', "hoge"]] ;
-    pp(data) ;
-    xml = ItkXml.to_Xml(data) ;
-    ItkXml::ppp(xml) ;
+  require 'test/unit'
+
+  #--============================================================
+  #++
+  ## unit test for this file.
+  class TC_Foo < Test::Unit::TestCase
+
+    #--::::::::::::::::::::::::::::::::::::::::::::::::::
+    #++
+    ## desc. for TestData
+    TestData = nil ;
+
+    #----------------------------------------------------
+    #++
+    ## show separator and title of the test.
+    def setup
+#      puts ('*' * 5) + ' ' + [:run, name].inspect + ' ' + ('*' * 5) ;
+      name = "#{(@method_name||@__name__)}(#{self.class.name})" ;
+      puts ('*' * 5) + ' ' + [:run, name].inspect + ' ' + ('*' * 5) ;
+      super
+    end
+
+    #----------------------------------------------------
+    #++
+    ## about test_a
+    def test_a ()
+      data = [:foo, [:bar, 1], ['baz', "hoge"]] ;
+      pp(data) ;
+      xml = ItkXml.to_Xml(data) ;
+      ItkXml::ppp(xml) ;
+    end
+
+    #----------------------------------------------------
+    #++
+    ## about test_a
+    def test_b ()
+      data = [[nil, :foo, [:bar, "abc"], [:baz, 123]], [:foosub, "def"]] ;
+      pp(data) ;
+      xml = ItkXml.to_Xml(data) ;
+      ItkXml::ppp(xml) ;
+    end
+
   end
 
-  ##--------------------------------------------------
-  ##--------------------------------------------------
-  ##--------------------------------------------------
-  # test main
-  
-  test1() ;
-  
 end
 
