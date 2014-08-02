@@ -1,5 +1,9 @@
 ##  -*- Mode: ruby -*-
 
+## ***** THIS IS OBSOLUTE!!! *****
+## ***** USE "ExpLogger.rb" instead. *****
+## Problem: conflict with ItkLogger and standard Ruby Logger.
+
 $LOAD_PATH.push('~/lib/ruby') if(!$LOAD_PATH.member?('~/lib/ruby')) ;
 require 'WithConfParam.rb' ;
 
@@ -10,12 +14,12 @@ module Itk
   module LogUtility
     ##::::::::::::::::::::::::::::::::::::::::::::::::::
     Level = {
-      :none => LevelNone = 0,
-      :info => LevelInfo = 1,
-      :debug => LevelDebug = 2,
+      :none => LevelAll = 0,
+      :debug => LevelDebug = 1,
+      :info => LevelInfo = 2,
       :error => LevelError = 3,
       :fatal => LevelFatal = 4,
-      :top => LevelTop = 5,
+      :top => LevelNone = 5,
     } ;
     LevelName = {} ;
     Level.each{|key, value| LevelName[value] = key.to_s.capitalize} ;
@@ -106,6 +110,7 @@ module Itk
     DefaultConf = {
       :stream => $stdout,
       :file => nil,
+      :tee => false, ## if true and :file is given, make log both.
       :append => false,
       :level => LevelNone,
       :withLevel => false,
@@ -116,6 +121,8 @@ module Itk
     attr :file, true ;
     attr :level, true ;
     attr :withLevelp, true ;
+    attr :tee, true ;
+    attr :chain, true ;  ## chained logger
 
     ##--------------------------------------------------
     def initialize(conf = {})
@@ -126,9 +133,10 @@ module Itk
     ##--------------------------------------------------
     def setup()
       @append = getConf(:append) ;
+      @tee = getConf(:tee) ;
       @file = getConf(:file) ;
       if(@file)
-        @stream = openFile(@file) ;
+        openFile(@file) ;
       end
       @stream = @stream || getConf(:stream) ;
       @level = getConf(:level) ;
@@ -142,23 +150,33 @@ module Itk
         mode = @appendp ? 'a' : 'w' ;
       end
 
+      if(@tee) then
+        newConf = @conf.dup.update({ :file => nil,
+                                     :stream => @stream,
+                                     :tee => false }) ;
+        @chain = self.class.new(newConf) ;
+      end
+
       @file = file ;
       @stream = open(@file, mode) ;
     end
 
     ##--------------------------------------------------
     def setLevel(level)
+      @chain.setLevel(level) if(@chain) ;
       @level = level ;
     end
 
     ##--------------------------------------------------
     def setWithLevel(flag = true)
+      @chain.setWithLevel(flag) if(@chain) ;
       @withLevel = flag ;
     end
 
     ##--------------------------------------------------
     def put(level,message)
-      if(level >= @level)
+      @chain.put(level,message) if(@chain) ;
+      if(@stream && level >= @level)
         @stream << LevelName[level] << ": " if(@withLevel) ;
         loggingTo(@stream,message) ;
       end
@@ -166,7 +184,7 @@ module Itk
 
     ##--------------------------------------------------
     def <<(message)
-      put(LevelTop,message) ;
+      put(LevelNone,message) ;
     end
 
     ##--------------------------------------------------
@@ -191,9 +209,7 @@ module Itk
 
     ##--------------------------------------------------
     def close()
-      if(@file)
-        @stream.close() ;
-      end
+      @stream.close() if(@file) ;
     end
 
   end # class Logger
@@ -283,6 +299,7 @@ if($0 == __FILE__) then
 
     ##----------------------------------------
     def setup
+      name = "#{(@method_name||@__name__)}(#{self.class.name})" ;
       puts ('*' * 5 ) + ' ' + [:run, name].inspect + ' ' + ('*' * 5) ;
       super
     end
