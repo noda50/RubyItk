@@ -5,20 +5,16 @@
 
 <html>
 <head>
-  <title>matrix2maxima (Itk::Maxima)</title>
+  <title>new (Itk::Maxima)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 166</span>
-166:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">matrix2maxima</span>(<span class="ruby-identifier">matrix</span>)
-167:       <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;matrix(&quot;</span> ;
-168:       <span class="ruby-identifier">matrix</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">vector</span><span class="ruby-operator">|</span>
-169:         <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;[&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">vector</span>.<span class="ruby-identifier">map</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">float2maxima</span>(<span class="ruby-identifier">v</span>)}.<span class="ruby-identifier">join</span>(<span class="ruby-value str">','</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;],&quot;</span> ;
-170:       }
-171:       <span class="ruby-identifier">str</span>.<span class="ruby-identifier">chop!</span>() ; <span class="ruby-comment cmt">## remove last &quot;,&quot;</span>
-172:       <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;)&quot;</span> ;
-173:       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
-174:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Maxima/Maxima.rb, line 32</span>
+32:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>()
+33:       <span class="ruby-ivar">@commandPath</span> = <span class="ruby-identifier">findFullPathToCom</span>(<span class="ruby-constant">CommandName</span>) ;
+34:       <span class="ruby-ivar">@commandOpts</span> = <span class="ruby-constant">CommandOpts</span> ;
+35:       <span class="ruby-identifier">setup</span>() ;
+36:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

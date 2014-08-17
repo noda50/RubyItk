@@ -5,29 +5,16 @@
 
 <html>
 <head>
-  <title>scan (Dia::Uml)</title>
+  <title>addLargePackage (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 192</span>
-192:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scan</span>()
-193:       <span class="ruby-identifier">scanEachObject</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span>
-194:         <span class="ruby-identifier">type</span> = <span class="ruby-identifier">object</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">'type'</span>).<span class="ruby-identifier">value</span>
-195:         <span class="ruby-keyword kw">case</span>(<span class="ruby-identifier">type</span>)
-196:         <span class="ruby-keyword kw">when</span>(<span class="ruby-value str">&quot;UML - Class&quot;</span>) ;
-197:           <span class="ruby-identifier">addClass</span>(<span class="ruby-identifier">object</span>) ;
-198:         <span class="ruby-keyword kw">when</span>(<span class="ruby-value str">&quot;UML - Generalization&quot;</span>) ;
-199:           <span class="ruby-identifier">addGeneralization</span>(<span class="ruby-identifier">object</span>) ;
-200:         <span class="ruby-keyword kw">when</span>(<span class="ruby-value str">&quot;UML - LargePackage&quot;</span>) ;
-201:           <span class="ruby-identifier">addLargePackage</span>(<span class="ruby-identifier">object</span>) ;
-202:         <span class="ruby-keyword kw">when</span>(<span class="ruby-value str">&quot;UML - Association&quot;</span>) ;
-203:           <span class="ruby-identifier">addAssociation</span>(<span class="ruby-identifier">object</span>) ;
-204:         <span class="ruby-keyword kw">else</span>
-205:           <span class="ruby-identifier">raise</span>(<span class="ruby-node">&quot;unknown UML type: #{type}&quot;</span>) ;
-206:         <span class="ruby-keyword kw">end</span>
-207:       }
-208:       <span class="ruby-identifier">linkReferences</span>() ;
-209:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 243</span>
+243:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addLargePackage</span>(<span class="ruby-identifier">object</span>)
+244:       <span class="ruby-identifier">package</span> = <span class="ruby-constant">Package</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">object</span>) ;
+245:       <span class="ruby-identifier">addObject</span>(<span class="ruby-identifier">package</span>) ;
+246:       <span class="ruby-identifier">addToTable</span>(<span class="ruby-ivar">@packageTable</span>,<span class="ruby-identifier">package</span>) ;
+247:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

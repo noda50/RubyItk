@@ -5,15 +5,18 @@
 
 <html>
 <head>
-  <title>determinant (Octave)</title>
+  <title>new (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 306</span>
-306:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">determinant</span>(<span class="ruby-identifier">mat</span>)
-307:     <span class="ruby-identifier">code</span> = <span class="ruby-node">&quot;det(#{convMatrixToOctave(mat)})&quot;</span> ;
-308:     <span class="ruby-identifier">evalCodeForScalar</span>(<span class="ruby-identifier">code</span>) ;
-309:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Octave/Octave.rb, line 61</span>
+61:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">com</span> = <span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">optStr</span> = <span class="ruby-value str">&quot;&quot;</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: octave</span>
+62:     <span class="ruby-ivar">@command</span> = <span class="ruby-identifier">findFullPathToCom</span>((<span class="ruby-identifier">com</span> <span class="ruby-operator">||</span> <span class="ruby-constant">DefaultCom</span>)) ;
+63:     <span class="ruby-ivar">@comOption</span> = [<span class="ruby-constant">DefaultComOption</span>, <span class="ruby-identifier">optStr</span>].<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot; &quot;</span>) ;
+64:     <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">block</span>) <span class="ruby-keyword kw">then</span>
+65:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">start</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+66:     <span class="ruby-keyword kw">end</span>
+67:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

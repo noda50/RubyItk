@@ -5,14 +5,21 @@
 
 <html>
 <head>
-  <title>drawCircle (MyCanvas)</title>
+  <title>getThermalColor (MyCanvas)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Canvas/myCanvas.rb, line 299</span>
-299:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">drawCircle</span>(<span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>,<span class="ruby-identifier">r</span>,<span class="ruby-identifier">fillp</span>=<span class="ruby-keyword kw">false</span>,<span class="ruby-identifier">color</span>=<span class="ruby-value str">&quot;black&quot;</span>)
-300:     <span class="ruby-ivar">@device</span>.<span class="ruby-identifier">drawCircle</span>(<span class="ruby-identifier">x</span>,<span class="ruby-identifier">y</span>,<span class="ruby-identifier">r</span>,<span class="ruby-identifier">fillp</span>,<span class="ruby-identifier">color</span>) ;
-301:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Canvas/myCanvas.rb, line 384</span>
+384:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getThermalColor</span>(<span class="ruby-identifier">level</span>, <span class="ruby-identifier">s</span> = <span class="ruby-value">0</span><span class="ruby-value">.8</span>, <span class="ruby-identifier">v</span> = <span class="ruby-value">1.0</span>) <span class="ruby-comment cmt"># level should be in [0.0,1.0]</span>
+385:     <span class="ruby-identifier">h</span> = ((<span class="ruby-value">1.0</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">level</span>) <span class="ruby-operator">**</span> <span class="ruby-value">1.4</span>) <span class="ruby-operator">*</span><span class="ruby-value">0</span><span class="ruby-value">.67</span>;
+386:     <span class="ruby-identifier">rgb</span> = <span class="ruby-identifier">hsv2rgb</span>(<span class="ruby-identifier">h</span>,<span class="ruby-identifier">s</span>,<span class="ruby-identifier">v</span>) ;
+387: 
+388:     <span class="ruby-identifier">name</span> = (<span class="ruby-value str">'#%02x%02x%02x'</span> <span class="ruby-operator">%</span> [(<span class="ruby-identifier">rgb</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">*</span> <span class="ruby-value">255</span>).<span class="ruby-identifier">to_i</span>,
+389:                                (<span class="ruby-identifier">rgb</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">*</span> <span class="ruby-value">255</span>).<span class="ruby-identifier">to_i</span>,
+390:                                (<span class="ruby-identifier">rgb</span>[<span class="ruby-value">2</span>] <span class="ruby-operator">*</span> <span class="ruby-value">255</span>).<span class="ruby-identifier">to_i</span>]) ;
+391: 
+392:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">name</span> ;
+393:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

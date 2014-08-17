@@ -1,21 +1,21 @@
 digraph TopLevel {
+    label = "TopLevel"
     fontname = Arial
+    bgcolor = lightcyan1
     fontsize = 8
     compound = true
-    bgcolor = lightcyan1
-    label = "TopLevel"
     node [
+        color = black,
         fontname = Arial,
-        fontsize = 8,
-        color = black
+        fontsize = 8
     ]
 
     subgraph cluster_XML {
-        URL = "classes/XML.html"
-        fontname = Arial
-        fillcolor = palegreen1
         color = blue
         label = "XML"
+        fontname = Arial
+        URL = "classes/XML.html"
+        fillcolor = palegreen1
         style = filled
         XML [
             width = 0.75,
@@ -27,8 +27,8 @@ digraph TopLevel {
     }
 
     REXML [
-        URL = "classes/REXML.html",
         shape = box,
+        URL = "classes/REXML.html",
         label = "REXML"
     ]
 
@@ -36,41 +36,31 @@ digraph TopLevel {
         lhead = cluster_XML
     ]
 
-    Dia [
-        URL = "classes/Dia.html",
-        fontcolor = black,
-        shape = ellipse,
-        color = palegoldenrod,
-        style = filled,
-        label = "Dia"
-    ]
-
     MyTest [
-        URL = "classes/MyTest.html",
-        fontcolor = black,
-        shape = ellipse,
         color = palegoldenrod,
+        shape = ellipse,
+        fontcolor = black,
+        URL = "classes/MyTest.html",
         style = filled,
         label = "MyTest"
     ]
 
     HashedArray [
-        URL = "classes/HashedArray.html",
-        fontcolor = black,
-        shape = ellipse,
         color = palegoldenrod,
+        shape = ellipse,
+        fontcolor = black,
+        URL = "classes/HashedArray.html",
         style = filled,
         label = "HashedArray"
     ]
 
-    Utility [
-        URL = "classes/Utility.html",
-        shape = box,
-        label = "Utility"
-    ]
-
-    Utility -> Dia [
-
+    Dia [
+        color = palegoldenrod,
+        shape = ellipse,
+        fontcolor = black,
+        URL = "classes/Dia.html",
+        style = filled,
+        label = "Dia"
     ]
 
     Test__Unit__TestCase [
@@ -88,6 +78,16 @@ digraph TopLevel {
     ]
 
     Array -> HashedArray [
+
+    ]
+
+    Utility [
+        shape = box,
+        URL = "classes/Utility.html",
+        label = "Utility"
+    ]
+
+    Utility -> Dia [
 
     ]
 

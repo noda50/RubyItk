@@ -1,7 +1,9 @@
 RDOC_FILES = Octave/Octave.rb \
 	     Dia/DiaUml.rb Dia/dia2ruby \
 	     Maxima/Maxima.rb \
-	     Canvas/myCanvas.rb
+	     Canvas/myCanvas.rb \
+	     lib/WithConfParam.rb \
+             lib/gnuplot.rb
 
 top : rdoc
 

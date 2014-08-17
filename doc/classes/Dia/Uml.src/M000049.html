@@ -5,20 +5,16 @@
 
 <html>
 <head>
-  <title>new (Dia::Uml)</title>
+  <title>addClass (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 168</span>
-168:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">srcFile</span>)
-169:       <span class="ruby-keyword kw">super</span>
-170:       <span class="ruby-ivar">@classTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>,<span class="ruby-identifier">:name</span>]) ;
-171:       <span class="ruby-ivar">@generalizationTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>]) ;
-172:       <span class="ruby-ivar">@packageTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>,<span class="ruby-identifier">:name</span>]) ;
-173:       <span class="ruby-ivar">@associationTable</span> = <span class="ruby-constant">HashedArray</span>.<span class="ruby-identifier">new</span>([<span class="ruby-identifier">:id</span>]) ;
-174: 
-175:       <span class="ruby-identifier">scan</span>() ;
-176:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 223</span>
+223:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addClass</span>(<span class="ruby-identifier">object</span>)
+224:       <span class="ruby-identifier">klass</span> = <span class="ruby-constant">Klass</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">object</span>) ;
+225:       <span class="ruby-identifier">addObject</span>(<span class="ruby-identifier">klass</span>) ;
+226:       <span class="ruby-identifier">addToTable</span>(<span class="ruby-ivar">@classTable</span>, <span class="ruby-identifier">klass</span>) ;
+227:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

@@ -5,22 +5,16 @@
 
 <html>
 <head>
-  <title>linkReferences (Dia::Uml::ObjectBase)</title>
+  <title>scan (Dia::Uml::ObjectBase)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 372</span>
-372:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>(<span class="ruby-identifier">umlDoc</span>)
-373:         <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@parent</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
-374:           <span class="ruby-identifier">pobj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@parent</span>) ;
-375:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">pobj</span>)
-376: <span class="ruby-comment cmt">#            p [:link, :parent, self.to_s, @parent, pobj.to_s] ;</span>
-377:             <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">pobj</span> ;
-378:           <span class="ruby-keyword kw">else</span>
-379:             <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;unknown ID:#{@parent} in object:#{self}&quot;</span> ;
-380:           <span class="ruby-keyword kw">end</span>
-381:         <span class="ruby-keyword kw">end</span>
-382:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 333</span>
+333:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scan</span>()
+334:         <span class="ruby-identifier">scanParent</span>() ;
+335:         <span class="ruby-identifier">scanName</span>() ;
+336:         <span class="ruby-identifier">scanSub</span>() ;
+337:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

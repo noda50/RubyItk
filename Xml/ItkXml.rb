@@ -504,6 +504,7 @@ module ItkXml
       #++
       ## generate XML
       def scanXml(clear = false)
+#        p @buffer ;
         xml = XML::Document.new(@buffer);
         @buffer = "" if(clear) ;
         return xml ;
@@ -535,7 +536,60 @@ module ItkXml
       super
       @filterList = [] ;
       @filterStack = [] ;
+      setupListener() ;
     end
+
+    #--------------------------------------------------------------
+    #++
+    ## initialize
+    def setupListener()
+      # add start_element filter
+      self.listen(:start_element){|uri, lname, qname, attrs|
+        @filterList.each{|filter|
+          if(filter.matchQName(qname, attrs)) then
+            @filterStack.push(filter) ;
+          end
+        }
+        # re-generate the start element
+        if(!@filterStack.empty?)
+          elm = "<#{qname}" ;
+          attrs.each{|key, value| elm << " #{key}='#{value}'" ; }
+          elm << ">" ;
+          # add to buffer for each filtering.
+          @filterStack.each{|filter|
+            filter.addToBuffer(elm) ;
+          }
+        end
+      }
+      # add end_element filter
+      self.listen(:end_element){|uri, lname, qname|
+        if(! @filterStack.empty?) then
+          # add to buffer for each filtering.
+          elm = "</#{qname}>" ; 
+          @filterStack.each{|filter|
+            filter.addToBuffer(elm) ;
+          }
+          # finalize filter
+          filter = @filterStack.last ;
+          if(filter.matchQName(qname)) then
+            filter.scanCall() ;
+            @filterStack.pop ;
+          end
+        end
+      }
+      # add text filter
+      self.listen(:text){|text|        # for Ruby 2.0
+        @filterStack.each{|filter|
+          filter.addToBuffer(text) ;
+        }
+      }
+      self.listen(:characters){|text|  # for Ruby 1.8
+        @filterStack.each{|filter|
+          filter.addToBuffer(text) ;
+        }
+      }
+    end
+
 
     #--------------------------------------------------------------
     #++
@@ -546,44 +600,6 @@ module ItkXml
       # generate filter
       newFilter = FilterEntry.new(qnamePattern, attrCond, &block) ;
       @filterList.push(newFilter) ;
-
-      # add start_element filter
-      self.listen(:start_element){|uri, lname, qname, attrs|
-        # check pattern-matching of each filter
-        @filterList.each{|filter|
-          @filterStack.push(filter) if(filter.matchQName(qname, attrs)) ;
-        }
-        # re-generate the start element
-        elm = "<#{qname}" ;
-        attrs.each{|key, value| elm << " #{key}='#{value}'" ; }
-        elm << ">" ;
-        # add to buffer for each filtering.
-        @filterStack.each{|filter|
-          filter.addToBuffer(elm) ;
-        }
-      }
-      # add end_element filter
-      self.listen(:end_element){|uri, lname, qname|
-        # add to buffer for each filtering.
-        elm = "</#{qname}>" ;
-        @filterStack.each{|filter|
-          filter.addToBuffer(elm) ;
-        }
-        # finalize filter
-        filter = @filterStack.last ;
-        if(filter) then
-          if(filter.matchQName(qname)) then
-            filter.scanCall() ;
-            @filterStack.pop ;
-          end
-        end
-      }
-      # add text filter
-      self.listen(:text){|text|
-        @filterStack.each{|filter|
-          filter.addToBuffer(text) ;
-        }
-      }
     end
 
   end

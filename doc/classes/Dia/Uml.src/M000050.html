@@ -5,15 +5,16 @@
 
 <html>
 <head>
-  <title>addFile (Dia::Uml)</title>
+  <title>addGeneralization (Dia::Uml)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 182</span>
-182:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addFile</span>(<span class="ruby-identifier">srcFile</span>)
-183:       <span class="ruby-identifier">readFile</span>(<span class="ruby-identifier">srcFile</span>) ;
-184:       <span class="ruby-identifier">scan</span>() ;
-185:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 233</span>
+233:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addGeneralization</span>(<span class="ruby-identifier">object</span>)
+234:       <span class="ruby-identifier">gen</span> = <span class="ruby-constant">Generalization</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">object</span>) ;
+235:       <span class="ruby-identifier">addObject</span>(<span class="ruby-identifier">gen</span>) ;
+236:       <span class="ruby-identifier">addToTable</span>(<span class="ruby-ivar">@generalizationTable</span>, <span class="ruby-identifier">gen</span>) ;
+237:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

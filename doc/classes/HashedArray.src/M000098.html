@@ -5,14 +5,18 @@
 
 <html>
 <head>
-  <title>include? (HashedArray)</title>
+  <title>setupTable (HashedArray)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 735</span>
-735:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">include?</span>(<span class="ruby-identifier">entry</span>)
-736:     <span class="ruby-ivar">@selfTable</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">entry</span>) ;
-737:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 744</span>
+744:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">setupTable</span>()
+745:     <span class="ruby-ivar">@selfTable</span> = {} ;
+746:     <span class="ruby-ivar">@tables</span> = {} ;
+747:     <span class="ruby-ivar">@keyList</span>.<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">key</span><span class="ruby-operator">|</span>
+748:       <span class="ruby-ivar">@tables</span>[<span class="ruby-identifier">key</span>] = {} ;
+749:     }
+750:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

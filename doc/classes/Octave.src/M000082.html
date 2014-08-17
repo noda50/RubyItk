@@ -5,15 +5,20 @@
 
 <html>
 <head>
-  <title>solveLinear (Octave)</title>
+  <title>start (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 328</span>
-328:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">solveLinear</span>(<span class="ruby-identifier">matA</span>, <span class="ruby-identifier">vecB</span>)
-329:     <span class="ruby-identifier">code</span> = <span class="ruby-node">&quot;#{convMatrixToOctave(matA)}\\#{convMatrixToOctave(vecB)}&quot;</span> ;
-330:     <span class="ruby-identifier">evalCodeForMatrix</span>(<span class="ruby-identifier">code</span>) ;
-331:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 136</span>
+136:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">start</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-comment cmt"># :yields: octave</span>
+137:     <span class="ruby-identifier">com</span> = <span class="ruby-node">&quot;#{@command} #{@comOption}&quot;</span> ;
+138:     <span class="ruby-ivar">@strm</span> = <span class="ruby-constant">IO</span>.<span class="ruby-identifier">popen</span>(<span class="ruby-identifier">com</span>,<span class="ruby-value str">'r+'</span>) ;
+139:     <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">block</span>)
+140:       <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-keyword kw">self</span>) ;
+141:       <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">final</span>() ;
+142:     <span class="ruby-keyword kw">end</span>
+143:     <span class="ruby-ivar">@strm</span> ;
+144:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

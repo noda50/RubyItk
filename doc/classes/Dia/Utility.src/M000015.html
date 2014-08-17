@@ -5,14 +5,14 @@
 
 <html>
 <head>
-  <title>addToTable (Dia::Utility)</title>
+  <title>getAttributeFromNode (Dia::Utility)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 142</span>
-142:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addToTable</span>(<span class="ruby-identifier">table</span>, <span class="ruby-identifier">object</span>)
-143:       <span class="ruby-identifier">table</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">object</span>) ;
-144:     <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 116</span>
+116:     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">getAttributeFromNode</span>(<span class="ruby-identifier">node</span>,<span class="ruby-identifier">name</span>)
+117:       <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">node</span>,<span class="ruby-node">&quot;dia:attribute[@name='#{name}']&quot;</span>) ;
+118:     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

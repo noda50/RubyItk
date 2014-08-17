@@ -5,17 +5,18 @@
 
 <html>
 <head>
-  <title>convColVectorToOctave (Octave)</title>
+  <title>evalCode (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 199</span>
-199:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">convColVectorToOctave</span>(<span class="ruby-identifier">vec</span>)
-200:     <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;[&quot;</span> ;
-201:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">vec</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;;&quot;</span>) ;
-202:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;]&quot;</span> ;
-203:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
-204:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>    <span class="ruby-comment cmt"># File Octave/Octave.rb, line 87</span>
+87:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evalCode</span>(<span class="ruby-identifier">code</span>)
+88:     <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@strm</span>)
+89:       <span class="ruby-identifier">evalCodeOnStream</span>(<span class="ruby-identifier">code</span>)
+90:     <span class="ruby-keyword kw">else</span>
+91:       <span class="ruby-identifier">evalCodeOnCommand</span>(<span class="ruby-identifier">code</span>)
+92:     <span class="ruby-keyword kw">end</span>
+93:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

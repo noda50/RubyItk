@@ -1,21 +1,21 @@
 digraph TopLevel {
+    label = "TopLevel"
     fontname = Arial
+    bgcolor = lightcyan1
     fontsize = 8
     compound = true
-    bgcolor = lightcyan1
-    label = "TopLevel"
     node [
+        color = black,
         fontname = Arial,
-        fontsize = 8,
-        color = black
+        fontsize = 8
     ]
 
     subgraph cluster_XML {
-        URL = "classes/XML.html"
-        fontname = Arial
-        fillcolor = palegreen1
         color = blue
         label = "XML"
+        fontname = Arial
+        URL = "classes/XML.html"
+        fillcolor = palegreen1
         style = filled
         XML [
             width = 0.75,
@@ -27,8 +27,8 @@ digraph TopLevel {
     }
 
     REXML [
-        URL = "classes/REXML.html",
         shape = box,
+        URL = "classes/REXML.html",
         label = "REXML"
     ]
 

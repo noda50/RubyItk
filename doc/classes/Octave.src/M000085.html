@@ -5,18 +5,17 @@
 
 <html>
 <head>
-  <title>findFullPathToCom (Octave)</title>
+  <title>convRowVectorToOctave (Octave)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>    <span class="ruby-comment cmt"># File Octave/Octave.rb, line 74</span>
-74:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">findFullPathToCom</span>(<span class="ruby-identifier">com</span>)
-75:     <span class="ruby-identifier">path</span> = <span class="ruby-keyword kw">nil</span> ;
-76:     <span class="ruby-identifier">open</span>(<span class="ruby-node">&quot;| which #{com}&quot;</span>,<span class="ruby-value str">&quot;r&quot;</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">strm</span><span class="ruby-operator">|</span>
-77:       <span class="ruby-identifier">path</span> = <span class="ruby-identifier">strm</span>.<span class="ruby-identifier">gets</span> ;
-78:       <span class="ruby-identifier">path</span>.<span class="ruby-identifier">chomp!</span> <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">path</span>) ;
-79:     }
-80:   <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Octave/Octave.rb, line 187</span>
+187:   <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">convRowVectorToOctave</span>(<span class="ruby-identifier">vec</span>)
+188:     <span class="ruby-identifier">str</span> = <span class="ruby-value str">&quot;[&quot;</span> ;
+189:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">vec</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">&quot;,&quot;</span>) ;
+190:     <span class="ruby-identifier">str</span> <span class="ruby-operator">+=</span> <span class="ruby-value str">&quot;]&quot;</span> ;
+191:     <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">str</span> ;
+192:   <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
