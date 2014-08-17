@@ -6,6 +6,7 @@
 ## === History
 ## * [2004/12/01]: Create This File.
 ## * [2014/08/17]: reform the file
+## * [2014/08/17]: introduce error bar facility
 #------------------------------------------------------------
 #++
 ## == Usage
