@@ -1,22 +1,22 @@
 digraph TopLevel {
     label = "TopLevel"
-    fontname = Arial
     bgcolor = lightcyan1
+    fontname = Arial
     fontsize = 8
     compound = true
     node [
-        color = black,
         fontname = Arial,
+        color = black,
         fontsize = 8
     ]
 
     subgraph cluster_XML {
-        color = blue
         label = "XML"
+        style = filled
         fontname = Arial
+        color = blue
         URL = "classes/XML.html"
         fillcolor = palegreen1
-        style = filled
         XML [
             width = 0.75,
             shape = plaintext,
@@ -36,40 +36,31 @@ digraph TopLevel {
         lhead = cluster_XML
     ]
 
-    MyTest [
-        color = palegoldenrod,
-        shape = ellipse,
-        fontcolor = black,
-        URL = "classes/MyTest.html",
-        style = filled,
-        label = "MyTest"
-    ]
-
     HashedArray [
+        style = filled,
         color = palegoldenrod,
         shape = ellipse,
-        fontcolor = black,
         URL = "classes/HashedArray.html",
-        style = filled,
+        fontcolor = black,
         label = "HashedArray"
     ]
 
     Dia [
+        style = filled,
         color = palegoldenrod,
         shape = ellipse,
-        fontcolor = black,
         URL = "classes/Dia.html",
-        style = filled,
+        fontcolor = black,
         label = "Dia"
     ]
 
-    Test__Unit__TestCase [
-        URL = "classes/Test/Unit/TestCase.html",
-        label = "Test::Unit::TestCase"
-    ]
-
-    Test__Unit__TestCase -> MyTest [
-
+    MyTest [
+        style = filled,
+        color = palegoldenrod,
+        shape = ellipse,
+        URL = "classes/MyTest.html",
+        fontcolor = black,
+        label = "MyTest"
     ]
 
     Array [
@@ -88,6 +79,15 @@ digraph TopLevel {
     ]
 
     Utility -> Dia [
+
+    ]
+
+    Test__Unit__TestCase [
+        URL = "classes/Test/Unit/TestCase.html",
+        label = "Test::Unit::TestCase"
+    ]
+
+    Test__Unit__TestCase -> MyTest [
 
     ]
 

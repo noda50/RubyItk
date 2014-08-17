@@ -101,6 +101,8 @@ class Gnuplot
   attr :m, TRUE ;
   attr :workstrm, TRUE ;
   attr :workfile, TRUE ;
+  attr :errbarstrm, TRUE ; ## for error bar
+  attr :errbarfile, TRUE ; ## for error bar
   attr :datafile, TRUE ;
   attr :title,    TRUE ;
   attr :hline,    TRUE ;
@@ -286,13 +288,29 @@ class Gnuplot
   #------------------------------------------
   #++
   ## direct plot 
+  ## _x_:: x value.
+  ## _y_:: y value. 
+  ##       If _y_ is an Array, it is treated as [ave, error] or
+  ##       [ave, min, max]
   def dpXYPlot(x,y) ;
-    if(@sustainedMode && @preValue[:main])
-      @workstrm << x << " " << @preValue[:main] << "\n" ;
-    end
-    @workstrm << x << " " << y << "\n" ;
+    if(y.is_a?(Array)) ## the case with error bar values
+      dpXYPlot(x,y[0]) ;
+      if(y.size > 1) then
+        prepareErrorBarStream() ;
+        @errbarstrm << x ;
+        y.each{|value|
+          @errbarstrm << " " << value ;
+        }
+        @errbarstrm << "\n" ;
+      end
+    else ## no error bar case
+      if(@sustainedMode && @preValue[:main])
+        @workstrm << x << " " << @preValue[:main] << "\n" ;
+      end
+      @workstrm << x << " " << y << "\n" ;
 
-    @preValue[:main] = y ;
+      @preValue[:main] = y ;
+    end
   end
 
   #------------------------------------------
@@ -300,6 +318,7 @@ class Gnuplot
   ## direct plot flush and show
   def dpFlush(rangeopt = "", styles = DfltPlotStyle) 
     @workstrm.flush ;
+    @errbarstrm.flush if(@errbarstrm) ;
     dpShow(rangeopt, styles) ;
   end
 
@@ -308,6 +327,7 @@ class Gnuplot
   ## direct plot end
   def dpEnd(showp = TRUE, rangeopt = "", styles = DfltPlotStyle) 
     @workstrm.close() ;
+    @errbarstrm.close() if(@errbarstrm) ;
 
     # copy data file for save
     if(!@datafile.nil?) then
@@ -331,6 +351,14 @@ class Gnuplot
     end
     com = sprintf("plot %s \"%s\" %s",rangeopt,datafile,styles) ;
 
+    ## error bar
+    if(@errbarstrm)
+      styleCount = 1 ;
+      com += (", \"%s\" w yerrorbars ls %d notitle" % 
+              [@errbarfile,styleCount]) ;
+    end
+
+    ## horizontal lines
     @hline.each{|line|
       label = line[0] ;
       value = line[1] ;
@@ -358,12 +386,47 @@ class Gnuplot
 
   #------------------------------------------
   #++
+  ## prepare error bar streams
+  ## _key_:: if nil, it is for direct plot.  
+  ##         if nonnil, it is for direct multi plot.
+  ## *return*:: a stream if the preparation executed. 
+  ##            nil if the preparation was done.
+  def prepareErrorBarStream(key = nil)
+    if(key.nil?)  #  for direct plot
+      if(@errbarstrm.nil?) then
+        @errbarstrm = Tempfile::new(DfltWorkfileBase) ;
+        @errbarfile = @errbarstrm.path ;
+        return @errbarstrm ;
+      elsif(@errbarstrm.is_a?(Tempfile))
+        return nil ;
+      else
+        raise("@errbarstrm was parepared for direct multi plot, " +
+              "but also is prepared for direct plot again.") ;
+      end
+    else # for direct multi plot
+      if(@errbarstrm.nil?) then
+        raise("@errbarstrm is parepared for direct multi plot " +
+               "without direct multi plot setup.") ;
+      elsif(@errbarstrm[key].nil?)
+        @errbarstrm[key] = Tempfile::new(DfltWorkfileBase) ;
+        @errbarfile[key] = @errbarstrm[key].path ;
+        return @errbarstrm[key] ;
+      else
+        return nil ;
+      end
+    end
+  end
+
+  #------------------------------------------
+  #++
   ## direct multiple plot begin
   def dmpBegin(m)
     if(m.is_a?(Integer))
       @m = m ;
       @workstrm = Array::new(m) ;
       @workfile = Array::new(m) ;
+      @errbarstrm = Array::new(m) ;
+      @errbarkfile = Array::new(m) ;
       @datafile = Array::new(m) ;
       @title = Array::new(m) ;
       @layerList = (0...m) ;
@@ -372,6 +435,8 @@ class Gnuplot
       @m = m.size ;
       @workstrm = Hash.new ;
       @workfile = Hash.new ;
+      @errbarstrm = Hash.new ;
+      @errbarfile = Hash.new ;
       @datafile = Hash.new ;
       @title = Hash.new ;
       @layerList = m ;
@@ -423,14 +488,31 @@ class Gnuplot
   #------------------------------------------
   #++
   ## direct multiple plot end
+  ## _k_:: key of the plot.
+  ## _x_:: x value.
+  ## _y_:: y value. 
+  ##       If _y_ is an Array, it is treated as [ave, error] or
+  ##       [ave, min, max]
   def dmpXYPlot(k,x,y)
-    if(@sustainedMode && @preValue[k])
-      @workstrm[k] << x << " " << @preValue[k] << "\n" ;
-    end
-    @workcount[k] += 1;
-    @workstrm[k] << x << " " << y << "\n" ;
+    if(y.is_a?(Array)) ## the case with error bar values
+      dmpXYPlot(k,x,y[0]) ;
+      if(y.size > 1) then
+        prepareErrorBarStream(k) ;
+        @errbarstrm[k] << x ;
+        y.each{|value|
+          @errbarstrm[k] << " " << value ;
+        }
+        @errbarstrm[k] << "\n" ;
+      end
+    else ## no error bar case
+      if(@sustainedMode && @preValue[k])
+        @workstrm[k] << x << " " << @preValue[k] << "\n" ;
+      end
+      @workcount[k] += 1;
+      @workstrm[k] << x << " " << y << "\n" ;
 
-    @preValue[k] = y ;
+      @preValue[k] = y ;
+    end
   end
 
   #------------------------------------------
@@ -439,6 +521,7 @@ class Gnuplot
   def dmpFlush(rangeopt = "", styles = DfltPlotStyle)
     @layerList.each{|k|
       @workstrm[k].flush() ;
+      @errbarstrm[k].flush() if(@errbarstrm[k]);
     }
     dmpShow(rangeopt, styles) ;
   end
@@ -449,6 +532,7 @@ class Gnuplot
   def dmpEnd(showp = TRUE, rangeopt = "", styles = DfltPlotStyle)
     @layerList.each{ |i|
       @workstrm[i].close() ;
+      @errbarstrm[i].close() if(@errbarstrm[i]) ;
 
       # copy data file for save
       if(!@datafile[i].nil?) then
@@ -471,8 +555,10 @@ class Gnuplot
 
     inlineDataList = [] ;
 
+    styleCount = 0 ;
     @layerList.each{|k|
       next if (@workcount[k] <= 0) ;
+      styleCount += 1 ;
       if(saveScript?())
         inlineDataList.push(@workfile[k]) ;
         file = '-' ;
@@ -495,8 +581,15 @@ class Gnuplot
 	com += sprintf("\"%s\" %s t \"%s\" %s",file,using,
                        title[k],localstyle) ;
       end
+
+      # error bar
+      if(@errbarstrm[k])
+        com += (", \"%s\" w yerrorbars ls %d notitle" % 
+                [@errbarfile[k],styleCount]) ;
+      end
     }
 
+    # plot horizontal lines.
     @hline.each{|line|
       label = line[0] ;
       value = line[1] ;
@@ -674,6 +767,51 @@ if(__FILE__ == $0) then
           y = rand(100) ;
           gplot.dmpXYPlot(:a,x,y) ;
           time += 10*60*60
+        }
+      }
+    end
+
+    #----------------------------------------------------
+    #++
+    ## error bar (single)
+    def test_e() ;
+      Gnuplot::directPlot("","w lp"){|gplot|
+        (0...10).each{|i|
+          x = i.to_f ;
+          d = rand() * 10.0 ;
+          yb = 0.4 * x * x + (d-5.0);
+          r = rand(3) ;
+          if(r > 1) then
+            gplot.dpXYPlot(x, [yb, yb-d, yb+d*2]) ;
+          elsif(r > 0) then
+            gplot.dpXYPlot(x, [yb, d]) ;
+          else
+            gplot.dpXYPlot(x, yb) ;
+          end
+        }
+      }
+    end
+
+    #----------------------------------------------------
+    #++
+    ## error bar (multi)
+    def test_f() ;
+      Gnuplot::directMultiPlot([:a,:b],"","w lp"){|gplot|
+        
+        (0...10).each{|i|
+          x = i.to_f ;
+          ya = x * x ;
+          d = rand() * 10.0 ;
+          yb = 0.4 * x * x + (d-5.0);
+          gplot.dmpXYPlot(:a,x,ya) ;
+          r = rand(3) ;
+          if(r > 1) then
+            gplot.dmpXYPlot(:b, x, [yb, yb-d, yb+d*2]) ;
+          elsif(r > 0) then
+            gplot.dmpXYPlot(:b, x, [yb, d]) ;
+          else
+            gplot.dmpXYPlot(:b, x, yb) ;
+          end
         }
       }
     end
