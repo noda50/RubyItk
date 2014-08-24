@@ -10,16 +10,16 @@
   <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 541</span>
-541:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">toRubyDef</span>(<span class="ruby-identifier">indent</span> = <span class="ruby-value str">&quot;&quot;</span>)
-542:           <span class="ruby-identifier">defstr</span> = <span class="ruby-value str">&quot;&quot;</span> ;
-543:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;\#\# #{@name}:: type: #{@type}&quot;</span> ;
-544:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;; value=#{@value}&quot;</span> <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@value</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">&gt;</span><span class="ruby-value">0</span>) ;
-545:           <span class="ruby-ivar">@comment</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">com</span><span class="ruby-operator">|</span>
-546:               <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;\# &quot;</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">com</span>
-547:           }
-548:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;attr \:#{@name}, true ;&quot;</span> ;
-549:           <span class="ruby-identifier">defstr</span>
-550:         <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 608</span>
+608:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">toRubyDef</span>(<span class="ruby-identifier">indent</span> = <span class="ruby-value str">&quot;&quot;</span>)
+609:           <span class="ruby-identifier">defstr</span> = <span class="ruby-value str">&quot;&quot;</span> ;
+610:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;\#\#*type* :: #{@type}.&quot;</span> ;
+611:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;\#\#*value* :: #{@value}&quot;</span> <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@value</span>.<span class="ruby-identifier">length</span><span class="ruby-operator">&gt;</span><span class="ruby-value">0</span>) ;
+612:           <span class="ruby-ivar">@comment</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">split</span>(<span class="ruby-value str">&quot;\n&quot;</span>).<span class="ruby-identifier">each</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">com</span><span class="ruby-operator">|</span>
+613:               <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;\# &quot;</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">com</span>
+614:           }
+615:           <span class="ruby-identifier">defstr</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">indent</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;attr \:#{@name}, true ;&quot;</span> ;
+616:           <span class="ruby-identifier">defstr</span>
+617:         <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

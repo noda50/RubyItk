@@ -1,31 +1,45 @@
 #! /usr/bin/env ruby
 ## -*- mode: ruby -*-
+## = Statistics Utility
+## Author:: Itsuki Noda
+## Version:: 0.0 2010/??/?? I.Noda
+##
+## === History
+## * [2010/??/??]: Create This File.
+## * [2014/08/24]: reform
+## == Usage
+## * ...
 
+#--======================================================================
+#++
 module Stat
 
-  ##======================================================================
-=begin
-== StatInfo
-
-   * Cumulate statical infomation and calculate average, variance and
-     standard diviation. 
-   
-   * It also record history.
-
-=end
+  #--======================================================================
+  #++
+  ## Cumulate statical infomation and calculate average, variance and
+  ## standard diviation.
+  ## It also record history.
 
   class StatInfo
+    #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    #++
+    ## minimum in given values.
     attr :min, true ;
+    ## maximum in given values.
     attr :max, true ;
-
+    ## sum of given values.
     attr :sum, true ;
+    ## squared sum of given values.
     attr :qsum, true ;
+    ## the number of given values.
     attr :countN, true ;
-
+    ## history of given values.
     attr :history, true ;
+    ## history maximum size.
     attr :historySize, true ;
 
-    ##--------------------------------------------------
+    #--------------------------------------------------------------
+    #++
     def initialize(historySize = 1)
       # historySize = 0 means infinite history
 
@@ -40,7 +54,8 @@ module Stat
       @history = Array.new(@historySize) ;
     end
 
-    ##--------------------------------------------------
+    #--------------------------------------------------------------
+    #++
     def put(value)
       @min = value if (@min.nil? || value < @min) ;
       @max = value if (@max.nil? || value > @max) ;
@@ -57,23 +72,28 @@ module Stat
       @countN += 1 ;
     end
 
-    ##--------------------------------------------------
-    ## access to history
+    #--------------------------------------------------------------
+    #++
+    ## == access to history
 
-    ##--------------------
+    #------------------------------------------
+    #++
     def last(n = 1)
       return @history[-n] ;
     end
 
-    ##--------------------
+    #------------------------------------------
+    #++
     def nth(n)
       return @history[n] ;
     end
 
-    ##--------------------------------------------------
-    ## calc stat info
+    #--------------------------------------------------------------
+    #++
+    ## == calc stat info
 
-    ##--------------------
+    #------------------------------------------
+    #++
     def average()
       if(@countN > 0) then
         return @sum / @countN ;
@@ -82,9 +102,12 @@ module Stat
       end
     end
 
+    #----------------------
+    #++
     alias ave average ;
 
-    ##--------------------
+    #------------------------------------------
+    #++
     def variance()
       if(@countN > 0 && @min < @max) then
         ave = average() ;
@@ -94,83 +117,104 @@ module Stat
       end
     end
 
+    #----------------------
+    #++
     alias var variance ;
 
-    ##--------------------
-    def sdiv()
+    #------------------------------------------
+    #++
+    def sdev()
       return Math::sqrt(variance()) ;
     end
 
-    alias sdev sdiv ;  
-    alias std sdiv ;
+    #----------------------
+    #++
+    alias sdiv sdev ;  # for backward compatibility.
+    #----------------------
+    #++
+    alias std sdev ;
 
-  end
+  end # class StatInfo
 
-  ##======================================================================
-=begin
-== Correlation2
-
-   * cumulate correlation information of two variables
-
-=end
+  #--======================================================================
+  #++
+  ## Correlation2.
+  ## cumulate correlation information of two variables
 
   class Correlation2
+    #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    #++
+    ## statistics of X values
     attr :xStat, true ;
+    ## statistics of Y values
     attr :yStat, true ;
+    ## statistics of X-Y values
     attr :xyStat, true ;
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def initialize()
       @xStat = StatInfo.new()
       @yStat = StatInfo.new() ;
       @xyStat = StatInfo.new() ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def put(xVal, yVal)
       @xStat.put(xVal) ;
       @yStat.put(yVal) ;
       @xyStat.put(xVal * yVal) ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def covariance()
       return @xyStat.average() - @xStat.average() * @yStat.average() ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def correlation()
       return covariance() / (@xStat.sdiv() * @yStat.sdiv()) ;
     end
 
-  end
+  end # class Correlation2
     
-  ##======================================================================
-=begin
-== TwoArrayStatInfo
-
-   * cumulate correlation information of two arrays
-
-=end
+  #--======================================================================
+  #++
+  ## cumulate correlation information of two arrays.
 
   class TwoArrayStatInfo
+    #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    #++
+    ## size of X vectors
     attr :sizeX, true ;
+    ## size of Y vectors
     attr :sizeY, true ;
+    ## array of statistics info for X
     attr :statInfoX, true ;
+    ## array of statistics info for Y
     attr :statInfoY, true ;
+    ## squared sum matrix
     attr :qMatrix, true ;
+    ## counting
     attr :count, true ;
-
+    ## average array for X
     attr :averageX, true ;
+    ## average array for Y
     attr :averageY, true ;
+    ## covariance of X-Y
     attr :covariance, true ;
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def initialize(sizeY, sizeX, historySize = 1)
       setup(sizeY, sizeX, historySize) ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def setup(sizeY, sizeX, historySize) ;
       @sizeX = sizeX ;
       @sizeY = sizeY ;
@@ -182,7 +226,8 @@ module Stat
       @count = 0 ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def put(valueY, valueX)
       (0...@sizeY).each{|i|
         @statInfoY[i].put(valueY[i]) ;
@@ -197,7 +242,8 @@ module Stat
       @count += 1 ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def averageX()
       if(@averageX.nil?) then
         @averageX = Array.new(@sizeX) ;
@@ -207,7 +253,9 @@ module Stat
       end
       return @averageX ;
     end
-    ##--------------------
+
+    #--------------------------------------------------------------
+    #++
     def averageY()
       if(@averageY.nil?) then
         @averageY = Array.new(@sizeY) ;
@@ -218,7 +266,8 @@ module Stat
       return @averageY ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def covariance() 
       if(@covariance.nil?) then
         aveX = averageX() ;
@@ -233,48 +282,44 @@ module Stat
       return @covariance ;
     end
 
-  end
-    
+  end # class TwoArrayStatInfo
 
-  ##======================================================================
-=begin
-== ArrayStatInfo
-
-   * cumulate correlation information of two variables
-
-=end
+  #--======================================================================
+  #++
+  ## cumulate correlation information of two variables
 
   class ArrayStatInfo < TwoArrayStatInfo
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def initialize(size, historySize = 1)
       setup(size, size, historySize) ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def put(value)
       super(value, value) ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def averageY()
       averageX() ;
       @averageY = @averageX ;
     end
 
-    ##--------------------
+    #--------------------------------------------------------------
+    #++
     def average()
       averageX() ;
     end
 
 
   end
-  ##======================================================================
-=begin
-== ArrayStatInfo_old
 
-   * cumulate correlation information of two variables
-
-=end
+  #--======================================================================
+  #++
+  ## cumulate correlation information of two variables
 
   class ArrayStatInfo_old
     attr :size, true ;
@@ -338,7 +383,43 @@ module Stat
       return @covariance ;
     end
 
-  end
+  end # class ArrayStatInfo_old
 
+end # module Stat
 
-end
+########################################################################
+########################################################################
+########################################################################
+if($0 == __FILE__) then
+
+  require 'test/unit'
+
+  #--============================================================
+  #++
+  ## unit test for this file.
+  class TC_StatInfo < Test::Unit::TestCase
+    #--::::::::::::::::::::::::::::::::::::::::::::::::::
+    #++
+    ## desc. for TestData
+    TestData = nil ;
+
+    #----------------------------------------------------
+    #++
+    ## show separator and title of the test.
+    def setup
+#      puts ('*' * 5) + ' ' + [:run, name].inspect + ' ' + ('*' * 5) ;
+      name = "#{(@method_name||@__name__)}(#{self.class.name})" ;
+      puts ('*' * 5) + ' ' + [:run, name].inspect + ' ' + ('*' * 5) ;
+      super
+    end
+
+    #----------------------------------------------------
+    #++
+    ## about test_a
+    def test_a
+      p [:test_a] ;
+    end
+
+  end # class TC_StatInfo
+end # if($0 == __FILE__)
+

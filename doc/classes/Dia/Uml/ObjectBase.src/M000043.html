@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 313</span>
-313:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanParent</span>()
-314:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">parentInfo</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-ivar">@xml</span>,<span class="ruby-value str">&quot;dia:childnode&quot;</span>))
-315:           <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">parentInfo</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">&quot;parent&quot;</span>).<span class="ruby-identifier">value</span> ;
-316:         <span class="ruby-keyword kw">end</span>
-317:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 350</span>
+350:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanParent</span>()
+351:         <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">parentInfo</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span>.<span class="ruby-identifier">first</span>(<span class="ruby-ivar">@xml</span>,<span class="ruby-value str">&quot;dia:childnode&quot;</span>))
+352:           <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">parentInfo</span>.<span class="ruby-identifier">attribute</span>(<span class="ruby-value str">&quot;parent&quot;</span>).<span class="ruby-identifier">value</span> ;
+353:         <span class="ruby-keyword kw">end</span>
+354:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

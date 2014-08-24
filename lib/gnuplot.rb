@@ -600,6 +600,7 @@ class Gnuplot
       
     }
 
+#    p [:plot, com] ;
     command(com) ;
 
     inlineDataList.each{|datafile|

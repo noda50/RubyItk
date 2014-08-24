@@ -5,22 +5,13 @@
 
 <html>
 <head>
-  <title>linkReferences (Dia::Uml::ObjectBase)</title>
+  <title>scanSub (Dia::Uml::ObjectBase)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
   <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 384</span>
-384:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">linkReferences</span>(<span class="ruby-identifier">umlDoc</span>)
-385:         <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@parent</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))
-386:           <span class="ruby-identifier">pobj</span> = <span class="ruby-identifier">umlDoc</span>.<span class="ruby-identifier">getObject</span>(<span class="ruby-ivar">@parent</span>) ;
-387:           <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">pobj</span>)
-388: <span class="ruby-comment cmt">#            p [:link, :parent, self.to_s, @parent, pobj.to_s] ;</span>
-389:             <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">pobj</span> ;
-390:           <span class="ruby-keyword kw">else</span>
-391:             <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;unknown ID:#{@parent} in object:#{self}&quot;</span> ;
-392:           <span class="ruby-keyword kw">end</span>
-393:         <span class="ruby-keyword kw">end</span>
-394:       <span class="ruby-keyword kw">end</span></pre>
+  <pre>     <span class="ruby-comment cmt"># File Dia/DiaUml.rb, line 344</span>
+344:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">scanSub</span>()
+345:       <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>
