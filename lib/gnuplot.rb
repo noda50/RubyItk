@@ -345,7 +345,9 @@ class Gnuplot
   #++
   ## direct plot show result
   def dpShow(rangeopt = "", styles = DfltPlotStyle) 
+    styleCount = 1 ;
     styles = "using 1:2 " + styles if(@timeMode) ;
+    styles += " ls #{styleCount}" ;
     datafile = @workfile ;
     if(saveScript?())
       datafile = '-' ;
@@ -354,7 +356,6 @@ class Gnuplot
 
     ## error bar
     if(@errbarstrm)
-      styleCount = 1 ;
       com += (", \"%s\" w yerrorbars ls %d notitle" % 
               [@errbarfile,styleCount]) ;
     end
@@ -577,10 +578,10 @@ class Gnuplot
       using = (@timeMode ? "using 1:2" : "") ;
 
       if(title[k].nil?) then
-	com += sprintf("\"%s\" %s %s",file,using,localstyle) ;
+	com += sprintf("\"%s\" %s %s ls %d",file,using,localstyle,styleCount) ;
       else
-	com += sprintf("\"%s\" %s t \"%s\" %s",file,using,
-                       title[k],localstyle) ;
+	com += sprintf("\"%s\" %s t \"%s\" %s ls %d",file,using,
+                       title[k],localstyle, styleCount) ;
       end
 
       # error bar
