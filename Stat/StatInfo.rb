@@ -7,6 +7,7 @@
 ## === History
 ## * [2010/??/??]: Create This File.
 ## * [2014/08/24]: reform
+## * [2014/08/29]: add exponential moving average
 ## == Usage
 ## * ...
 
@@ -38,9 +39,14 @@ module Stat
     ## history maximum size.
     attr :historySize, true ;
 
+    ## stepsize (alpha) for exponential moving average
+    attr :alpha, true ;
+    ## exponential moving average
+    attr :ema, true ;
+
     #--------------------------------------------------------------
     #++
-    def initialize(historySize = 1)
+    def initialize(historySize = 1, alpha = 0.01)
       # historySize = 0 means infinite history
 
       @sum = 0.0 ;
@@ -52,6 +58,9 @@ module Stat
 
       @historySize = historySize ;
       @history = Array.new(@historySize) ;
+
+      @alpha = alpha ;
+      @ema = 0.0 ;
     end
 
     #--------------------------------------------------------------
@@ -68,6 +77,10 @@ module Stat
       else
         @history.push(value) ;
       end
+
+      @ema = ((@countN == 0) ? 
+              value : 
+              ((1.0-@alpha) * @ema + @alpha * value)) ;
 
       @countN += 1 ;
     end
