@@ -26,6 +26,8 @@ class WithConfParam
   DefaultConf = { nil => nil } ;
   ## default value if missing key
   DefaultValue = nil ;
+  ## list of attributes directly set by conf
+  DirectConfAttrList = [] ;
   
   #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   #++
@@ -53,6 +55,7 @@ class WithConfParam
   ## _conf_:: configuration for the instance
   def initialize(conf = {}) 
     setPiledConf(conf) ;
+    setDirectConfAttrList() ;
   end
 
   #----------------------------------------------------
@@ -87,6 +90,33 @@ class WithConfParam
       end
       
       return newConf ;
+    end
+  end
+
+  #----------------------------------------------------
+  #++
+  ## set attribute value by config directly/automatically
+  ## _klass_:: the class now processing
+  ## *return*:: ?
+  def setDirectConfAttrList(klass = self.class())
+    setDirectConfAttrList(klass.superclass()) if(klass != WithConfParam) ;
+    if(klass.const_defined?(:DirectConfAttrList)) then
+      setDirectConfAttr(klass::DirectConfAttrList) ;
+    end
+  end
+
+  #----------------------------------------------------
+  #++
+  ## set attribute value by the same name config directly/automatically
+  ## _attr_:: attribute name or list of attributes
+  ## *return*:: the value
+  def setDirectConfAttr(attr)
+    if(attr.is_a?(Array)) then
+      return attr.map{|at| 
+        setDirectConfAttr(at) ;
+      }
+    else
+      return self.instance_variable_set("@#{attr}", self.getConf(attr)) ;
     end
   end
 
@@ -195,6 +225,7 @@ if($0 == __FILE__) then
     ## basic check
     class FooA < WithConfParam
       DefaultConf = { :x => 1, :z => 0 } ;
+      DirectConfAttrList = [:z] ;
     end
 
     class BarA < FooA
@@ -203,6 +234,7 @@ if($0 == __FILE__) then
 
     class CooA < BarA
       DefaultConf = { :x => 3 } ;
+      DirectConfAttrList = [:x] ;
     end
 
     def test_a
@@ -235,6 +267,20 @@ if($0 == __FILE__) then
       p [CooA, :z, CooA.getConf(:z)] ;
     end
 
+    #----------------------------------------------------
+    #++
+    ## getConf for the class
+    def test_c
+      f0 = FooA.new() ;
+      b0 = BarA.new() ;
+      c0 = CooA.new() ;
+      c1 = CooA.new({:z => 4}) ;
+
+      p [:f0, f0] ;
+      p [:b0, b0] ;
+      p [:c0, c0] ;
+      p [:c1, c1] ;
+    end
 
   end # class TC_Foo < Test::Unit::TestCase
 end # if($0 == __FILE__)
