@@ -79,7 +79,9 @@ class Gnuplot
   #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   #++
   ## command
-  @@command = "gnuplot #{Colors} -persist %s >& /dev/null" ;
+  #@@command = "gnuplot #{Colors} -persist %s >& /dev/null" ;
+  #@@command = "gnuplot #{Colors} -persist %s |& cat" ;
+  @@command = "gnuplot #{Colors} -persist %s" ;
 
   ## default terminal setting
   @@defaultTerm = "x11" ;
@@ -140,7 +142,13 @@ class Gnuplot
     else
       opt = comlineOpt ;
       opt = "" if opt.nil? ;
-      @strm = open("|" + (@@command % opt) ,"w") ;
+#      @strm = open("|" + (@@command % opt) ,"w") ;
+      @strm = IO.popen((@@command % opt) ,"r+") ;
+      @thread = Thread.new(@strm){ |s|
+        while(l = s.gets) 
+          puts l ;
+        end
+      }
       #@strm = STDOUT ;
     end
   end
@@ -800,7 +808,6 @@ if(__FILE__ == $0) then
     ## error bar (multi)
     def test_f() ;
       Gnuplot::directMultiPlot([:a,:b],"","w lp"){|gplot|
-        
         (0...10).each{|i|
           x = i.to_f ;
           ya = x * x ;
