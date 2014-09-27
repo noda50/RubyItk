@@ -28,17 +28,18 @@ module Stat
 
   end
 
-  #--======================================================================
-  #++
-  ## Override Build-in Numeric class
-  class Numeric
-    #--------------------------------------------------------------
-    #++
-    ## for the compatibility with RandomValue
-    def value()
-      self
-    end
-  end
-
-
 end
+
+#--======================================================================
+#++
+## Override Build-in Numeric class
+class Numeric
+  #--------------------------------------------------------------
+  #++
+  ## for the compatibility with RandomValue
+  def value()
+    self
+  end
+end
+
+
