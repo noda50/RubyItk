@@ -1,22 +1,22 @@
 digraph TopLevel {
-    compound = true
     fontsize = 8
-    fontname = Arial
+    compound = true
     label = "TopLevel"
+    fontname = Arial
     bgcolor = lightcyan1
     node [
-        color = black,
         fontsize = 8,
-        fontname = Arial
+        fontname = Arial,
+        color = black
     ]
 
     subgraph cluster_XML {
-        color = blue
-        fillcolor = palegreen1
-        fontname = Arial
-        style = filled
         label = "XML"
         URL = "classes/XML.html"
+        style = filled
+        fontname = Arial
+        color = blue
+        fillcolor = palegreen1
         XML [
             shape = plaintext,
             height = 0.01,
@@ -37,30 +37,30 @@ digraph TopLevel {
     ]
 
     HashedArray [
-        color = palegoldenrod,
         shape = ellipse,
         fontcolor = black,
-        style = filled,
         URL = "classes/HashedArray.html",
+        style = filled,
+        color = palegoldenrod,
         label = "HashedArray"
     ]
 
-    Dia [
-        color = palegoldenrod,
+    MyTest [
         shape = ellipse,
         fontcolor = black,
+        URL = "classes/MyTest.html",
         style = filled,
-        URL = "classes/Dia.html",
-        label = "Dia"
+        color = palegoldenrod,
+        label = "MyTest"
     ]
 
-    MyTest [
-        color = palegoldenrod,
+    Dia [
         shape = ellipse,
         fontcolor = black,
+        URL = "classes/Dia.html",
         style = filled,
-        URL = "classes/MyTest.html",
-        label = "MyTest"
+        color = palegoldenrod,
+        label = "Dia"
     ]
 
     Array [
@@ -72,6 +72,15 @@ digraph TopLevel {
 
     ]
 
+    Test__Unit__TestCase [
+        URL = "classes/Test/Unit/TestCase.html",
+        label = "Test::Unit::TestCase"
+    ]
+
+    Test__Unit__TestCase -> MyTest [
+
+    ]
+
     Utility [
         shape = box,
         URL = "classes/Utility.html",
@@ -79,15 +88,6 @@ digraph TopLevel {
     ]
 
     Utility -> Dia [
-
-    ]
-
-    Test__Unit__TestCase [
-        URL = "classes/Test/Unit/TestCase.html",
-        label = "Test::Unit::TestCase"
-    ]
-
-    Test__Unit__TestCase -> MyTest [
 
     ]
 

@@ -3,6 +3,8 @@ RDOC_FILES = Octave/Octave.rb \
 	     Maxima/Maxima.rb \
 	     Canvas/myCanvas.rb \
 	     lib/WithConfParam.rb \
+	     lib/ExpLogger.rb \
+	     lib/WithTest.rb \
              lib/gnuplot.rb
 
 top : rdoc

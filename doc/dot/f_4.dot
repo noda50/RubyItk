@@ -1,21 +1,21 @@
 digraph TopLevel {
-    compound = true
     fontsize = 8
-    fontname = Arial
+    compound = true
     label = "TopLevel"
+    fontname = Arial
     bgcolor = lightcyan1
     node [
-        color = black,
         fontsize = 8,
-        fontname = Arial
+        fontname = Arial,
+        color = black
     ]
 
     MyCanvas [
-        color = palegoldenrod,
         shape = ellipse,
         fontcolor = black,
-        style = filled,
         URL = "classes/MyCanvas.html",
+        style = filled,
+        color = palegoldenrod,
         label = "MyCanvas"
     ]
 

@@ -1,22 +1,22 @@
 digraph TopLevel {
-    compound = true
     fontsize = 8
-    fontname = Arial
+    compound = true
     label = "TopLevel"
+    fontname = Arial
     bgcolor = lightcyan1
     node [
-        color = black,
         fontsize = 8,
-        fontname = Arial
+        fontname = Arial,
+        color = black
     ]
 
     subgraph cluster_XML {
-        color = blue
-        fillcolor = palegreen1
-        fontname = Arial
-        style = filled
         label = "XML"
         URL = "classes/XML.html"
+        style = filled
+        fontname = Arial
+        color = blue
+        fillcolor = palegreen1
         XML [
             shape = plaintext,
             height = 0.01,
