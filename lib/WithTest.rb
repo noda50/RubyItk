@@ -40,7 +40,7 @@ module Itk
     def listTestMethodSuffixes()
       list = listTestMethods() ;
       list.map{|name|
-        name.gsub(/^#{self.class::TestMethodPrefix}/,'') ;
+        name.to_s.gsub(/^#{self.class::TestMethodPrefix}/,'') ;
       }
     end
 
