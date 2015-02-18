@@ -75,6 +75,7 @@ class Gnuplot
 
   ## default styles
   DfltPlotStyle = "w linespoints" ; 
+  DfltPlotStyleForFunc = "w lines" ;
   
   #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   #++
@@ -500,7 +501,7 @@ class Gnuplot
   #------------------------------------------
   #++
   ## set style for each plot
-  def dmpPlotFunc(k, funcForm, style = "l")
+  def dmpPlotFunc(k, funcForm, style = DfltPlotStyleForFunc)
     @plotFunc[k] = funcForm ;
     @workcount[k] += 1 ;
     dmpSetStyle(k,style) ;
