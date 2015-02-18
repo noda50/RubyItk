@@ -441,6 +441,7 @@ class Gnuplot
       @title = Array::new(m) ;
       @layerList = (0...m) ;
       @workcount = Hash.new ;
+      @plotFunc = Hash.new ;
     elsif(m.is_a?(Array))
       @m = m.size ;
       @workstrm = Hash.new ;
@@ -451,6 +452,7 @@ class Gnuplot
       @title = Hash.new ;
       @layerList = m ;
       @workcount = Hash.new ;
+      @plotFunc = Hash.new ;
     else
       raise "unknown index for multiple plot: #{m}" ;
     end
@@ -484,15 +486,23 @@ class Gnuplot
   #------------------------------------------
   #++
   ## set title for each plot
-  def dmpSetTitle(k,title) ;
+  def dmpSetTitle(k,title)
     @title[k] = title ;
   end
 
   #------------------------------------------
   #++
   ## set style for each plot
-  def dmpSetStyle(k,style) ;
+  def dmpSetStyle(k,style)
     @localStyle[k] = style ;
+  end
+
+  #------------------------------------------
+  #++
+  ## set style for each plot
+  def dmpPlotFunc(k,funcForm)
+    @plotFunc[k] = funcForm ;
+    @workcount[k] += 1 ;
   end
 
   #------------------------------------------
@@ -568,13 +578,6 @@ class Gnuplot
     styleCount = 0 ;
     @layerList.each{|k|
       next if (@workcount[k] <= 0) ;
-      styleCount += 1 ;
-      if(saveScript?())
-        inlineDataList.push(@workfile[k]) ;
-        file = '-' ;
-      else
-        file = @workfile[k] ;
-      end
       if(firstp) then
 	com += " " ;
 	firstp = FALSE ;
@@ -582,13 +585,24 @@ class Gnuplot
 	com += ", " ;
       end
 
+      styleCount += 1 ;
+      if(saveScript?())
+        inlineDataList.push(@workfile[k]) ;
+        file = '-' ;
+      else
+        file = @workfile[k] ;
+      end
+
       localstyle = @localStyle[k] || styles ;
       using = (@timeMode ? "using 1:2" : "") ;
 
+      plotObject = (@plotFunc[k] ? @plotFunc[k] :
+                    (sprintf("\"%s\" %s", file, using))) ;
+
       if(title[k].nil?) then
-	com += sprintf("\"%s\" %s %s ls %d",file,using,localstyle,styleCount) ;
+	com += sprintf("%s %s ls %d",plotObject,localstyle,styleCount) ;
       else
-	com += sprintf("\"%s\" %s t \"%s\" %s ls %d",file,using,
+	com += sprintf("%s t \"%s\" %s ls %d",plotObject,
                        title[k],localstyle, styleCount) ;
       end
 
