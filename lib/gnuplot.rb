@@ -500,10 +500,10 @@ class Gnuplot
   #------------------------------------------
   #++
   ## set style for each plot
-  def dmpPlotFunc(k,funcForm)
+  def dmpPlotFunc(k, funcForm, style = "l")
     @plotFunc[k] = funcForm ;
     @workcount[k] += 1 ;
-    @localstyle[k] = "l"
+    dmpSetStyle(k,style) ;
   end
 
   #------------------------------------------
