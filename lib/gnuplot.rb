@@ -503,6 +503,7 @@ class Gnuplot
   def dmpPlotFunc(k,funcForm)
     @plotFunc[k] = funcForm ;
     @workcount[k] += 1 ;
+    @localstyle[k] = "l"
   end
 
   #------------------------------------------
