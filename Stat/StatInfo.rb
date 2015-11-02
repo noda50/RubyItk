@@ -147,6 +147,20 @@ module Stat
     #++
     alias std sdev ;
 
+    #--------------------------------------------------------------
+    #++
+    ## convert to Hash
+    def to_h()
+      return ({
+                :average => average(),
+                :variance => variance(),
+                :sdev => sdev(),
+                :n => @countN,
+                :min => @min,
+                :max => @max,
+              }) ;
+    end
+
   end # class StatInfo
 
   #--======================================================================

@@ -7,6 +7,8 @@
 ## * [2004/12/01]: Create This File.
 ## * [2014/08/17]: reform the file
 ## * [2014/08/17]: introduce error bar facility
+## * [2015/06/06]: change "ls" (linestyle) to "lt" (linetype).
+##                 "ls" becomes obsolute in recent gnuplot.
 #------------------------------------------------------------
 #++
 ## == Usage
@@ -356,7 +358,8 @@ class Gnuplot
   def dpShow(rangeopt = "", styles = DfltPlotStyle) 
     styleCount = 1 ;
     styles = "using 1:2 " + styles if(@timeMode) ;
-    styles += " ls #{styleCount}" ;
+#    styles += " ls #{styleCount}" ;
+    styles += " lt #{styleCount}" ;
     datafile = @workfile ;
     if(saveScript?())
       datafile = '-' ;
@@ -365,7 +368,8 @@ class Gnuplot
 
     ## error bar
     if(@errbarstrm)
-      com += (", \"%s\" w yerrorbars ls %d notitle" % 
+#      com += (", \"%s\" w yerrorbars ls %d notitle" % 
+      com += (", \"%s\" w yerrorbars lt %d notitle" % 
               [@errbarfile,styleCount]) ;
     end
 
@@ -471,7 +475,11 @@ class Gnuplot
 #      else
 #        @title[i] = i.to_s ;
 #      end
-      @title[i] = i.inspect ;
+      if(i.is_a?(String)) then
+        @title[i] = i ;
+      else
+        @title[i] = i.inspect ;
+      end
 
       @workcount[i] = 0 ;
     }
@@ -602,15 +610,18 @@ class Gnuplot
                     (sprintf("\"%s\" %s", file, using))) ;
 
       if(title[k].nil?) then
-	com += sprintf("%s %s ls %d",plotObject,localstyle,styleCount) ;
+#	com += sprintf("%s %s ls %d",plotObject,localstyle,styleCount) ;
+	com += sprintf("%s %s lt %d",plotObject,localstyle,styleCount) ;
       else
-	com += sprintf("%s t \"%s\" %s ls %d",plotObject,
+#	com += sprintf("%s t \"%s\" %s ls %d",plotObject,
+	com += sprintf("%s t \"%s\" %s lt %d",plotObject,
                        title[k],localstyle, styleCount) ;
       end
 
       # error bar
       if(@errbarstrm[k])
-        com += (", \"%s\" w yerrorbars ls %d notitle" % 
+#        com += (", \"%s\" w yerrorbars ls %d notitle" % 
+        com += (", \"%s\" w yerrorbars lt %d notitle" % 
                 [@errbarfile[k],styleCount]) ;
       end
     }

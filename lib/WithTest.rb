@@ -2,6 +2,7 @@
 
 require 'thread' ;
 require 'TimeDuration.rb' ;
+require 'Itk/ItkThreadPool.rb' ;
 
 ##----------------------------------------------------------------------
 def methodName(offset = 0)
@@ -89,7 +90,7 @@ module Itk
   end # class WithTest
 
   ##============================================================
-  class ThreadPool
+  class ThreadPool_obsoleted
 
     ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     attr :max, true ;
