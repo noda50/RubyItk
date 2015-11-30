@@ -95,10 +95,20 @@ class WithConfParam
 
   #----------------------------------------------------
   #++
-  ## set attribute value by config directly/automatically
+  ## set attribute value by config directly/automatically.
+  ## (obsolete, only for compatibility)
   ## _klass_:: the class now processing
   ## *return*:: ?
   def setDirectConfAttrList(klass = self.class())
+    setAllAttrByConfNamesake(klass) ;
+  end
+
+  #----------------------------------------------------
+  #++
+  ## set attribute value by config directly/automatically
+  ## _klass_:: the class now processing
+  ## *return*:: ?
+  def setAllAttrByConfNamesake(klass = self.class())
     setDirectConfAttrList(klass.superclass()) if(klass != WithConfParam) ;
     if(klass.const_defined?(:DirectConfAttrList)) then
       setDirectConfAttr(klass::DirectConfAttrList) ;
@@ -107,10 +117,20 @@ class WithConfParam
 
   #----------------------------------------------------
   #++
-  ## set attribute value by the same name config directly/automatically
+  ## set attribute value by the same name config directly/automatically.
+  ## (obsolete, for compatibility)
   ## _attr_:: attribute name or list of attributes
   ## *return*:: the value
   def setDirectConfAttr(attr)
+    setAttrByConfNamesake(attr) ;
+  end
+
+  #----------------------------------------------------
+  #++
+  ## set attribute value by the same name config directly/automatically
+  ## _attr_:: attribute name or list of attributes
+  ## *return*:: the value
+  def setAttrByConfNamesake(attr)
     if(attr.is_a?(Array)) then
       return attr.map{|at| 
         setDirectConfAttr(at) ;

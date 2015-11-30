@@ -23,8 +23,13 @@ module Itk
 
     ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     ##----------------------------------------
+    def self.timestamp(klass = self)
+      Time.now.strftime(klass::TimestampFormat)
+    end
+
+    ##----------------------------------------
     def timestamp()
-      Time.now.strftime(self.class::TimestampFormat)
+      self.class.timestamp(self.class) ;
     end
 
     ##----------------------------------------
