@@ -122,24 +122,40 @@ module Geo2D
     DrawParam = {
       :fillColor => 'grey80',
       :frameColor => 'grey20',
+      :drawInterior => true,
+      :fillColorInterior => 'white',
       nil	=> nil } ;
 
     ##----------------------------------------
     def draw(canvas, *param)
       param.push(DrawParam) ;
+      frameColor = lookupParam(param, :frameColor);
+      fillColor = lookupParam(param, :fillColor);
+
+      drawRing(@exterior, canvas, frameColor, fillColor) ;
+
+      if(lookupParam(param, :drawInterior)) then
+        fillColorInterior = lookupParam(param, :fillColorInterior);
+        @interior.each{|ring|
+          drawRing(ring, canvas, frameColor, fillColorInterior) ;
+        }
+      end
+
+      self ;
+    end
+
+    ##----------------------------------------
+    def drawRing(ring, canvas, frameColor, fillColor)
       posList = [] ;
-      @exterior.eachPoint(){ |point|
+      ring.eachPoint(){|point|
         posList.push([point.x, point.y]) ;
       }
-      if(lookupParam(param, :fillColor).nil?) then
-        canvas.drawEmptyPolygon(posList,
-                                lookupParam(param, :frameColor)) ;
+      if(fillColor.nil?) then
+        canvas.drawEmptyPolygon(posList, frameColor) ;
       else
-        canvas.drawFramedPolygon(posList,
-                                 lookupParam(param, :frameColor),
-                                 lookupParam(param, :fillColor)) ;
+        canvas.drawFramedPolygon(posList, frameColor, fillColor) ;
       end
-      self ;
+      ring ;
     end
 
   end

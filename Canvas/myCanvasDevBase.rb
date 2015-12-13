@@ -34,6 +34,10 @@ class MyCanvasDevBase
   attr :scaleX, true ;
   attr :scaleY, true ;
 
+  attr :flipX, true ;
+  attr :flipY, true ;
+  attr :swapXY, true ;
+
   attr :boudaryMinX, true ;
   attr :boudaryMinY, true ;
   attr :boudaryMaxX, true ;
@@ -89,6 +93,9 @@ class MyCanvasDevBase
 
     setSize(width, height,
 	    param.fetch('scale',dfltScale()),param.fetch('centerp',FALSE)) ;
+
+    setFlip(param.fetch('flipX',false), param.fetch('flipY',false),
+            param.fetch('swapXY',false)) ;
   end
 
   ##----------------------------------------
@@ -157,6 +164,14 @@ class MyCanvasDevBase
     return @scaleY ;
   end
 
+  ##----------------------------------------
+  ## setFlip
+
+  def setFlip(flipX, flipY, swapXY)
+    @flipX = flipX || false ;
+    @flipY = flipY || false ;
+    @swapXY = swapXY || false ;
+  end
 
   ##----------------------------------------
   ## setScaleShift by boundary box
@@ -169,6 +184,8 @@ class MyCanvasDevBase
   def setBoundaryBox(x0,y0,x1,y1)
     @boundaryMinX = min(x0,x1) ; @boundaryMaxX = max(x0,x1) ;
     @boundaryMinY = min(y0,y1) ; @boundaryMaxY = max(y0,y1) ;
+    @flipX = (x0 > x1) ;
+    @flipY = (y0 > y1) ;
   end
 
   def setScaleShiftByBoundaryBoxBody() 
@@ -229,12 +246,28 @@ class MyCanvasDevBase
   ##----------------------------------------
   ## scaled and shifted values
 
-  def valFltX(x)
-    return @shiftX + scaleFltX(x) ;
+  def valFltX(x, bare = false)
+    if(bare) then
+      return @shiftX + scaleFltX(x) ;
+    else
+      if(@flipX) then
+        return @sizeX - valFltX(x, true) ;
+      else
+        return valFltX(x, true) ;
+      end
+    end
   end
 
-  def valFltY(y)
-    return @shiftY + scaleFltY(y) ;
+  def valFltY(y, bare = false)
+    if(bare) then
+      return @shiftY + scaleFltY(y) ;
+    else
+      if(@flipY) then
+        return @sizeY - valFltY(y, true) ;
+      else
+        return valFltY(y, true) ;
+      end
+    end
   end
 
   ##----------------------------------------

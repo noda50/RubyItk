@@ -32,7 +32,7 @@ class WithConfParam
   #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   #++
   ## store configuration for each instance
-  attr :conf, true ;
+  attr_accessor :conf ;
   
   #----------------------------------------------------
   #++
