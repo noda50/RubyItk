@@ -9,6 +9,8 @@
 ## this is not completed to implement.
 ## the problem is that tk can not understand state command.
 
+$LOAD_PATH.push(File::dirname(__FILE__)) ;
+
 require 'tk' ;
 require 'thread' ;
 require 'myCanvasDevBase.rb' ;

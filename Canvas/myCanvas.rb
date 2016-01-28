@@ -70,6 +70,8 @@
 #       drawText(x,y,text,fontSize = 14, fontFamily = :times, color = "black") 
 #
 
+$LOAD_PATH.push(File::dirname(__FILE__)) ;
+
 require "myCanvasDevBase.rb" ;
 require "myCanvasTgif.rb" ;
 require "myCanvasGtk.rb" ;

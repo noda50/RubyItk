@@ -6,6 +6,8 @@
 ##Date: 2004/12/01
 ##EndHeader:
 
+$LOAD_PATH.push(File::dirname(__FILE__)) ;
+
 require 'gtk2' ;
 require 'thread' ;
 require 'myCanvasDevBase.rb' ;

@@ -37,7 +37,7 @@ module Itk
       list = [] ;
       pattern = /^#{self.class::TestMethodPrefix}/ ;
       methods().sort().each{|m|
-        list.push(m) if (m =~ pattern) ;
+        list.push(m.intern) if (m =~ pattern) ;
       }
       return list ;
     end
@@ -52,7 +52,7 @@ module Itk
 
     ##----------------------------------------
     def isMember?(testName)
-      listTestMethods.member?(testName)
+      listTestMethods.member?(testName.intern)
     end
 
     ##----------------------------------------

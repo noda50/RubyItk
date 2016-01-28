@@ -1,3 +1,4 @@
+# coding: utf-8
 ## -*- Mode:Ruby -*-
 ##Header:
 ##Title: Canvas Utility using Gtk
@@ -15,19 +16,31 @@
 ##	  }
 ## [2011/10/31:I.Noda] : multiple candidate for "rgb.txt"
 ## [2011/11/01:I.Noda] : fix mutex problem
+## [2016/01/28:I.Noda] : try to adapt gtk3, but failed.
 ##EndModifyHistory:
 
 ##----------------------------------------------------------------------
-## for compatibility of Gtk2
-$isGtk2 = false ;
+## for compatibility of Gtk2, Gtk3
+$gtkVer = :gtk1 ;
 $LOAD_PATH.each{|dir|
-  if(FileTest::exists?(File::join(dir,"gtk2.rb"))) then
-    $isGtk2 = true ;
+  ## [2016/01/28 I.Noda]
+  ## try to adapt gtk3.  But, it does not work well.
+  ## several constants, and the name of events are renamed or deprecated.
+  ## need to check over-all flow of the usage of gtk3.
+#  if(FileTest::exists?(File::join(dir,"gtk3.rb"))) then
+#    $gtkVer = :gtk3 ;
+#    break ;
+#  end
+  if (FileTest::exists?(File::join(dir,"gtk2.rb"))) then
+    $gtkVer = :gtk2 ;
     break ;
   end
 }
 
-if($isGtk2)
+case($gtkVer)
+when :gtk3 ;
+  require 'gtk3' ;
+when :gtk2 ;
   require 'gtk2' ;
 else
   require 'gtk' ;
@@ -42,12 +55,14 @@ else
 
 end
 
+$LOAD_PATH.push(File::dirname(__FILE__)) ;
+
 require 'thread' ;
 require 'myCanvasDevBase.rb' ;
 
 ##----------------------------------------------------------------------
 ## for compatibility of Gtk2
-if($isGtk2)
+if($gtkVer == :gtk2 || $gtkVer == :gtk3)
   Gtk::Widget::SIGNAL_EXPOSE_EVENT = "expose_event" ;
   Gtk::Widget::SIGNAL_CONFIGURE_EVENT = "configure_event" ;
 end
@@ -141,7 +156,8 @@ class MyCanvasGtk < MyCanvasDevBase
   ##
 
   def setupWindow(param)
-    if($isGtk2)
+    case($gtkVer)
+    when :gtk2,:gtk3;
       Gtk.init ;
       @topwindow = Gtk::Window::new() ;
     else
@@ -216,14 +232,18 @@ class MyCanvasGtk < MyCanvasDevBase
   def setupWindowCanvas(param)
     @canvas = Gtk::DrawingArea::new() ;
 
-    if($isGtk2)
+    case($gtkVer)
+    when :gtk2, :gtk3;
       @canvas.set_size_request(@sizeX,@sizeY) ;
     else
       @canvas.set_usize(@sizeX,@sizeY) ;
     end
 
     # set mouse event active
-    if($isGtk2)
+    case($gtkVer)
+    when :gtk3 ;
+      # do nothing ;
+    when :gtk2 ;
       @canvas.set_events(Gdk::Event::BUTTON_PRESS_MASK)
     else
       @canvas.set_events(Gdk::BUTTON_PRESS_MASK)
@@ -248,7 +268,8 @@ class MyCanvasGtk < MyCanvasDevBase
       if(@drawable.nil?) 
 	@drawable = @canvas.window ;
 
-        if($isGtk2)
+        case($gtkVer)
+        when :gtk2, :gtk3 ;
           @geometry = @drawable.geometry ;
         else
           @geometry = @drawable.get_geometry ;
@@ -445,8 +466,13 @@ class MyCanvasGtk < MyCanvasDevBase
       @thread = Thread::new{
         Thread::current.abort_on_exception = true ;
         Gtk.main ;
+        while(true)
+          Thread::pass() ;
+        end
       }
-      @thread.run() ;  #  !!! <- key point !!!
+      if(RUBY_VERSION < "2.0.0") then
+        @thread.run() ;  #  !!! <- key point !!!
+      end
       beginPage() ;
     end
   end
@@ -469,7 +495,7 @@ class MyCanvasGtk < MyCanvasDevBase
       @quitMutex.synchronize() {
 #        p [:enterWaitQuit, Thread::current] ;
         @quitCV.wait(@quitMutex) ;
-        ## ¤Ê¤¼¤«°Ê²¼¤Î£²¤Ä¤¬¤Ê¤¤¤È¡¢¤¦¤Þ¤¯½ª¤ï¤ì¤Ê¤¤¡£
+        ## ãªãœã‹ä»¥ä¸‹ã®ï¼’ã¤ãŒãªã„ã¨ã€ã†ã¾ãçµ‚ã‚ã‚Œãªã„ã€‚
         p [:exitWaitQuit, Thread::current] ;
       }
       p [:exitWaitQuit2, Thread::current] ;
@@ -514,7 +540,8 @@ class MyCanvasGtk < MyCanvasDevBase
 
   def flush()
     if(! @buffer.nil?) 
-      if($isGtk2)
+      case($gtkVer)
+      when :gtk2, :gtk3 ;
         @drawable.draw_drawable(@gc,@buffer,0,0,0,0,width(),height()) ;
       else
         @drawable.draw_pixmap(@gc,@buffer,0,0,0,0,width(),height()) ;
@@ -557,7 +584,8 @@ class MyCanvasGtk < MyCanvasDevBase
   ##
 
   def setGCLineAttributes(gc,thickness,style)
-    if($isGtk2)
+    case($gtkVer)
+    when :gtk2, :gtk3 ;
       if(style == :dashed)
         gc.set_line_attributes(thickness, Gdk::GC::LINE_ON_OFF_DASH,
                                Gdk::GC::CAP_NOT_LAST, Gdk::GC::JOIN_MITER) ;
@@ -659,7 +687,8 @@ class MyCanvasGtk < MyCanvasDevBase
     @drawMutex.synchronize{
       @font = getFont(fontFamily, fontSize) ;
       @gc.set_foreground(getColor(color)) ;
-      if($isGtk2)
+      case($gtkVer)
+      when :gtk2, :gtk3 ;
         ## see http://homepage1.nifty.com/markey/memo/200502.html
         layout = @topwindow.create_pango_layout() ;
         layout.set_text(text) ;
@@ -705,7 +734,8 @@ class MyCanvasGtk < MyCanvasDevBase
 
     #copy from old buffer
     if(!oldbuf.nil? && copyp)
-      if($isGtk2)
+      case($gtkVer)
+      when :gtk2, :gtk3 ;
         newbuf.draw_drawable(@gc,oldbuf,0,0,0,0,width(),height()) ;
       else
         newbuf.draw_pixmap(@gc, oldbuf, 0,0, 0,0,width(),height());
@@ -721,7 +751,8 @@ class MyCanvasGtk < MyCanvasDevBase
   ##
 
   def expose_event(w,e)
-    if($isGtk2)
+    case($gtkVer)
+    when :gtk2, :gtk3 ;
       @drawable.draw_drawable(@gc,@currentbuffer,0,0,0,0,width(),height()) ;
     else
       @drawable.draw_pixmap(@gc,@currentbuffer,0,0,0,0,width(),height()) ;
@@ -737,7 +768,8 @@ class MyCanvasGtk < MyCanvasDevBase
   def assignBaseColors()
     @color = Hash::new() ;
 
-    if($isGtk2)
+    case($gtkVer)
+    when :gtk2, :gtk3 ;
       @colormap = Gdk::Colormap.system ;
     else
       @colormap = Gdk::Colormap.get_system ;
@@ -818,7 +850,8 @@ class MyCanvasGtk < MyCanvasDevBase
   end
 
   def fontAlias(aliasname)
-    if($isGtk2)
+    case($gtkVer)
+    when :gtk2, :gtk3 ;
       table = { 
         :times => "Times %d",
         :helvetica => "Helvetica %d",
@@ -841,7 +874,8 @@ class MyCanvasGtk < MyCanvasDevBase
     font = fontlist[size] ;
     if(font.nil?) then
       fontname = fontAlias(family) ;
-      if($isGtk2) 
+      case($gtkVer)
+      when :gtk2, :gtk3 ;
         font = Pango::FontDescription.new(fontname % [size]) ;
       else
         font = Gdk::Font.fontset_load(fontname % [size]) ;
