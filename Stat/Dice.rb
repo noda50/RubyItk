@@ -10,10 +10,10 @@ require 'Stat/RandomValue.rb' ;
 ##======================================================================
 module Stat
   class Dice < RandomValue 
-    attr :mode, true ;  ## :integer | :symbol
-    attr :min, true ;
-    attr :max, true ;
-    attr :symbolList, true ;
+    attr_accessor :mode ;  ## :integer | :symbol
+    attr_accessor :min ;
+    attr_accessor :max ;
+    attr_accessor :symbolList ;
 
     ##------------------------------
     def initialize(arg0, arg1 = nil)

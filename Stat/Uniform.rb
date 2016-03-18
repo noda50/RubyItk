@@ -10,9 +10,9 @@ require 'Stat/RandomValue.rb' ;
 ##======================================================================
 module Stat
   class Uniform < RandomValue 
-    attr :min, true ;
-    attr :max, true ;
-    attr :mode, true ;	# should be :uniform, :log
+    attr_accessor :min ;
+    attr_accessor :max ;
+    attr_accessor :mode ;	# should be :uniform, :log
 
     ##------------------------------
     def initialize(minValue, maxValue, mode = :uniform)
@@ -28,6 +28,8 @@ module Stat
         (@max - @min) * rand() + @min ;
       when :log
         Math::exp((@max - @min) * rand() + @min) ;
+      else
+        raise "unknown mode: " + @mode ;
       end
     end
 

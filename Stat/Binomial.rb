@@ -6,8 +6,8 @@ require 'Stat/RandomValue' ;
 module Stat
   ##======================================================================
   class Binomial < RandomValue
-    attr :p, true ;
-    attr :n, true ;
+    attr_accessor :p ;
+    attr_accessor :n ;
 
     def initialize(n, p = 0.5)
       @n = n ;

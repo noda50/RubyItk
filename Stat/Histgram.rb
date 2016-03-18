@@ -16,10 +16,10 @@ module Stat
 
   class Histgram < StatInfo
 
-    attr :step, true ;
-    attr :table, true ;
-    attr :bottom, true ;
-    attr :centered, true ;
+    attr_accessor :step ;
+    attr_accessor :table ;
+    attr_accessor :bottom ;
+    attr_accessor :centered ;
 
     ##--------------------------------------------------
     def initialize(step, centered = false, historySize = 1) ;

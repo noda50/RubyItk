@@ -1,4 +1,5 @@
 #! /usr/bin/env ruby
+# coding: utf-8
 ## -*- Mode: ruby -*-
 ########################################################################
 ##Header:
@@ -16,13 +17,13 @@ module Stat
   class RegAnalysis
     ##::::::::::::::::::::::::::::::::::::::::::::::::::
     ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    attr :count, true ;
-    attr :dimX, true ;
-    attr :dimY, true ;
-    attr :sumX, true ;
-    attr :sumY, true ;
-    attr :sumXX, true ;
-    attr :sumYX, true ;
+    attr_accessor :count ;
+    attr_accessor :dimX ;
+    attr_accessor :dimY ;
+    attr_accessor :sumX ;
+    attr_accessor :sumY ;
+    attr_accessor :sumXX ;
+    attr_accessor :sumYX ;
 
     ##--------------------------------------------------
     def initialize(dimY, dimX) ;
@@ -156,8 +157,8 @@ module Stat
     ##::::::::::::::::::::::::::::::::::::::::::::::::::
     DefaultAlpha = 0.1 ;
     ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    attr :alphaX, true ;
-    attr :alphaY, true ;
+    attr_accessor :alphaX ;
+    attr_accessor :alphaY ;
 
     ##--------------------------------------------------
     def initialize(dimY, dimX, alphaY = DefaultAlpha, alphaX = DefaultAlpha) 

@@ -25,24 +25,24 @@ module Stat
     #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     #++
     ## minimum in given values.
-    attr :min, true ;
+    attr_accessor :min ;
     ## maximum in given values.
-    attr :max, true ;
+    attr_accessor :max ;
     ## sum of given values.
-    attr :sum, true ;
+    attr_accessor :sum ;
     ## squared sum of given values.
-    attr :qsum, true ;
+    attr_accessor :qsum ;
     ## the number of given values.
-    attr :countN, true ;
+    attr_accessor :countN ;
     ## history of given values.
-    attr :history, true ;
+    attr_accessor :history ;
     ## history maximum size.
-    attr :historySize, true ;
+    attr_accessor :historySize ;
 
     ## stepsize (alpha) for exponential moving average
-    attr :alpha, true ;
+    attr_accessor :alpha ;
     ## exponential moving average
-    attr :ema, true ;
+    attr_accessor :ema ;
 
     #--------------------------------------------------------------
     #++
@@ -172,11 +172,11 @@ module Stat
     #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     #++
     ## statistics of X values
-    attr :xStat, true ;
+    attr_accessor :xStat ;
     ## statistics of Y values
-    attr :yStat, true ;
+    attr_accessor :yStat ;
     ## statistics of X-Y values
-    attr :xyStat, true ;
+    attr_accessor :xyStat ;
 
     #--------------------------------------------------------------
     #++
@@ -216,23 +216,23 @@ module Stat
     #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     #++
     ## size of X vectors
-    attr :sizeX, true ;
+    attr_accessor :sizeX ;
     ## size of Y vectors
-    attr :sizeY, true ;
+    attr_accessor :sizeY ;
     ## array of statistics info for X
-    attr :statInfoX, true ;
+    attr_accessor :statInfoX ;
     ## array of statistics info for Y
-    attr :statInfoY, true ;
+    attr_accessor :statInfoY ;
     ## squared sum matrix
-    attr :qMatrix, true ;
+    attr_accessor :qMatrix ;
     ## counting
-    attr :count, true ;
+    attr_accessor :count ;
     ## average array for X
-    attr :averageX, true ;
+    attr_accessor :averageX ;
     ## average array for Y
-    attr :averageY, true ;
+    attr_accessor :averageY ;
     ## covariance of X-Y
-    attr :covariance, true ;
+    attr_accessor :covariance ;
 
     #--------------------------------------------------------------
     #++
@@ -349,13 +349,13 @@ module Stat
   ## cumulate correlation information of two variables
 
   class ArrayStatInfo_old
-    attr :size, true ;
-    attr :statInfo, true ;
-    attr :qMatrix, true ;
-    attr :count, true ;
+    attr_accessor :size ;
+    attr_accessor :statInfo ;
+    attr_accessor :qMatrix ;
+    attr_accessor :count ;
 
-    attr :average, true ;
-    attr :covariance, true ;
+    attr_accessor :average ;
+    attr_accessor :covariance ;
 
     ##--------------------
     def initialize(size, historySize = 1)

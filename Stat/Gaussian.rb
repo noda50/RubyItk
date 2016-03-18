@@ -1,4 +1,5 @@
 #! /usr/bin/env ruby
+# coding: euc-jp
 ## -*- mode: ruby -*-
 
 require 'Stat/RandomValue' ;
@@ -6,8 +7,8 @@ require 'Stat/RandomValue' ;
 module Stat
   ##======================================================================
   class Gaussian < RandomValue
-    attr :mean, true ;
-    attr :std, true ;
+    attr_accessor :mean ;
+    attr_accessor :std ;
 
     ##--------------------------------------------------
     def initialize(mean = 0.0, std = 1.0)

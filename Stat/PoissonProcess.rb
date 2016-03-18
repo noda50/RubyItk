@@ -26,11 +26,11 @@ module Stat
     #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     #++
     ## probability to happen an event. Should be in [0,1]
-    attr :prob, true ;
+    attr_accessor :prob ;
     ## the number of occurance of the event
-    attr :nOccur, true ;
+    attr_accessor :nOccur ;
     ## the number of total chanve
-    attr :nChance, true ;
+    attr_accessor :nChance ;
 
     #--------------------------------------------------------------
     #++
