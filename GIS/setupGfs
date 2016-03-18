@@ -1,0 +1,15 @@
+#! /bin/tcsh
+
+##
+## This scripts should be executed by root
+##
+
+cat <<__END__ | mysql -p
+drop database if exists gfs ;
+create database gfs ;
+grant all on gfs.* to ''@localhost;
+__END__
+
+
+
+

@@ -1,0 +1,541 @@
+#! /usr/bin/env ruby
+
+$LOAD_PATH.push("~/lib/ruby") ;
+
+require 'optparse' ;
+require 'ostruct' ;
+require "gnuplot.rb" ;
+require "TimeDuration.rb" ;
+require 'sexp.rb' ;
+
+##======================================================================
+$conf = 
+  OpenStruct.new({ # :mode => :loopRemain,
+                   :mode => :check,
+                   :plot => false,
+                   :interval => 10,
+                   :log => false,
+                   :plotLog => false,
+                   :maxLogCount => 2000,
+                   :logFile => "/tmp/batMon.log",
+#                   :logFile => "/tmp/batMon.2.log",
+                 }) ;
+##======================================================================
+$op = OptionParser.new() {|op|
+  op.banner = <<_END_
+  Usage: #{$0} [Options]*
+_END_
+
+  op.separator("Options:") ;
+  op.set_summary_indent("") ;
+  op.set_summary_width(60) ;
+  sep = "\n\t\t" ;
+
+  op.on("--check", sep + "check battery status.") { 
+    $conf.mode = :check ;
+  }
+
+  op.on("--loop", sep + "loop to check remain battery status.") { 
+    $conf.mode = :loopRemain ;
+  }
+
+  op.on("--plot", sep + "plot remain battery status.") {
+    $conf.plot = true ;
+  }
+
+  op.on("--interval <IntervalInSec>", Integer, sep + "specify interval of check loop") { 
+    |interval|
+    $conf.interval = interval ;
+  }
+  op.on("--log", sep + "turn on logging and specify logfile.") {
+    $conf.log = true ;
+  }
+  op.on("--logFile <LogFile>", String, sep + "turn on logging and specify logfile.") {
+    |logfile|
+    $conf.logFile = logfile ;
+  }
+  op.on("--plotLog", String, sep + "plot log file.") {
+    $conf.mode = :plotLog ;
+    $conf.plotLog = true ;
+  }
+  op.on("--temp", sep + "check temperature.") {
+    $conf.mode = :temperature ;
+  }
+  op.on_tail("--help", sep + "show this message.") { |h|
+    puts(op)
+    exit(1)
+  }
+}
+
+$op.parse!(ARGV) ;
+
+##======================================================================
+class SensorInfo
+  ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  #Sensor (Vine 5CR, X201s)
+  SensorsComPath = "/usr/bin/sensors -u" ;
+
+  attr :data, true ;
+
+  ##--------------------------------------------------
+  def initialize(execp = true)
+    getInfo() if(execp) ;
+  end
+
+  def  getInfo()
+    @data = {} ;
+    entry = nil ;
+    open("| #{SensorComPath}", 'r') {|strm|
+      while(line = strm.gets())
+        line.chomp! ;
+        if(line =~ /^\s*$/) ## 空行
+          entry = nil ;
+        elsif(entry.nil?) ## 最初もしくは空行の後
+          entry = {} ;
+          entry[:name] = line ;
+          @data[line] = entry ;
+        else
+          values = line.split(/:\s*/) ;
+          if(values.length ==1)
+            subentry = {}
+            entry[values[0]] = subentry ;
+          elsif(values[0] =~ /^\s+/) # subentry
+            values[0].gsub!(/^\s+/)
+            subentry[values[0]] = values[1] ;
+          else
+            entry[values[0]] = values[1]
+          end
+        end
+      end
+    }
+  end
+end
+
+##======================================================================
+class BatteryMonitor
+
+  ##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#  ThermalMode = false ;
+  ThermalMode = :type2 ;
+
+  ProcBatteryPath = "/proc/acpi/battery" ;
+  StateRelPath = "state" ;
+  InfoRelPath = "info" ;
+
+  # for type 1 (Vine 5CR, X61s)
+  ProcThermalPath = "/proc/acpi/thermal_zone" ;
+  ThermalZoneList = ['THM0', 'THM1'] ;
+  TempRelPath = "temperature" ;
+
+  # for type 2 (Vine 6CR, X201s)
+  ProcThermalPath2 = "/proc/acpi/ibm/thermal" ;
+  ProcThermalPath2b = "/sys/devices/virtual/thermal/thermal_zone0" ;
+
+  ScanInterval = 10.0 ; ## sec
+#  ThermalScale = 800 ;
+
+  ThermalScale = 800 ;
+  
+
+  attr :batteryName, true ;
+  attr :info, true ;
+  attr :state, true ;
+  attr :temperature, true ;
+  attr :scanInterval, true ;
+  attr :cycle, true ;
+  attr :gplot, true ;
+  attr :logstrm, true ;
+
+  ##--------------------------------------------------
+  def initialize(interval = ScanInterval, batteryName = "BAT0")
+    @batteryName = batteryName ;
+    @scanInterval = interval ;
+    @info = {} ;
+    @state = {} ;
+    @temperature = {} ;
+    @cycle = 0 ;
+    @gplot = nil ;
+    @logstrm = nil ;
+  end
+
+  ##--------------------------------------------------
+  def statePath()
+    return "#{ProcBatteryPath}/#{@batteryName}/#{StateRelPath}" ;
+  end
+
+  ##--------------------------------------------------
+  def infoPath()
+    return "#{ProcBatteryPath}/#{@batteryName}/#{InfoRelPath}" ;
+  end
+
+  ##--------------------------------------------------
+  def temperaturePath(zone)
+    return "#{ProcThermalPath}/#{zone}/#{TempRelPath}" ;
+  end
+
+  ##--------------------------------------------------
+  def scanEntry(entry)
+    slot = nil ;
+    value = nil ;
+
+    entry.chomp!() ;
+    if(entry =~ /^\s*([^\:]+):\s*(.*)\s*$/)
+      (slot,value) = $1,$2 ;
+    end
+
+    return [slot,value] ;
+  end
+
+  ##--------------------------------------------------
+  ## for type 1 (Vine 5CR, X61s)
+  def scanTemperature() 
+    if(ThermalMode)
+      if(ThermalMode == :type2)
+        scanTemperature2() ;
+      else
+        ThermalZoneList.each{|zone|
+          open(temperaturePath(zone),"r"){|strm|
+            while(entry = strm.gets())
+              (slot, value) = scanEntry(entry) ;
+              if(slot == 'temperature')
+                temp = value.split[0].to_f ;
+                @temperature[zone] = temp ;
+                #            p [zone, slot, value, temp] ;
+              else
+                p [:warning, :unknown_temperature_slot, slot, value] ;
+              end
+            end
+          }
+        }
+      end
+    end
+  end
+
+  ##--------------------------------------------------
+  ## for type 2 (Vine 6CR, X201s)
+  def scanTemperature2() 
+    if(ThermalMode == :type2)
+      open(ProcThermalPath2,"r"){|strm|
+        while(entry = strm.gets())
+          (slot, value) = scanEntry(entry) ;
+          if(slot == 'temperatures')
+            temp = value.split.map{|valueStr| valueStr.to_f } ;
+            @temperature = temp ;
+#            p [slot, value, temp] ;
+          else
+            p [:warning, :unknown_temperature_slot, slot, value] ;
+          end
+        end
+      }
+    end
+  end
+
+  ##--------------------------------------------------
+  def scanState()
+    open(statePath(),"r"){|strm|
+      while(entry = strm.gets())
+        (slot,value) = scanEntry(entry) ;
+        @state[slot] = value ;
+      end
+    }
+  end
+  
+  ##--------------------------------------------------
+  def scanInfo()
+    open(infoPath(),"r"){|strm|
+      while(entry = strm.gets())
+        (slot,value) = scanEntry(entry) ;
+        @info[slot] = value ;
+      end
+    }
+  end
+
+  ##--------------------------------------------------
+  AmpWattRatio = 10.0 ;  ## magic number
+  def getWattValue(valueStr)
+    v = valueStr.split ;
+    unitStr = v[1] ;
+    wattStr = v[0] ;
+    if(v[1] =~ /mA/) then
+      return wattStr.to_f * AmpWattRatio ;
+    else
+      return wattStr.to_f ;
+    end
+  end
+
+  ##--------------------------------------------------
+  def presentRate()
+    return getWattValue(@state["present rate"]) ;
+  end
+
+  ##--------------------------------------------------
+  def remainingCapacity()
+    return getWattValue(@state["remaining capacity"]) ;
+  end
+
+  ##--------------------------------------------------
+  def fullCapacity()
+    return getWattValue(@info["last full capacity"]) ;
+  end
+
+  ##--------------------------------------------------
+  def chargingState()
+    mode = nil ;
+    case(@state["charging state"])
+    when "discharging";
+      mode = :discharging ;
+    when "charging" ;
+      mode = :charging ;
+    when "charged" ;
+      mode = :charged ;
+    end
+    return mode ;
+  end
+
+  ##--------------------------------------------------
+  def remainingTime()
+    if(chargingState() == :charging)
+      rest = fullCapacity() - remainingCapacity() ;
+    else
+      rest = remainingCapacity() ;
+    end
+
+    rate = presentRate() ;
+
+    hour = 0.0 ;
+    hour = rest / rate if (rate > 0.0) ;
+
+    dulation = TimeDulation.new() ;
+    dulation.addHour(hour) ;
+
+    return dulation ;
+  end
+
+  ##--------------------------------------------------
+  def hour2Time()
+    time = Time.new() ;
+    
+  end
+
+  ##--------------------------------------------------
+  def run()
+    case($conf.mode)
+    when :temperature
+      
+    when :loopRemain ;
+      loopCheckRemain() ;
+    when :check ;
+      doCheckBattery() ;
+    when :plotLog ;
+      plotLog() ;
+    else
+      warning("Unknown mode: " + $conf.mode) ;
+    end
+  end
+
+
+  ##--------------------------------------------------
+  def doCheckBattery()
+    scanInfo() ;
+    scanState() ;
+    showCurrentStatus(true) ;
+    if(chargingState() == :charged) then
+      chargedRatio = (remainingCapacity() / fullCapacity()).to_f ;
+      if(chargedRatio < 0.9) then
+        puts("!!! Something Wrong in Battery !!!") ;
+        exit(1) ;
+      end
+    end
+  end
+    
+
+  ##--------------------------------------------------
+  def showCurrentStatus(detailed = false)
+    show(chargingState(), @cycle, presentRate(), 
+         remainingCapacity(), fullCapacity(), remainingTime(), detailed) ;
+  end
+
+  ##--------------------------------------------------
+  def loopCheckRemain()
+    scanInfo() ;
+    setup() ;
+
+    while(true)
+      scanState() ;
+      scanTemperature() ; 
+      showCurrentStatus() ;
+
+      @cycle += 1 ;
+      sleep @scanInterval ;
+    end
+  end
+
+  ##--------------------------------------------------
+  def plotLog()
+    setup() ;
+
+    ## skip long history
+    if(@logCount > $conf.maxLogCount)
+      l = @logCount - $conf.maxLogCount ;
+      (0...l).each{ @logstrm.gets() } ;
+    end
+
+    fromCycle = nil ;
+
+    labels = (ThermalMode ?
+              [:discharge,:charge,:max, :capacity, :thm0, :thm1] :
+              [:discharge,:charge,:max, :capacity] ) ;
+
+    Gnuplot::directMultiPlot(labels,"[][0:]","w l"){|gplot|
+#      gplot.command('set xdata time') ;
+#      gplot.command('set timefmt "%H:%M:%S"') ;
+#      gplot.command('set format x "%H:%M"') ;
+
+      if(ThermalMode)
+        thmScale = ThermalScale ;
+        gplot.pushHLine('30 deg', 30 * thmScale) ;
+        gplot.pushHLine('50 deg', 50 * thmScale) ;
+        gplot.pushHLine('70 deg', 70 * thmScale) ;
+        gplot.pushHLine('90 deg', 90 * thmScale) ;
+      end
+      gplot.setKeyConf('left bottom') ;
+
+      while(!@logstrm.eof?)
+        sexp = Sexp::scanStream(@logstrm) ;
+        next if(!sexp) ;
+
+        cycle = sexp.assocVal('cycle').to_f ;
+        fromCycle = cycle if (fromCycle.nil?) ;
+        time = TimeDuration.new((cycle - fromCycle) * @scanInterval) ;
+#        timeInMinute = time.timestr(false) ;
+        timeInMinute = time.sec/60.0 ;
+
+        capacity = sexp.assocVal('capacity').to_f ;
+        max = sexp.assoc('capacity').nth(2).to_f ;
+        state = sexp.assocVal('state').to_s.intern ;
+        rate = sexp.assocVal('rateHour').to_f ;
+
+        if(ThermalMode)
+          thm0 = sexp.assoc('temperature').nth(1).to_f * thmScale;
+          thm1 = sexp.assoc('temperature').nth(2).to_f * thmScale;
+          thm0 = 100.0 * thmScale if (thm0 < 0) 
+          thm1 = 100.0 * thmScale if (thm1 < 0) 
+#          p [thm0, thm1] ;
+        end
+
+        case(state)
+        when :discharging
+          discharge = rate ;
+          charge = 0.0 ;
+        when :charging
+          discharge = 0.0 ;
+          charge = rate ;
+        else
+          discharge = 0.0 ;
+          charge = 0.0 ;
+        end
+#        gplot.dmpXYPlot(:capacity,cycle, capacity) ;
+#        gplot.dmpXYPlot(:charge,cycle, charge) ;
+#        gplot.dmpXYPlot(:discharge,cycle, discharge) ;
+        showRatio = false ;
+        if(showRatio)
+          gplot.dmpXYPlot(:capacity,timeInMinute, capacity/max) ;
+          gplot.dmpXYPlot(:charge,timeInMinute, charge/max) ;
+          gplot.dmpXYPlot(:discharge,timeInMinute, discharge/max) ;
+          gplot.dmpXYPlot(:max,timeInMinute, max/max) ;
+        else
+          gplot.dmpXYPlot(:capacity,timeInMinute, capacity) ;
+          gplot.dmpXYPlot(:charge,timeInMinute, charge) ;
+          gplot.dmpXYPlot(:discharge,timeInMinute, discharge) ;
+          gplot.dmpXYPlot(:max,timeInMinute, max) ;
+        end
+        
+        if(ThermalMode)
+          gplot.dmpXYPlot(:thm0,timeInMinute, thm0) ;
+          gplot.dmpXYPlot(:thm1,timeInMinute, thm1) ;
+        end
+      end
+    }
+  end
+
+  ##--------------------------------------------------
+  def countLog(logfile)
+    strm = open(logfile,"r") ;
+    c = 0 ;
+    while(strm.gets()) 
+      c += 1 ;
+    end
+    return c;
+  end
+
+  ##--------------------------------------------------
+  def setup()
+    if($conf.plot)
+      @gplot = Gnuplot::new() ;
+      @gplot.dmpBegin([:capacity, :rate]) ;
+    end
+    if($conf.plotLog)
+      @logCount = countLog($conf.logFile) ;
+      @logstrm = open($conf.logFile, "r") ;
+    elsif($conf.log)
+      @logstrm = open($conf.logFile, "w") ;
+    end
+  end
+
+  ##--------------------------------------------------
+  def show(state, cycle, rate, capacity, fullCapacity, hour, detailed = false)
+    tempInfo = (ThermalMode == :type2 ? @temperature :
+                ThermalMode ? ThermalZoneList.map{|zone| @temperature[zone]} :
+                []) ;
+    p [ThermalMode, tempInfo] ;
+    if(@gplot)
+      @gplot.dmpXYPlot(:capacity, cycle, capacity) ;
+      @gplot.dmpXYPlot(:rate, cycle, rate) ;
+      @gplot.dmpFlush("","w i") ;
+    else
+      if(detailed)
+        puts '_' * 60 
+        puts "state: " + state.to_s ;
+        puts "capacity: %5d / %5d  [%5.2f%%]" % [capacity.to_i,
+                                               fullCapacity.to_i,
+                                               100 * capacity / fullCapacity] ;
+        puts "rate: " + rate.to_s + " * " + hour.to_s ;
+        puts "period: by now (" + Time.now().to_s  + ")" ;
+        puts "          until " + hour.endTimeFromNow().to_s ;
+        puts '~' * 60 
+      else
+        p [cycle, state, capacity, fullCapacity, hour.timestr, rate,
+           tempInfo] ;
+      end
+    end
+    
+    # output to logfile
+    if(@logstrm)
+      s = Sexp::list(:batMon,
+                     Sexp::list(:time, Time.now().isoStr()),
+                     Sexp::list(:cycle, cycle),
+                     Sexp::list(:state, state.to_s),
+                     Sexp::list(:capacity, capacity.to_i, fullCapacity.to_i, 
+                                100 * capacity / fullCapacity),
+                     Sexp::list(:rateHour, rate, 
+                                hour.timestr,
+                                hour.endTimeFromNow.isoStr()),
+                     (ThermalMode ?
+                      Sexp::list(:temperature, *tempInfo) :
+                      nil)) ;
+      s.print(@logstrm, true) ;
+      @logstrm.flush
+    end
+  end
+
+end
+
+##======================================================================
+##======================================================================
+##======================================================================
+
+bmon = BatteryMonitor.new($conf.interval) ;
+bmon.run() ;
+
+
+

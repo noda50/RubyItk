@@ -1,0 +1,693 @@
+#! /usr/bin/ruby
+## -*- Mode: ruby -*-
+
+#require 'mysql' ;
+require 'OpenGIS' ;
+require 'ItkSql' ;
+include OpenGIS ;
+
+def warning(msg,line = __LINE__, file = __FILE__)
+  $stderr << "Warning in " << file << ":" << line << ": " << msg << "\n" ;
+end
+
+module OpenGIS
+
+##//////////////////////////////////////////////////////////////////////
+
+  $prefix = nil ;
+
+  ##======================================================================
+  class SqlTable < ItkSqlTableDef
+
+    ##----------------------------------------
+    ## initialize
+
+    def initialize(name, colDefs = [])
+      super(name,colDefs) ;
+    end
+
+  end
+
+  ##======================================================================
+  class XsdDefs
+
+    ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## instance variables
+
+    attr :defs,	 	true ;
+    attr :name,	  	true ;
+    attr :definedAt,	true ;
+
+    ##----------------------------------------
+    ## initialize
+
+    def initialize()
+      setDefs(nil) ;
+    end
+
+    ##----------------------------------------
+    ## setDefs
+
+    def setDefs(defs) 
+      @defs = defs ;
+      if(!@defs.nil?) then
+	@name = defs.attributes['name'] ;
+      end
+      @defineAt = nil ;
+    end
+
+    ##----------------------------------------
+    ## check GlobalDef
+
+    def isGlobal?
+      return (@defineAt.nil? || @defineAt == "") ;
+    end
+
+  end
+  
+  ##======================================================================
+  class XsdElement < XsdDefs
+    
+    ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## instance variables
+    attr :xPath,	true ;
+    attr :dataType, 	true ;
+    attr :minOccers, 	true ;
+    attr :maxOccers,	true ;
+    attr :isGroupRef, 	true ;
+
+    attr :sqlTable, 	true ;
+    attr :sqlSubElements, true ;
+
+    ##----------------------------------------
+    ## initialize
+    def initialize(defs = nil)
+      @xPath = nil ;
+      @dataType = nil ;
+      @minOccers = "1" ;
+      @maxOccers = "1" ;
+      @isGroupRef = false ;
+
+      @sqlTable = nil ;
+      @sqlSubElements = [] ;
+
+      setDefs(defs) ;
+    end
+
+    ##----------------------------------------
+    ## scan
+
+    def scan(topschema)
+
+      ## check the node is group or element
+      @isGroupRef = true if (@defs.name == 'group') ;
+
+      if(@isGroupRef) then
+	typename = @defs.attributes['ref'] ;
+	raise("no type definition in " + @defs.to_s) if(typename.nil?()) ;
+
+	barename = typename.sub(/^.*:/,'') ;
+	barename = typename if(barename.nil?) ;
+
+	@name = barename ;
+
+      else
+	typename = @defs.attributes['type'] ;
+	if(typename.nil?()) then
+	  r = XML::XPath::first(@defs,"#{$prefix}:simpleType/#{$prefix}:restriction") ;
+	  if(!r.nil?()) then
+	    typename = r.attributes['base'] ;
+	  end
+	end
+	raise("no type definition in " + @defs.to_s) if(typename.nil?()) ;
+
+      end
+
+      @dataType = topschema.findDataType(typename) ;
+
+      minOcc = @defs.attributes['minOccers'] ;
+      maxOcc = @defs.attributes['maxOccers'] ;
+
+      @minOccers = minOcc if(!minOcc.nil?) ;
+      @maxOccers = maxOcc if(!maxOcc.nil?) ;
+    end
+
+    ##----------------------------------------
+    ## convert to sql table definition
+
+    $jointStr = "~" ;
+
+    def convertToSqlTable(tablePrefix = "")
+      @sqlTable = SqlTable::new(tablePrefix + @name) ;
+      @sqlTable.addColumns([ ['id', 'int', [ItkSqlColumnDef::F_AutoIncrement]],
+			     ['pid','int', [] ] ]) ;
+
+      convertToSqlColumn(@sqlTable,tablePrefix,nil) ;
+      return @sqlTable ;
+    end
+
+    ##----------------------------------------
+    ## convert to sql column definition
+
+    def convertToSqlColumn(table, tablePrefix = "", columnPrefix = "")
+                                                  # when columnPrefix=nil, 
+                                                  # the column is top of the 
+                                                  # table.
+
+      isTopInTable = columnPrefix.nil?() ;
+      
+      if(@maxOccers.to_i == 1 || isTopInTable) then
+	@dataType.convertToSqlColumn(@name, table, tablePrefix, columnPrefix) ;
+      else
+	convertToSqlTable(tablePrefix) ;
+      end
+	  
+    end
+
+    ##----------------------------------------
+    ## collect SQL tables
+
+    def collectSqlTables(result = [])
+      if(!@sqlTable.nil? && @sqlTable.is_a?(SqlTable)) then
+	result.push(@sqlTable) ;
+      end
+      @dataType.collectSqlTables(result) ;
+      return result ;
+    end
+  end
+
+  ##======================================================================
+  class XsdDataType < XsdDefs
+    
+    ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## instance variables
+    attr :content, 	true ;
+    attr :parent,  	true ;
+    attr :isBuiltin, 	true ;
+    attr :isGroup, 	true ;
+    attr :sqlType,  	true ;
+    attr :sqlTypeOpt, 	true ;
+
+    ##----------------------------------------
+    ## initialize
+    def initialize(defs = nil)
+      @content = nil ;
+      @parent = nil ;
+      @isBuiltin = false ;
+      @isGroup = false ;
+      @sqlType = nil ;
+      @sqlTypeOpt = nil ;
+      setDefs(defs) ;
+    end
+
+    ##----------------------------------------
+    ## scan
+
+    def scan(topschema)
+      @isGroup = true if (@defs.name == 'group') ;
+      scanBody(topschema,@defs) ;
+    end
+
+    ##----------------------------------------
+    ## scan body
+
+    def scanBody(topschema,node)
+      node.each{|child|
+	if(child.is_a?(XML::Element)) then
+	  case(child.name)
+	  when 'complexContent'
+	    scanBody(topschema,child) ;
+	  when 'simpleContent'
+	    scanBody(topschema,child) ;
+	  when 'extension'
+	    @parent = topschema.findDataType(child.attributes['base']) ;
+	    scanBody(topschema,child) ;
+	  when 'restriction'
+	    @parent = topschema.findDataType(child.attributes['base']) ;
+	    ## do nothing ???
+	  when 'sequence'
+	    scanContent(topschema,child) ;
+	  when 'choice'
+	    scanContent(topschema,child) ;
+	  when 'attribute'
+	    ## do nothing ???
+	  else
+	    raise("unsupported syntax for complexType : " + child.to_s) ;
+	  end
+	end
+      }
+    end
+
+    ##----------------------------------------
+    ## scan sequence
+
+    def scanContent(topschema,node)
+      case(node.name)
+      when 'sequence'
+	@content = XsdSequence::new(node) ;
+      when 'choice'
+	@content = XsdChoice::new(node) ;
+      when 'all'
+	@content = XsdAll::new(node) ;
+      else
+	raise("unsupported syntax for content of complexType : " + 
+	      child.to_s) ;
+      end
+      @content.scan(topschema) ;
+    end
+
+    ##----------------------------------------
+    ## convert to SQL column
+
+    def convertToSqlColumn(colName, table, tablePrefix = "", columnPrefix = "")
+      isTopInTable = columnPrefix.nil?() ;
+
+      if(!@parent.nil?) then
+	@parent.convertToSqlColumn(colName,table,tablePrefix,columnPrefix) ;
+      end
+
+      if(isTopInTable) then
+	actualColName = "_value_" ;
+	newColPrefix = "" ;
+      else
+	actualColName = columnPrefix + colName ;
+	newColPrefix = columnPrefix + colName + $jointStr ;
+      end
+      newTablePrefix = tablePrefix + colName + $jointStr ;
+
+      if(@isBuiltin) then
+
+	if(!@sqlType.nil?) 
+	  table.addColumn([ actualColName, @sqlType, @sqlTypeOpt ] )  ;
+	end
+
+      elsif(@content.is_a?(XsdSequence) ||
+	    @content.is_a?(XsdAll)) then
+
+	@content.list.each{|elm|
+	  elm.convertToSqlColumn(table,newTablePrefix,newColPrefix) ;
+	}
+
+      elsif(@content.is_a?(XsdChoice)) then
+
+	@content.list.each{|elm|
+	  elm.convertToSqlTable(newTablePrefix) ;
+	}
+
+      elsif(!@parent.nil?) then
+      else
+	warning("unsupported data type for SQL table defs:" + 
+		@name,
+		__LINE__);
+      end
+    end
+
+    ##----------------------------------------
+    ## collect SQL tables
+
+    def collectSqlTables(result = [])
+      if(!@isBuiltin && !@content.nil?) then
+	@content.collectSqlTables(result) ;
+      end
+      return result ;
+    end
+
+    ##----------------------------------------
+    ## describe
+
+    def describe(strm = $stdout)
+      if(isGroup) then
+	metatype = 'Group' ;
+      else
+	metatype = 'Complex' ;
+      end
+
+      strm << "#[" << metatype << ":" << @name ;
+      if(!@parent.nil?) then
+	strm << " < " << @parent.name() ;
+      end
+      strm << "]" << "\n" ;
+
+      strm << "  Elements:" << "\n" ;
+      if(@content.nil?) then
+	strm << "\t" << "(no elements)" << "\n"
+      else
+	@content.describe(strm) ;
+      end
+      strm << "-" * 10 << "\n" ;
+    end
+  end
+
+  ##------------------------------------------------------------
+  ## class methods for XsdDataType
+
+  class << XsdDataType
+    def defineBuiltInType(name,sqlName,optarg = [])
+      ty = XsdDataType::new() ;
+      ty.name = name ;
+      ty.defs = name ;
+      ty.isBuiltin = true ;
+
+      ty.sqlType = sqlName ;
+      ty.sqlTypeOpt = optarg ;
+
+      return ty ;
+    end
+  end
+
+  ##======================================================================
+  ## class for sequence, choice, all, and any
+
+  class XsdContainer < XsdDefs
+    
+    ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## instance variables
+    attr :element,	true ;
+    attr :list,		true ;
+
+    ##----------------------------------------
+    ## initialize
+
+    def initialize(defs = nil)
+      @element = Hash::new ;
+      @list    = Array::new ;
+      setDefs(defs);
+    end
+
+    ##----------------------------------------
+    ## scan
+
+    def scan(topschema)
+      @defs.each{|child|
+	if(child.is_a?(XML::Element)) then
+	  if(child.name == 'element') then
+	    elm = XsdElement::new(child) ;
+	    elm.scan(topschema) ;
+	    @element[elm.name] = elm ;
+	    @list.push(elm) ;
+	  elsif(child.name == 'group') then
+	    group = XsdElement::new(child) ;
+	    group.scan(topschema) ;
+	    @element[group.name] = group ;
+	    @list.push(group) ;
+	  else
+	    raise("unsupported syntax for Container(sequence,choice,etc.) : " +
+		  child.to_s) ;
+	  end
+	end
+      }
+    end
+
+    ##----------------------------------------
+    ## collect SQL tables
+
+    def collectSqlTables(result = [])
+      @list.each{|elm|
+	elm.collectSqlTables(result) ;
+      }
+      return result ;
+    end
+
+    ##----------------------------------------
+    ## describe
+
+    def describe(strm = $stdout)
+      strm << "    <" << xsdTypeName() << ">" << "\n" ;
+      @list.each{|elm|
+	strm << "\t" << elm.name << " : " << elm.dataType.name << "\n" ;
+      }
+    end
+
+  end
+  
+  ##======================================================================
+  ## class for sequence
+
+  class XsdSequence < XsdContainer  
+    def xsdTypeName() ; return "sequence" ; end ;
+  end
+    
+  ##======================================================================
+  ## class for choice
+
+  class XsdChoice < XsdContainer  
+    def xsdTypeName() ; return "choice" ; end ;
+  end
+    
+  ##======================================================================
+  ## class for all
+
+  class XsdAll < XsdContainer  
+    def xsdTypeName() ; return "all" ; end ;
+  end
+    
+  ##======================================================================
+  class Xsd2Sql
+
+    ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## class constants
+
+    BuiltInTypes = Hash::new() ;
+
+    def builtInType(name)
+      return BuiltInTypes[name] ;
+    end
+
+    ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## instance variables
+    attr :schema, true ;
+    attr :element, true ;
+    attr :elementList, true ;
+    attr :dataType, true ;
+    attr :dataTypeList, true ;
+    attr :sqlTableList, true ;
+
+    ##----------------------------------------
+    ## initialize
+
+    def initialize(schema = nil)
+      @element = Hash::new() ;
+      @elementList = Array::new() ;
+      @dataType = Hash::new() ;
+      @dataTypeList = Array::new() ;
+      @tableList = Array::new() ;
+      setSchema(schema) ;
+    end
+
+    ##----------------------------------------
+    ## set schema top
+
+    def setSchema(schema = nil)
+      if(schema.is_a?(IO))
+	@schema = XML::Document.new(schema) ;
+      elsif(schema.is_a?(String))
+	@schema = XML::Document.new(schema) ;
+      elsif(schema.is_a?(XML::Document))
+	@schema = schema ;
+      elsif(schema.nil?)
+	@schema = nil ;
+      else
+	raise("unknown schema data : " + schema.to_s) ;
+      end
+    end
+
+    ##----------------------------------------
+    ## scan Schema
+
+    def scanSchema()
+      scanSchema1stPass() ;
+      scanSchema2ndPass() ;
+    end
+
+    ##----------------------------------------
+    ## scan Schema first pass
+
+    def scanSchema1stPass()
+      XML::XPath::each(@schema,"/*:schema"){|schm|
+	$prefix = schm.prefix ;
+	schm.each{|defs|
+	  if(defs.is_a?(XML::Element)) then
+	    case(defs.name)
+	    when('element')
+	      scanElement1stPass(defs) ;
+	    when('complexType')
+	      scanDataType1stPass(defs) ;
+	    when('simpleType')
+	      scanDataType1stPass(defs) ;
+	    when('group')
+	      scanDataType1stPass(defs) ;
+	    end
+	  end
+	}
+      }
+    end
+
+    ##----------------------------------------
+    ## scan Schema second pass
+
+    def scanSchema2ndPass()
+      scanElement2ndPass() ;
+      scanComplexType2ndPass() ;
+    end
+
+    ##----------------------------------------
+    ## scan Element (1st)
+
+    def scanElement1stPass(defs)
+      element = XsdElement::new(defs) ;
+      @element[element.name()] = element ;
+      @elementList.push(element) ;
+    end
+
+    ##----------------------------------------
+    ## scan ComplexType (1st)
+
+    def scanDataType1stPass(defs)
+      dataType = XsdDataType::new(defs) ;
+      @dataType[dataType.name()] = dataType ;
+      @dataTypeList.push(dataType) ;
+    end
+
+    ##----------------------------------------
+    ## scan Schema second pass
+
+    def scanSchema2ndPass()
+      scanElement2ndPass() ;
+      scanDataType2ndPass() ;
+    end
+
+    ##----------------------------------------
+    ## scan Element (2nd)
+
+    def scanElement2ndPass()
+      @element.each{|name,defs|
+	defs.scan(self) ;
+      }
+    end
+
+    ##----------------------------------------
+    ## scan ComplexType (2nd)
+
+    def scanDataType2ndPass()
+      @dataType.each{|name,defs|
+	defs.scan(self) ;
+      }
+    end
+
+    ##----------------------------------------
+    ## scan ComplexType (2nd)
+
+    def defineSqlTables()
+      @elementList.each{|elm|
+	elm.convertToSqlTable() ;
+      }
+      
+      @sqlTableList = Array::new ;
+      @elementList.each{|elm|
+	elm.collectSqlTables(@sqlTableList) ;
+      }
+
+      return @sqlTableList ;
+    end
+
+    ##----------------------------------------
+    ## find dataType from name
+
+    def findDataType(typename)
+      barename = typename.sub(/^.*:/,'') ;
+      barename = typename if(barename.nil?) ;
+
+      r = @dataType[barename] ;
+      if(r.nil?) then
+	r = builtInType(barename)
+	raise("Unknown datatype:" + typename) if(r.nil?) ;
+      end
+      
+      return r ;
+    end
+      
+    ##----------------------------------------
+    ## describe
+
+    def describe(strm = $stdout)
+      strm << "<<<<<<<<<<<Elements>>>>>>>>>>>>" << "\n" ;
+      @elementList.each{|elm|
+	strm << "\t" << elm.name << " : " << elm.dataType.name << "\n"
+      }
+
+      strm << "-" * 20 << "\n" ;
+      strm << "<<<<<<<<<<<DataTypes>>>>>>>>>>>" << "\n" ;
+      @dataTypeList.each{|type|
+	type.describe(strm) ;
+      }
+
+      strm << "-" * 50 << "\n" ;
+    end
+
+  end
+
+  ##------------------------------------------------------------
+  ## class methods for Xsd2Sql
+
+  class << Xsd2Sql
+
+    ##----------------------------------------
+    ## read schema from file
+    def scanFile(filename)
+      return Xsd2Sql::new(File::new(filename)) ;
+    end
+
+    ##----------------------------------------
+    ## read schema from string
+    def scanString(xmlString)
+      return Xsd2Sql::new(xmlString) ;
+    end
+    
+    ##----------------------------------------
+    ## read schema from XML Schema
+    def scanXML(xml)
+      return Xsd2Sql::new(xml) ;
+    end
+
+    ##----------------------------------------
+    ## define built-in type
+    def defineBuiltInType(name,sqlName,optarg = [])
+      ty = XsdDataType.defineBuiltInType(name,sqlName,optarg) ;
+      Xsd2Sql::BuiltInTypes[name] = ty ;
+    end
+
+  end
+
+  Xsd2Sql::defineBuiltInType("integer",		"int") ;
+  Xsd2Sql::defineBuiltInType("float",  		"double") ;
+  Xsd2Sql::defineBuiltInType("string",		"blob") ;
+  Xsd2Sql::defineBuiltInType("unsignedByte",	"int unsigned") ;
+  Xsd2Sql::defineBuiltInType("unsignedLong",	"int unsigned") ;
+  Xsd2Sql::defineBuiltInType("unsignedInt",	"int unsigned") ;
+
+  Xsd2Sql::defineBuiltInType("SqlTinyBlob",	"tinyblob") ;
+  Xsd2Sql::defineBuiltInType("SqlBlob",		"blob") ;
+  Xsd2Sql::defineBuiltInType("SqlMediumBlob",	"mediumblob") ;
+  Xsd2Sql::defineBuiltInType("SqlLongBlob",	"longblob") ;
+
+  Xsd2Sql::defineBuiltInType("AbstractFeatureType", nil) ;
+  Xsd2Sql::defineBuiltInType("AbstractFeatureCollectionType", nil) ;
+  
+  Xsd2Sql::defineBuiltInType("geometryPropertyType", "geometry",
+			     [ ItkSqlColumnDef::F_NotNull,
+			       ItkSqlColumnDef::F_Index]) ;
+
+##//////////////////////////////////////////////////////////////////////
+end
+
+##======================================================================
+## main
+
+xsd = OpenGIS::Xsd2Sql::new($stdin) ;
+xsd.scanSchema() ;
+xsd.describe() ;
+
+tables = xsd.defineSqlTables() ;
+tables.each{|tab|
+  p(tab.name + ":" + tab.strDeclareCol) ;
+}

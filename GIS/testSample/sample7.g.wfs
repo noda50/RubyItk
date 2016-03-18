@@ -1,0 +1,39 @@
+<GetFeature>
+  <Query typeName="Building">
+    <Filter>
+<!--
+      <BBox>
+        <PropertyName>gml:geometryProperty</PropertyName>
+        <gml:Box>
+          <gml:coordinates>-12200.0,-55100.0 -12000.0,-55000.0</gml:coordinates>
+        </gml:Box>
+      </BBox>
+-->
+      <BBox>
+        <PropertyName>gml:geometryProperty</PropertyName>
+        <gml:Box>
+          <gml:coordinates>-122000.0,-551000.0 -0.0,-00.0</gml:coordinates>
+        </gml:Box>
+      </BBox>
+<!--
+      <And>
+        <BBox>
+          <PropertyName>gml:geometryProperty</PropertyName>
+          <gml:Box>
+            <gml:coordinates>-12200.0,-55100.0 -12000.0,-55000.0</gml:coordinates>
+          </gml:Box>
+        </BBox>
+        <Not>
+	  <PropertyIsGreaterThanOrEqualTo>
+            <PropertyName>nFloors</PropertyName>
+            <Add>
+              <Literal>2</Literal>
+              <PropertyName>damage/grade</PropertyName>
+            </Add>
+          </PropertyIsGreaterThanOrEqualTo>
+        </Not>
+      </And>
+-->
+    </Filter>
+  </Query>
+</GetFeature>

@@ -1,0 +1,2 @@
+
+require 'bin/post-clean'

@@ -1,0 +1,34 @@
+<gml:_FeatureCollection:>
+  <road>
+    <name>国道1号</name>
+    <linkList>
+      <link>
+        <linkID>1-1</linkID>
+        <geometry>
+          <gml:LinerSequence>
+	    x0,y0 x1,y1 x2,y2 x3,y3 ...
+          </gml:LinerSequence>
+        </geometry>
+        <width>6.0</width>
+      </link>
+      <link>
+        <linkID>1-2</linkID>
+        <geometry>
+          <gml:LinerSequence>
+	    x10,y10 x11,y11 x12,y12 x13,y13 ...
+          </gml:LinerSequence>
+        </geometry>
+        <width>6.0</width>
+      </link>
+      <link>
+        <linkID>1-3</linkID>
+        ...
+      </link>
+      <link>
+        <linkID>1-4</linkID>
+        ...
+      </link>
+      ...
+    </linkList>
+  </road>
+</gml:_FeatureCollection:>

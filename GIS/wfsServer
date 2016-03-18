@@ -1,0 +1,72 @@
+#! /usr/bin/ruby
+## -*- Mode: ruby -*-
+
+$LOAD_PATH.push("/usr/local/lib/ruby/site_ruby/1.8") ;
+
+require 'WfsProcessor' ;
+require 'socket' ;
+
+##======================================================================
+##======================================================================
+##======================================================================
+
+##----------------------------------------------------------------------
+##----------------------------------------------------------------------
+## help
+
+def help(strm = $stderr)
+  strm << "Usage: #{$0} [-sqlHost sqlHost] [-port localPort] [-test]\n" ;
+end
+
+##----------------------------------------------------------------------
+## options
+
+$sqlHost = 'localhost' ;
+$port = 5050 ;
+$testP = false ;
+
+while(ARGV.size > 0)
+  case (ARGV[0])
+  when '-sqlHost' ; $sqlHost = ARGV[1] ; shift ;
+  when '-port' ; $port = ARGV[1] ; shift ;
+  when '-test' ; $testP = true ;
+  else
+    help() ;
+    exit(1) ;
+  end
+end
+
+$logstrm = $stdout ;
+
+##----------------------------------------------------------------------
+## logging
+
+def logging(mode, message="")
+  $logstrm << "[" << Time::now().to_s << "] ";
+  $logstrm << mode << ": " ;
+  $logstrm << message << "\n" ;
+end
+
+##======================================================================
+##======================================================================
+## main
+
+$socket = TCPServer.open($port) ;
+
+logging("Open", "socket at: %s." % $socket.addr.join(":")) ;
+
+while(true)
+  sock = $socket.accept() ;
+
+  Thread.start do
+    s = sock ;
+    connectID = s.peeraddr[2].to_s + ":" + s.peeraddr[1].to_s ;
+    logging("Accept","socket from: %s." % connectID) ;
+    processor = WfsProcessor::new() ;
+    processor.wfsServer(s) ;
+    s.close() ;
+    logging("Close","socket from: %s." % connectID) ;
+  end
+
+end
+

@@ -1,0 +1,94 @@
+%%  -*- Mode: Memo -*-
+
+%%----------------------------------------------------------------------
+[.] 必要なモジュール
+
+[..] Ruby ver 1.6
+
+	1.6.7 以降推奨
+
+[..] REXML
+
+	http://www.germane-software.com/~ser/software/rexml/
+
+[..] Uconv module
+
+	http://www.yoshidam.net/Ruby_ja.html#uconv
+
+%%----------------------------------------------------------------------
+[.] 注意
+
+[..] 必要に応じて、最初の行の
+
+	#! /usr/local/bin/ruby 
+
+      のパスを直してください。
+
+[..] 使用しているXML パーザは厳格に文法をチェックするので、end tag を
+     忘れないように。
+
+     また、単独で現れるタグ (<br> や <hr> など) にも end tag が必要です。
+     end tag がうっとおしい場合は、 <br/> や <hr/> という記法も使えます。
+
+%%----------------------------------------------------------------------
+[.] 主な機能
+
+[..] ファイルのインクルード
+
+	<Include file="filename"/>
+
+      Include タグの場所に、filename の内容を挿入します。
+      内容は、itml に従って解釈されます。
+
+[..] タグの定義
+
+     (例)
+
+	<DefNode tag="foo" bar1="default1" bar2="default2">
+	  <table width="&_bar1;" _restargs_="*">
+	    <tr>
+	     <td bgcolor="&_bar2;">
+		<InsertBody/>
+	     </td>
+	    </tr>
+	  </table>
+	</DefNode>
+
+   これにより、foo というノードが定義できます。これを使って、
+
+	<foo bar2="white" rule="1">
+	  This is a test.
+	</foo>
+
+    とすると、
+
+	<table width="default1" rule="1">
+	 <tr>
+	  <td bgcolor="white">
+	   This is a test.
+	  </td>
+	 </tr>
+	<table>
+
+    に展開されます。
+
+    DefNode の中では、<InsertBody/> という特殊なタグが使えます。
+    展開の際に、<foo> と </foo> で挟まれたものがここに挿入されます。
+
+    DefNode の attribute list のうち、tag は、定義するタグの名前を指定
+    します。それ以外のタグは新しいタグ独自の attribute として定義され、
+    展開の際には、 &_attrname; という部分を、指定された値に置き換えま
+    す。また、DefNode 中に指定した値は、default 値として扱われます。
+
+    また、展開するテンプレートのなかの attribute list に、_
+     restargs_="*" という記述がありますが、ここには、DefNode の 
+     attribute list の中に現れなかったものをまとめてここに入れます。
+
+[..] 置き換えの定義
+
+	<DefSubst foo1="foovalue1" foo2="foovalue2"/>
+
+    attribute list に現れる &_XXXX; という形式の文字列の置き換えを定義
+    します。上の例では、"&_foo1;" を "foovalue1" に、"&_foo2;" を 
+    "foovalue2" に置き換えます。
+

@@ -1,0 +1,56 @@
+#! /usr/bin/ruby
+## -*- Mode: ruby -*-
+
+$LOAD_PATH.push("/usr/local/lib/ruby/site_ruby/1.8") ;
+
+require 'WfsProcessor' ;
+require 'socket' ;
+
+##======================================================================
+##======================================================================
+##======================================================================
+
+##----------------------------------------------------------------------
+##----------------------------------------------------------------------
+## help
+
+def help(strm = $stderr)
+  strm << "Usage: #{$0} [-host host] [-port port] [-test]\n" ;
+end
+
+##----------------------------------------------------------------------
+## options
+
+$host = 'localhost' ;
+$port = 5050 ;
+$testP = false ;
+
+while(ARGV.size > 0)
+  case (ARGV[0])
+  when '-host' ; $host = ARGV[1] ; shift ;
+  when '-port' ; $port = ARGV[1] ; shift ;
+  when '-test' ; $testP = true ;
+  else
+    help() ;
+    exit(1) ;
+  end
+end
+
+##======================================================================
+##======================================================================
+## main
+
+$socket = TCPSocket.open($host,$port) ;
+
+Thread.start do
+  while(istr = $stdin.gets())
+    $socket.write(istr) ;
+    $socket.flush() ;
+  end
+#  $socket.shutdown(1) ; # to close output stream in socket
+end
+
+while(ostr = $socket.gets())
+  $stdout.write(ostr) ;
+end
+

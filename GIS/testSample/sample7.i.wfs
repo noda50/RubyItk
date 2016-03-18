@@ -1,0 +1,95 @@
+<Transaction>
+  <Insert>
+
+  <Building>
+   <gml:geometryProperty>
+    <gml:Polygon>
+     <gml:outerBoundaryIs>
+      <gml:LinearRing>
+       <gml:coordinates>-13022.000000,-52682.000000 -13025.000000,-52680.000000 -13018.000000,-52671.000000 -13015.000000,-52673.000000 -13017.000000,-52676.000000 -13017.000000,-52676.000000 -13022.000000,-52682.000000</gml:coordinates>
+      </gml:LinearRing>
+     </gml:outerBoundaryIs>
+    </gml:Polygon>
+   </gml:geometryProperty>
+   <id>18</id>
+   <representativePoint>
+    <gml:Point>
+     <gml:coordinates>-13019.400000,-52677.100000</gml:coordinates>
+    </gml:Point>
+   </representativePoint>
+   <structureType>0</structureType>
+   <usageType>0</usageType>
+   <nFloors>2</nFloors>
+   <year>-1</year>
+   <area>0.000000</area>
+   <cirLength>0.000000</cirLength>
+   <meshId>0</meshId>
+   <damage>
+    <grade>0</grade>
+    <prob>0.000000</prob>
+    <direction>0</direction>
+   </damage>
+  </Building>
+
+  <Building>
+   <gml:geometryProperty>
+    <gml:Polygon>
+     <gml:outerBoundaryIs>
+      <gml:LinearRing>
+       <gml:coordinates>-13000.000000,-52589.000000 -13001.000000,-52589.000000 -13000.000000,-52589.000000 -13000.000000,-52589.000000</gml:coordinates>
+      </gml:LinearRing>
+     </gml:outerBoundaryIs>
+    </gml:Polygon>
+   </gml:geometryProperty>
+   <id>22</id>
+   <representativePoint>
+    <gml:Point>
+     <gml:coordinates>-13000.500000,-52589.000000</gml:coordinates>
+    </gml:Point>
+   </representativePoint>
+   <structureType>0</structureType>
+   <usageType>0</usageType>
+   <nFloors>1</nFloors>
+   <year>-1</year>
+   <area>0.000000</area>
+   <cirLength>0.000000</cirLength>
+   <meshId>0</meshId>
+   <damage>
+    <grade>0</grade>
+    <prob>0.000000</prob>
+    <direction>0</direction>
+   </damage>
+  </Building>
+
+  <Building>
+   <gml:geometryProperty>
+    <gml:Polygon>
+     <gml:outerBoundaryIs>
+      <gml:LinearRing>
+       <gml:coordinates>-13000.000000,-51780.600000 -13002.000000,-51779.000000 -13000.000000,-51776.200000 -13000.000000,-51780.600000</gml:coordinates>
+      </gml:LinearRing>
+     </gml:outerBoundaryIs>
+    </gml:Polygon>
+   </gml:geometryProperty>
+   <id>23</id>
+   <representativePoint>
+    <gml:Point>
+     <gml:coordinates>-13000.700000,-51778.600000</gml:coordinates>
+    </gml:Point>
+   </representativePoint>
+   <structureType>0</structureType>
+   <usageType>0</usageType>
+   <nFloors>2</nFloors>
+   <year>-1</year>
+   <area>0.000000</area>
+   <cirLength>0.000000</cirLength>
+   <meshId>0</meshId>
+   <damage>
+    <grade>0</grade>
+    <prob>0.000000</prob>
+    <direction>0</direction>
+   </damage>
+  </Building>
+
+  </Insert>
+</Transaction>

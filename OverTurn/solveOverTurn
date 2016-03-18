@@ -1,0 +1,542 @@
+#! /usr/local/bin/ruby
+## -*- Mode: Ruby -*-
+##Header:
+##File: solveOverTurn
+##Author: NODA, Itsuki
+##Date: 2000/10/28
+##EndHeader:
+
+##Memo:
+##  This is the first Ruby Program.
+##EndMemo:
+
+
+##======================================================================
+## utilities
+##----------------------------------------------------------------------
+
+##--------------------------------------------------
+## abstract value
+
+def abs (v) 
+  if(v < 0) then 
+    return -v ;
+  else 
+    return v ;
+  end 
+end
+
+##--------------------------------------------------
+## sign of the number
+
+def sign(v) 
+  if(v > 0) then
+    return +1 ;
+  elsif (v < 0)
+    return -1 ;
+  else
+    return 0 ;
+  end
+end
+
+##======================================================================
+## class Pos
+##----------------------------------------------------------------------
+
+class Pos
+
+  ##--------------------------------------------------
+  ## attributes
+
+  attr(:x,true) ;
+  attr(:y,true) ;
+
+  ##--------------------------------------------------
+  ## init
+  def initialize(x,y)
+    @x = x ; @y = y ;
+  end
+
+  ##--------------------------------------------------
+  ## output
+
+  def to_s
+    sprintf("#Pos[%d,%d]",@x,@y) ;
+  end
+
+end
+
+##======================================================================
+## class Table
+##----------------------------------------------------------------------
+
+class Table
+
+  ##--------------------------------------------------
+  ## constants
+
+  MaxX = 3 ;
+  MaxY = 3 ;
+
+  ##--------------------------------------------------
+  ## attributes
+
+  attr(:tab) ;
+
+  ##--------------------------------------------------
+  ## init
+  def initialize(itab = nil)
+    if(itab) 
+      @tab = itab ;
+    else
+      @tab = [[ 0, 0, 0, 0],
+  	      [ 0, 0, 0, 0],
+              [ 0, 0, 0, 0],
+              [ 0, 0, 0, 0]] ;
+    end
+    return self
+  end
+
+  ##--------------------------------------------------
+  ## access
+
+  def [](x)
+    return @tab[x] ;
+  end
+
+  def val(x,y) 
+    return @tab[x][y] ;
+  end
+
+  def pval(pos)
+    return @tab[pos.x][pos.y] ;
+  end
+
+  ##--------------------------------------------------
+  ## set
+
+  def set(x,y,val)
+    @tab[x][y] = val ;
+  end
+
+  def pset(pos,val) ;
+    setxy(pos.x,pos.y,val) ;
+  end
+
+  def setBlack(x,y) 
+    set(x,y,+1) ;
+  end
+
+  def setWhite(x,y) 
+    set(x,y,-1) ;
+  end
+
+  def unset(x,y) 
+    set(x,y,0) ;
+  end
+
+  ##--------------------------------------------------
+  ## flip
+
+  def flip(x,y)
+    set(x,y,-self.val(x,y)) ;
+  end
+
+  ##--------------------------------------------------
+  ## check cell
+
+  def isEmpty(x,y)
+    return val(x,y) == 0 ;
+  end
+
+  def isOccupy(x,y)
+    if(isEmpty(x,y))
+      return false ;
+    else
+      return val(x,y) ;
+    end
+  end
+
+  ##--------------------------------------------------
+  ## check whole table is the same
+
+  def isSame(tab)
+    for x in 0..MaxX
+      for y in 0..MaxY
+        return(false) if (self.val(x,y) != tab.val(x,y)) ;
+      end
+    end
+    return true ;
+  end
+
+  ##--------------------------------------------------
+  ## check whole table is the same in all symmetry
+
+  def checkSymmetryX (tab)
+    for x in 0..MaxX
+      for y in 0..MaxY
+        return false if (tab.val(x,y) !=  self.val(3-x,y)) ;
+      end
+    end
+    return true ;
+  end
+
+  def checkSymmetryY (tab)
+    for x in 0..MaxX
+      for y in 0..MaxY
+        return false if (tab.val(x,y) !=  self.val(x,3-y)) ;
+      end
+    end
+    return true ;
+  end
+
+  def checkSymmetryXY(tab)
+    for x in 0..MaxX
+      for y in 0..MaxY
+        return false if (tab.val(x,y) !=  self.val(3-x,3-y)) ;
+      end
+    end
+    return true ;
+  end
+
+  def checkSymmetryZ(tab)
+    for x in 0..MaxX
+      for y in 0..MaxY
+        return false if (tab.val(x,y) !=  self.val(y,x)) ;
+      end
+    end
+    return true ;
+  end
+
+  def checkSymmetryZX(tab)
+    for x in 0..MaxX
+      for y in 0..MaxY
+        return false if (tab.val(x,y) !=  self.val(y,3-x)) ;
+      end
+    end
+    return true ;
+  end
+
+  def checkSymmetryZY(tab)
+    for x in 0..MaxX
+      for y in 0..MaxY
+        return false if (tab.val(x,y) !=  self.val(3-y,x)) ;
+      end
+    end
+    return true ;
+  end
+
+  def checkSymmetryZXY(tab)
+    for x in 0..MaxX
+      for y in 0..MaxY
+        return false if (tab.val(x,y) !=  self.val(3-y,3-x)) ;
+      end
+    end
+    return true ;
+  end
+
+  def isSymmetry(tab)
+    return self.isSame(tab) ||
+	   self.checkSymmetryX(tab)   ||
+	   self.checkSymmetryY(tab)   ||
+	   self.checkSymmetryXY(tab)  ||
+	   self.checkSymmetryZ(tab)   ||
+	   self.checkSymmetryZX(tab)  ||
+	   self.checkSymmetryZY(tab)  ||
+	   self.checkSymmetryZXY(tab) ;
+  end
+
+  ##--------------------------------------------------
+  ## check all stone is white
+
+  def isAllWhite ()
+    for x in 0..MaxX
+      for y in 0..MaxY
+        v = self.val(x,y) ;
+        if(v == 1) 
+          return false ;
+        end
+      end
+    end
+    return true ;
+  end
+
+  ##--------------------------------------------------
+  ## make a copy of a table
+
+  def copy ()
+    t = @tab.clone ;
+    for x in 0..MaxX
+      t[x] = t[x].clone ;
+    end
+    return Table.new(t) ;
+  end
+
+  ##--------------------------------------------------
+  ## check a jump
+
+  def isLegalJump(from,to) 
+    dx = to.x - from.x ; dy = to.y - from.y ;
+
+    if (isEmpty(from.x,from.y) || isOccupy(to.x,to.y) ||
+        (dx != 0 && dy != 0 && abs(dx) != abs(dy)) || 
+        (dx == 0 && dy == 0))
+      return false ;
+    end
+
+    ddx = sign(dx) ; ddy = sign(dy) ;
+    x = from.x ; y = from.y ;
+    l = 0 ;
+    loop do
+      x += ddx ; y += ddy ; 
+      break if (x == to.x && y == to.y) ;
+      return(false) if (isEmpty(x,y)) 
+      l += 1 ;
+      if(l > 10) 
+        printf("\nsomething wrong!!\n") ;
+      end
+    end
+    if(l > 0) 
+      return true ;
+    else
+      return false ;
+    end
+  end 
+
+  ##--------------------------------------------------
+  ## listup legal jump from a certain starting point
+
+  def listLegalJumpFrom(from)
+    l = [] ;
+    for x in 0 .. MaxX
+      for y in 0 .. MaxY
+        to = Pos.new(x,y) ;
+        if(isLegalJump(from,to))
+          l.push(to) ;
+        end
+      end
+    end
+    l
+  end
+
+  ##--------------------------------------------------
+  ## make a new state by a jump
+
+  def makeJump(from,to)
+    tab = self.copy() ;
+    ddx = sign(to.x - from.x) ;
+    ddy = sign(to.y - from.y) ;
+    x = from.x + ddx ; y = from.y + ddy;
+    until (x == to.x && y == to.y) do
+      tab.flip(x,y) ;
+      x += ddx ; y += ddy ;
+    end
+    tab.set(to.x,to.y,tab.val(from.x,from.y)) ;
+    tab.unset(from.x,from.y) ;
+    return tab ;
+  end
+
+  ##--------------------------------------------------
+  ## check the state is in the list
+
+  def isInList(tablist)
+    for tab in tablist
+       return(true) if self.isSame(tab) ;
+    end
+    return false ;
+  end
+
+  ##--------------------------------------------------
+  ## list up possible legal moves from a staring point
+
+  def listLegalMoveFrom(from,history=[])
+    newhist = history.clone ;
+    newhist.push(self) ;
+    tolist = self.listLegalJumpFrom(from) ;
+    result = [newhist] ;
+    for to in tolist
+      newtab = makeJump(from,to) ;
+      if(!newtab.isInList(newhist))
+        result += newtab.listLegalMoveFrom(to,newhist) ;
+      end
+    end
+    return result
+  end
+
+  ##--------------------------------------------------
+  ## list up all possible legal moves
+
+  def listLegalMoveAll()
+    result = [] ;
+    for x in 0..MaxX
+      for y in 0..MaxY
+        from = Pos.new(x,y) ;
+        r = self.listLegalMoveFrom(from) ;
+        r.shift ;
+        result += r ;
+      end
+    end
+    return result ;
+  end
+
+  ##--------------------------------------------------
+  ## show a state 
+
+  def show()
+    for l in @tab
+      print "\n" ;
+      for c in l
+        if (c > 0) 
+          print "¡ü" ;
+        elsif(c < 0)
+          print "¡û" ;
+	else
+          print "¡¦" ;
+        end
+      end
+    end
+    print "\n" ;
+  end
+
+  ##--------------------------------------------------
+  ## output
+
+  def to_s
+    str = "#Table[" ;
+    i = 0
+    for l in @tab
+      if(i != 0) 
+        str += "," ;
+      end
+      str += "[" ;
+      for e in l 
+        if(e == 0)
+          str += "." ;
+	elsif(e > 0)
+          str += "+" ;
+        else
+          str += "-" ;
+        end
+      end
+      str += "]" ;
+    end
+    str += "]" ;
+    return str 
+  end
+end
+
+##======================================================================
+## class OpenMove
+##----------------------------------------------------------------------
+
+class OpenMove
+  attr(:final,true) ;
+  attr(:history,true) ;
+
+  def initialize(move) 
+    @final = move.last ;
+    @history = move ;
+  end
+end
+
+##======================================================================
+## reduceList
+##----------------------------------------------------------------------
+
+def reduceList(movelist)
+  openlist = [] ;
+  for move in movelist
+    newp = true ;
+    for oldmove in openlist
+      if(move.last.isSymmetry(oldmove.final))
+        newp = false ;
+        if(oldmove.history.length > move.length)
+          oldmove.history = move ;
+        end
+        break ;
+      end
+    end
+    if(newp) 
+      openlist.push(OpenMove.new(move)) ;
+    end
+  end
+  r = [] ;
+  for mv in openlist
+    r.push(mv.history) ;
+  end
+  return r ;
+end
+
+##======================================================================
+## solve
+##----------------------------------------------------------------------
+
+def solve (state)
+
+  firstMoveList = reduceList(state.listLegalMoveAll()) ;
+
+  c = 0 ;
+
+  for firstMove in firstMoveList
+    newstate = firstMove.last ;
+    secondMoveList = reduceList(newstate.listLegalMoveAll()) ;
+    for secondMove in secondMoveList
+      laststate = secondMove.last ;
+      if(laststate.isAllWhite()) 
+        c += 1 ;
+        printf("--------- ans %d --------------\n",c) ;
+        state.show() ;
+        printf("---------\n") ;
+        for st in firstMove
+          st.show() ;
+        end
+        printf("---------\n") ;
+        for st in secondMove
+          st.show() ;
+        end
+      end
+    end
+  end
+end
+
+######################################################################
+##======================================================================
+## main
+##----------------------------------------------------------------------
+
+$q = [] ;
+
+$q[0] = Table.new([[ 0, 0, 0, 0],
+                   [ 0, 0, 0, 0],
+                   [ 0, 1, 0, 0],
+                   [ 0, 1, 0, 0]]) ;
+
+$q[1] = Table.new([[ 0, 0, 0, 0],
+                   [ 0, 0, 0, 0],
+                   [ 1, 1, 0, 0],
+                   [ 1, 1, 0, 0]]) ;
+
+$q[2] = Table.new([[ 0, 1, 0, 0],
+                   [ 0, 1, 1, 0],
+                   [ 0, 0, 1, 1],
+                   [ 0, 0, 0, 0]]) ;
+
+$q[3] = Table.new([[ 0, 0, 0, 0],
+                   [ 0, 0, 1, 1],
+                   [ 1, 0, 1, 1],
+                   [ 0, 0, 0, 0]]) ;
+
+
+$q[26] = Table.new([[ 0, 0, 1, 0],
+                    [ 1, 1, 0, 1],
+                    [ 1, 1, 0, 1],
+                    [ 0, 0, 1, 0]]) ;
+
+$q[27] = Table.new([[ 0, 1, 1, 0],
+                    [ 1, 1, 0, 1],
+                    [ 1, 0, 1, 1],
+                    [ 0, 1, 1, 0]]) ;
+
+solve($q[2]) ;
+
+

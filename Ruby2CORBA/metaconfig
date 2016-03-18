@@ -1,0 +1,19 @@
+
+add_bool_config 'without-tao', false, 'do not configure/build/clean the ACE+TAO libraries'
+
+add_path_config 'aceroot', ENV['ACE_ROOT'] || '', 'the path to the root directory of ACE'
+
+add_path_config 'taoroot', ENV['TAO_ROOT'] || '', 'the path to the root directory of TAO'
+
+add_path_config 'mpcroot', ENV['MPC_ROOT'] || '', 'the path to the root directory of MPC'
+
+add_path_config 'aceinstdir', (RUBY_PLATFORM =~ /win32/ ? '$prefix/bin' : '$prefix/lib'), 'the directory where the ACE+TAO dlls are installed'
+
+add_bool_config 'with-ipv6', false, 'build ACE+TAO libraries with IPv6 support enabled'
+
+add_bool_config 'with-ssl', false, 'build ACE+TAO libraries with SSL support enabled'
+
+add_path_config 'sslroot', (RUBY_PLATFORM =~ /win32/ ? (ENV['SSL_ROOT'] || '') : '/usr'), 'the root path where SSL includes and libraries can be found'
+
+add_bool_config 'without-threads', false, 'build ACE+TAO libraries without threading support'
+

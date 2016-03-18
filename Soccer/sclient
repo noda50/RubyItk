@@ -1,0 +1,331 @@
+#!/usr/local/bin/ruby
+## -*- Mode: Ruby -*-
+##Header:
+##EndHeader:
+
+
+##======================================================================
+## require
+##----------------------------------------------------------------------
+
+$LOAD_PATH.push("../lib") ;
+
+require "MutexCondVar" ;
+require "socket" ;
+require "sexp" ;
+
+##======================================================================
+## Server Info
+##----------------------------------------------------------------------
+
+$host = "localhost" ;
+$port = 6000 ;
+$bufsize = 4096 ;
+
+$protoVersion = 5.0 ;
+
+$teamname = "orochi" ; 
+=begin
+  "tengu"
+  "yamamba"
+  "oni"
+  "yukinba"
+  "namahage"
+  "kamaitachi"
+  "kodama"
+  "satori"
+  "yamabiko"
+=end
+
+# $logLevel = 0 ;		# no log
+# $logLevel = 1 ; 	# log normal
+# $logLevel = 2 ; 	# log detailed
+$logLevel = 10000 ; 	# log everything
+
+LogLevel_Init = 1 ;
+LogLevel_Sensing = 10 ;
+LogLevel_Command = 10 ;
+
+##======================================================================
+## class Player
+##----------------------------------------------------------------------
+
+class Player
+
+  ##--------------------------------------------------
+  ## class attribute
+
+
+  ##--------------------------------------------------
+  ## attribute
+
+  attr :socket 		,true ;
+
+  attr :shost           ,true ;
+  attr :sport           ,true ;
+  attr :teamname        ,true ;
+
+  attr :cvSensor	,true ;
+  attr :cvMotor		,true ;
+
+  attr :initTime	,true ;
+
+  ##--------------------------------------------------
+  ## initialize
+
+  def initialize()
+    @cvSensor = MutexCondVar.new() ;
+    @cvMotor = MutexCondVar.new() ;
+  end
+
+  ##============================================================
+  ## my initialize
+
+  ##--------------------------------------------------
+  ## my initialize
+
+  def myInit()
+    @shost = $host ;
+    @sport = $port ;
+    @teamname = $teamname ;
+
+    @socket = UDPSocket::new() ;
+    @socket.bind("localhost",0) ;
+    logging(LogLevel_Init,
+	    'Socket', ("UDP:%s:%d:" % [@socket.addr[2], @socket.addr[1]])) ;
+    
+#    @socket.connect(@shost,@sport) ; # if specified, then the socket refuse 
+                                      # message from other port.
+
+    @socket.send("(init %s (version %f))" % [@teamname, $protoVersion],
+		 0, @shost, @sport) ;
+     (initmsg, fromaddr) = @socket.recvfrom($bufsize) ;
+    adjustFromAddress(fromaddr) ;
+
+    logging(LogLevel_Init,
+	    'Recv', {
+	      'message' => initmsg, 
+	      'from' => ("%s:%d" % [@shost,@sport]) } ) ;
+
+    @initTime = Time::now() ;
+
+  end
+
+  ##--------------------------------------------------
+  ## connect
+
+  def open() 
+    @socket = UDPSocket.new() ;
+    @socket.connect($host,$port) ;
+  end
+
+  def adjustFromAddress(fromaddr)
+    @shost = fromaddr[2] ;
+    @sport = fromaddr[1] ;
+  end
+
+  ##============================================================
+  ## Sensor
+
+  ##--------------------------------------------------
+  ## start sensor thread
+
+  def startSensor()
+    Thread.start { loopSensor() ; } ;
+  end
+
+  ##--------------------------------------------------
+  ## receive sensor info
+
+  def loopSensor()
+    while (true) do
+      (sensorinfo, fromaddr) = @socket.recvfrom($bufsize) ;
+      adjustFromAddress(fromaddr) ;
+      scanSensorInfo(sensorinfo) ;
+      @cvSensor.lockedSignal() ; 
+    end
+  end
+
+  ##--------------------------------------------------
+  ## check sensor type (tentative) 
+
+  def scanSensorTypeShort(info)
+    if    (/\(see / =~ info) then
+      return 's' ;
+    elsif (/\(hear / =~ info) then
+      return 'h' ;
+    elsif (/\(sense_body / =~ info) then
+      return 'b' ;
+    else
+      return '?' ;
+    end
+  end
+
+  def scanSensorTypeLong(info)
+    if    (/\(see / =~ info) then
+      return 'see' ;
+    elsif (/\(hear / =~ info) then
+      return 'hear' ;
+    elsif (/\(sense_body / =~ info) then
+      return 'sense_body' ;
+    else
+      return 'unknown' ;
+    end
+  end
+
+  ##--------------------------------------------------
+  ## scan sensor info
+
+  def scanSensorInfo(info) 
+    # type = scanSensorTypeShort(info) ;
+    sexp = Sexp::scanString(info) ;
+    type = sexp.car() ;
+    logging(LogLevel_Sensing,
+	    'sensing',{'type' => type}, true) ;
+    case(type)
+
+    when 'see'
+      analyzeSeeInfo(sexp) ;
+    when 'hear'
+      analyzeHearInfo(sexp) ;
+    when 'sense_body'
+      analyzeBodyInfo(sexp) ;
+    else
+      logging(0,
+	      'warning', ['unknown_message',sexp], true) ;
+    end
+  end
+
+  ##============================================================
+  ## Analyze
+
+  def analyzSeeInfo()
+  end
+
+  def analyzHearInfo()
+  end
+
+  def analyzBodyInfo()
+  end
+
+  ##============================================================
+  ## Motor
+
+  ##--------------------------------------------------
+  ## send command
+
+  def sendCommand(comstr)
+    @socket.send(comstr,0,@shost,@sport) ;
+    @cvMotor.lockedSignal() ; 
+    logging(LogLevel_Command,
+	    'command',comstr, true) ;
+  end
+
+  ##============================================================
+  ## Sensor
+
+  ##--------------------------------------------------
+  ## send move command
+
+  def comMove(x,y)
+    sendCommand("(move %f %f)" % [x,y]) ;
+  end
+
+  ##--------------------------------------------------
+  ## send turn command
+
+  def comTurn(pow) 
+    sendCommand("(turn %f)" % [pow]) ;
+  end
+
+  ##--------------------------------------------------
+  ## send dash command
+
+  def comDash(pow) 
+    sendCommand("(dash %f)" % [pow]) ;
+  end
+
+  ##--------------------------------------------------
+  ## send kick command
+
+  def comKick(pow,dir) 
+    sendCommand("(kick %f %f)" % [pow,dir]) ;
+  end
+
+  ##============================================================
+  ## Logging
+
+  def logging(level, tag, message, withTimestamp = false, strm = $stdout)
+
+    return if(level >= $logLevel) ;
+
+    strm << "(" << tag.to_s ;
+
+    strm << (" (time %12.6f)" % 
+	     [(Time::now - @initTime).to_f]) if withTimestamp ;
+
+    loggingBody(message, strm, false) ;
+
+    strm << ")" << "\n" ;
+  end
+
+  def loggingBody(message, strm = $stdout, withParenForArrray = true) 
+    if(message.is_a?(Array)) then
+      message.each{|mesg|
+	strm << "(" if(withParenForArray) ;
+	loggingBody(mesg, strm) ;
+	strm << ")" if(withParenForArray) ;
+      }
+    elsif(message.is_a?(Hash)) then
+      message.each{|key,value|
+	strm << " (" << key.to_s ;
+	loggingBody(value, strm) ;
+	strm << ")" ;
+      }
+    else
+      strm << " " << message ;
+    end
+  end
+
+end
+
+
+
+##======================================================================
+## test
+##----------------------------------------------------------------------
+
+$p = Player.new() ;
+$p.myInit() ;
+$p.startSensor() ;
+
+$p.comMove(0,0) ;
+
+while true do 
+  $p.comTurn(5) ;
+  sleep(0.1) ;
+end
+
+
+
+##
+=begin
+$p.socket = UDPSocket.new();
+$p.socket.bind("localhost",0) ;
+$p.socket.send("(init aho)",0,$host,$port) ;
+($rbuf,$addr) = $p.socket.recvfrom(4096) ;
+print $addr[1] ;
+print $rbuf ;
+print "\n" ;
+=end
+
+
+
+
+
+
+
+
+
+
+

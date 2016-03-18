@@ -1,0 +1,24 @@
+//
+// $Id: Test.idl 33 2007-06-24 17:36:10Z martin $
+//
+
+/// Put the interfaces in a module, to avoid global namespace pollution
+module Test
+{
+  typedef sequence<long>  TLongSeq;
+
+  /// A very simple interface
+  interface Hello
+  {
+    /// Return a simple string
+    string echo (in string txt);
+
+    TLongSeq echo_seq (in TLongSeq lseq);
+
+    /// A method to shutdown the ORB
+    /**
+     * This method is used to simplify the test shutdown process
+     */
+    oneway void shutdown ();
+  };
+};

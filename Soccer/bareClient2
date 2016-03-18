@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+## -*- Mode: Ruby -*-
+
+$LOAD_PATH.push("/usr/users/noda/work/ruby/Soccer") ;
+
+require "socket" ;
+require "MutexCondVar" ;
+require "lib/sexp" ;
+
+# server and protocol information
+$host = "localhost" ;
+$port = 6000 ;
+#$protoVersion = 5.0 ;
+$protoVersion = 9.0 ;
+$bufsize = 4096 ;
+
+# teamname
+$teamname = "bare" ; 
+
+# open socket
+$socket = UDPSocket::new() ;
+$socket.bind($host,0) ;
+
+# send init command
+$socket.send("(init %s (version %f))" % [$teamname, $protoVersion],
+	     0, $host, $port) ;
+
+# receive init response
+(initmsg, fromaddr) = $socket.recvfrom($bufsize) ;
+$stdout << initmsg << "\n" ;
+
+# adjust server port
+$port = fromaddr[1] ;
+
+# loop for receiving sensor info
+$mtxCvBody = MutexCondVar::new() ;
+Thread.start {
+  while(true) do
+    (sensorinfo, fromaddr) = $socket.recvfrom($bufsize) ;
+#    $stdout << sensorinfo << "\n" ;
+    sexp = Sexp::scanString(sensorinfo) ;
+    if(sexp.car().eqValue?('sense_body')) then
+      p([:signal,Time::now().to_f]) ;
+      $mtxCvBody.lockedSignal() ;
+    end
+  end
+}
+
+# loop for sending commands
+while(true) do
+  p([:wait,Time::now().to_f]) ;
+  $mtxCvBody.lockedWait() ;
+  p([:sleep,Time::now().to_f]) ;
+  sleep(0.05) ;
+  p([:awake,Time::now().to_f]) ;
+  com = "(turn 10)" ;
+  $socket.send(com, 0, $host, $port) ;
+end
+
+
+

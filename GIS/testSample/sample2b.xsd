@@ -1,0 +1,167 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      Schema for RoboCup Soccer Simulator Game files.
+      Copyright 2003 The RoboCup Soccer Simulator Maintenance
+      Committee. All rights reserved.
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:element name="ServerParam" type="ParamListType"/>
+  <xsd:element name="PlayerParam" type="ParamListType"/>
+  <xsd:element name="PlayerType" type="PTType" maxOccurs="unbounded"/>
+
+  <xsd:element name="MsgInfo" type="MIType"/>
+  <xsd:element name="PlayMode" type="xsd:string"/>
+  <xsd:element name="Team" type="TType"/>
+  <xsd:element name="ShowInfo" type="SIType"/>      
+
+  <xsd:complexType name="ParamListType">
+    <xsd:sequence>
+      <xsd:element name="Param" type="ParamType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="PTType">
+    <xsd:sequence>
+      <xsd:element name="Param" type="ParamType" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="xsd:byte"/>
+  </xsd:complexType>
+
+<!--
+  <xsd:complexType name="ParamType">
+    <xsd:attribute name="name" type="xsd:string"/>
+  </xsd:complexType>
+-->
+  <xsd:complexType name="ParamType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="board" type="xsd:unsignedByte"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+    <xsd:attribute name="name" type="xsd:string"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="MIType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="board" type="xsd:unsignedByte"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="TType">
+    <xsd:sequence>
+      <xsd:element name="Name" type="xsd:string"/>
+      <xsd:element name="Score" type="xsd:unsignedInt"
+        minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="side" type="SideType"/>
+  </xsd:complexType>
+
+  <xsd:simpleType name="SideType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="l"/>
+      <xsd:enumeration value="r"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="SIType">
+    <xsd:sequence>
+      <xsd:element name="Ball" type="BallType"/>
+      <xsd:element name="Player" type="PlayerType"
+        minOccurs="22" maxOccurs="22"/>
+    </xsd:sequence>
+    <xsd:attribute name="time" type="xsd:unsignedLong"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="BallType">
+    <xsd:sequence>
+      <xsd:group ref="PosGrp"/>
+      <xsd:group ref="VelGrp"
+        minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:group name="PosGrp">
+    <xsd:sequence>
+      <xsd:element name="X" type="xsd:float"/>
+      <xsd:element name="Y" type="xsd:float"/>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="VelGrp">
+    <xsd:sequence>
+      <xsd:element name="VelX" type="xsd:float"/>
+      <xsd:element name="VelY" type="xsd:float"/>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:complexType name="PlayerType">
+    <xsd:sequence>
+      <xsd:group ref="PosGrp"/> 
+      <xsd:group ref="PlayerSubType"/>
+    </xsd:sequence>
+    <xsd:attribute name="side" type="SideType"/>
+    <xsd:attribute name="unum" type="UnumType"/>
+    <xsd:attribute name="type" type="xsd:unsignedInt"/>
+    <xsd:attribute name="mode" type="xsd:unsignedInt"/>
+  </xsd:complexType>
+
+  <xsd:group name="PlayerSubType">
+    <xsd:choice>
+      <xsd:element name="BodyAng" type="xsd:float"/>
+      <xsd:group ref="PlayerDataGrp"/>
+    </xsd:choice> 
+  </xsd:group>
+
+
+  <xsd:group name="PlayerDataGrp">
+    <xsd:sequence>
+      <xsd:group ref="VelGrp"/>
+      <xsd:element name="BodyAng" type="xsd:float"/>
+      <xsd:element name="HeadAng" type="xsd:float"/>
+      <xsd:element name="ViewWidth" type="xsd:float"/>
+      <xsd:element name="ViewQual" type="ViewQualType"/>
+      <xsd:element name="Stamina" type="xsd:float"/>
+      <xsd:element name="Effort" type="xsd:float"/>
+      <xsd:element name="Recovery" type="xsd:float"/>
+      <xsd:element name="Count" type="CountType"/>
+    </xsd:sequence>
+  </xsd:group>
+
+
+
+<xsd:simpleType name="UnumType">
+  <xsd:restriction base="xsd:unsignedByte">
+    <xsd:minInclusive value="0"/>
+    <xsd:maxInclusive value="11"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+
+  <xsd:simpleType name="ViewQualType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="low"/>
+      <xsd:enumeration value="high"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="CountType">
+    <xsd:sequence>
+      <xsd:element name="Kick" type="xsd:unsignedLong"/>     
+      <xsd:element name="Turn" type="xsd:unsignedLong"/>     
+      <xsd:element name="Dash" type="xsd:unsignedLong"/>     
+      <xsd:element name="Say" type="xsd:unsignedLong"/>     
+      <xsd:element name="TurnNeck" type="xsd:unsignedLong"/>     
+      <xsd:element name="Catch" type="xsd:unsignedLong"/>     
+      <xsd:element name="Move" type="xsd:unsignedLong"/>     
+      <xsd:element name="ChgView" type="xsd:unsignedLong"/>     
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

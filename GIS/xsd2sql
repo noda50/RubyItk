@@ -1,0 +1,68 @@
+#! /usr/bin/ruby
+## -*- Mode: ruby -*-
+
+$LOAD_PATH.push("/usr/local/lib/ruby/site_ruby/1.8") ;
+
+require 'WfsProcessor' ;
+
+##======================================================================
+##======================================================================
+##======================================================================
+
+##----------------------------------------------------------------------
+##----------------------------------------------------------------------
+def help(strm = $stderr)
+  strm << "Usage: #{$0} [<options>] <mode> [<args> *]" << "\n" ;
+
+  strm << "\t" << "<options> :\n" ;
+  strm << "\t\t" << "-test : run in test mode (do no actual operation).\n" ;
+  strm << "\t\t" << "-schema <schemafile> : use <schemafile> instead in DB.\n";
+  strm << "\t\t" << "-help : show this message.\n";
+
+  strm << "\t" << "<mode> :\n" ;
+  strm << "\t\t" << "setupDB : setup GIS Database. \n" ;
+  strm << "\t\t" << "clearDB : clear GIS Database. \n" ;
+  strm << "\t\t" << "register <schemafile> : register schema to DB. \n" ;
+  strm << "\t\t" << "describe <schemafile> : describe schema. (for test)\n" ;
+  strm << "\t\t" << "showSkelton <featureName>: show skelton of the feature.\n";
+  strm << "\t\t" << "createTable <featureName> : create table for the feature.\n" ;
+  strm << "\t\t" << "dropTable <featureName> : drop table for the feature." << "\n" ;
+  strm << "\t\t" << "insert1 <dataFile>* : insert one data." << "\n" ;
+  strm << "\t\t" << "insertN <dataFile>* : insert multi data." << "\n" ;
+
+end
+
+##----------------------------------------------------------------------
+##----------------------------------------------------------------------
+
+$testP = false ;
+
+if(ARGV[0] == "-test")
+  $testP = true ;
+  ARGV.shift ;
+end
+
+$mode = ARGV[0] ; 
+ARGV.shift ; 
+
+##======================================================================
+##======================================================================
+## main
+
+processor = WfsProcessor::new() ;
+
+case $mode
+when "setupDB"		; processor.setupDB() ;
+when "clearDB"		; processor.clearDB() ;
+when "register"		; processor.register(ARGV) ;
+when "checkSchemaFile"	; processor.checkSchemaFile(ARGV) ;
+when "showSkelton"	; processor.showSkelton(ARGV) ;
+when "createTable"	; processor.createTable(ARGV);
+when "dropTable"	; processor.dropTable(ARGV) ;
+when "insert1"		; processor.insert1(ARGV) ;
+when "insertN"		; processor.insertN(ARGV) ;
+when "wfsQuery"		; processor.wfsQuery(ARGV) ;
+when "wfsCount"		; processor.wfsQuery(ARGV,true) ;
+when "help"		; help() ;
+else			; help() ;
+end

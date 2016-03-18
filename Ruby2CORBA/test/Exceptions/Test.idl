@@ -1,0 +1,30 @@
+//
+// $Id: Test.idl 40 2007-06-25 18:33:55Z martin $
+//
+
+/// Put the interfaces in a module, to avoid global namespace pollution
+module Test
+{
+  exception ExOne
+  {
+    string why;
+    long code;
+  };
+
+  exception ExBoo
+  {
+  };
+
+  /// A very simple interface
+  interface Hello
+  {
+    /// Raises exceptions
+    void test_exception () raises (ExOne);
+
+    /// A method to shutdown the ORB
+    /**
+     * This method is used to simplify the test shutdown process
+     */
+    oneway void shutdown ();
+  };
+};

@@ -1,0 +1,47 @@
+
+Current version: 0.9.4
+
+Changes since version 0.9.3:
+
+o   Improved test framework. Failing tests now correctly detected and reported.
+
+o   Fixed 'long' value conversion bug thanks to Ragnar Dahlen
+
+o   Added export macros to support GCC with visibility enabled
+
+Changes since version 0.9.2:
+
+o   added prebuilt packaging
+
+o   use $TAO_ROOT instead of $ACE_ROOT/TAO; TAO_ROOT must now be set when
+    building R2CORBA with a custom ACE/TAO location
+
+o   added rpm packaging support script
+
+Changes since version 0.9.1:
+
+o  fixed several install issues
+
+o  fixed Windows build problem (spaces in path)
+
+Changes since version 0.8.2:
+
+o   added support for the IORTable pseudo object;
+    (see new regression test under test/IORTable)
+
+o   integrated Ruby signal handling/trapping with TAO so that
+    when running the ORB's reactor signals will be caught and
+    Ruby defined handlers called;
+    (see new NamingService example under example/ins)
+
+o   various IDL compiler improvements with, among others, much better
+    processing of preprocessor directives thanks to Renato Lucindo and
+    Eider Oliveira;
+    (see extended test/IDL_Test)
+
+o   added new Collocation regression test to verify bugfixes for this
+    functionality in TAO >= 1.6.3;
+
+o   several bugfixes and smaller enhancements thanks to (among others)
+    Leo Seib and Harald Lange.
+

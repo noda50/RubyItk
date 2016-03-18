@@ -1,0 +1,644 @@
+#! /usr/bin/ruby -d
+## -*- Mode: Ruby -*-
+
+##--------------------------------------------------
+## Usage:
+=begin
+	% itml2html [infile [outfile]]
+=end
+
+##----------------------------------------------------------------------
+## Memo
+=begin
+
+= itml (Improvised Text Markup Language)
+Privately Extended HTML.
+
+== Inclusion
+Include another file.
+
+: Format
+    <Include file="subfile.itml">
+
+== Define & Recall
+Define a new node format and recall the format later.
+
+=== Define
+
+: Format
+    <DefNode tag="foo" baz1="default1" baz2="default2">
+      <bar bar_arg1="&_baz1;" _restargs_="*">
+      <bar2 bar_arg2="&_baz2;"/>
+        <InsertBody/>
+      </bar>
+    </DefNode>
+
+: Description
+  Define a new node whose name is specifiled by "tag" attribute.
+  Other attributes are stored to the local database.
+
+  In the body of the definition, 
+  <InsertBody/> is replaced by the body part of the node
+  at the recalled point.
+  A string "&_NAME;" occer in attribute value is replaced by
+  a stored attribute value in DefNode tag.
+    
+  '_restargs_="*"' is replaced to the args of the node at the recalled point.
+
+=== Recall
+
+: Format
+    <foo baz1="hoge" extraarg1="goo" extraarg2="gol">
+      Here you are.
+    </foo>
+
+: Output
+    <bar bar_arg1="hoge" extraarg1="goo" extraarg2="gol">
+      <bar2 bar_arg2="default2"/>
+      Here you are.
+    </bar>
+
+: Description
+  The defined node can be recalled as above.
+
+== Subst
+
+=== Define
+
+: Format
+
+    <DefSubst soccer="football"/>
+
+: Recall
+
+    <sports name="&_soccer;"> </sports>
+
+: Output
+
+    <sports name="football"> </sports>
+
+: Description
+
+  Define a attribute substitution.
+
+=== Recall as Text
+
+: Format
+
+    <DoSubst label="soccer"/>
+
+: Output
+
+    soccer
+
+: Description
+
+  recall defined subst as a text entry.
+
+=end
+
+##----------------------------------------------------------------------
+## includes
+
+require "tempfile" ;
+
+require "uconv" ;
+#require "rexml_EUC/document" ;
+require "rexml/document" ;
+include REXML ;
+
+##----------------------------------------------------------------------
+## params
+
+$removeCommentsp = true ;
+#$removeCommentsp = false ;
+
+
+##----------------------------------------------------------------------
+## constants
+
+##----------------------------------------
+## tag names for special nodes of ITML
+
+Tag_Define = "DefNode" ;
+Tag_DefSubst = "DefSubst" ;
+Tag_Body = "InsertBody" ;
+Tag_Include = "Include" ;
+Tag_DoSubst = "DoSubst" ;
+
+Tag_Undefined = "UNDEFINED" ;	# used to enclose multiple nodes
+Tag_Dummy = Tag_Undefined ;	# same as undefined
+
+##----------------------------------------
+## dummy node strings
+
+DummyNodeStrBegin = "<" + Tag_Dummy + ">" ;
+DummyNodeStrEnd = "</" + Tag_Dummy + ">" ;
+
+##----------------------------------------
+## special attribute names
+
+Attr_Tag = "tag" ;		# used in <DefNode>
+Attr_File = "file" ;		# used in <Include>
+Attr_Label = "label" ;		# used in <DoSubst>
+Attr_Rest = "_restargs_" ;	# used in realizing Defined Nodes
+Attr_Pointer = "_pointer_" ;	# internal use in <InsertBody>
+
+ArgFormat = Regexp::new("\&\_([a-zA-Z0-9_]*)\;") ;	# substText pattern
+
+SubstTableName = "ITML_BaseNode" ;	# system researved subst table
+
+##----------------------------------------------------------------------
+## cheking
+
+##------------------------------
+## check <DefNode>
+
+def isDefine?(node) 
+  return node.name == Tag_Define ;
+end
+
+##------------------------------
+## check <DefSubst>
+
+def isDefSubst?(node) 
+  return node.name == Tag_DefSubst ;
+end
+
+##------------------------------
+## check <DoSubst>
+
+def isDoSubst?(node) 
+  return node.name == Tag_DoSubst ;
+end
+
+##------------------------------
+## check <InsertBody>
+
+def isInsertBody?(node)
+  return node.name == Tag_Body ;
+end
+
+##------------------------------
+## check defined nodes
+
+def isDefinedNode?(node)
+  return $defTable.key?(node.name) ;
+end
+
+##------------------------------
+## check <Include>
+
+def isInclude?(node) 
+  return node.name == Tag_Include ;
+end
+
+##------------------------------
+## check dummy (undefined) nodes
+
+def isDummyNode?(node) 
+  return node.name == Tag_Dummy ;
+end
+
+##----------------------------------------------------------------------
+## define operation
+
+##------------------------------
+## put defined node to the def table
+
+def putDefine(defnode)
+  tagname = defnode.attributes[Attr_Tag] ;
+  
+  if(!tagname) then
+    $stderr << "Warning: no tagname in :" << "\n" << defnode << "\n" ;
+    return FALSE
+  end
+  
+  $defTable[tagname] = defnode ;
+  return TRUE ;
+end
+
+##------------------------------
+## get definition of a defined node from the def table
+
+def getDefine(node)
+  return $defTable[node.name] ;
+end
+
+##------------------------------
+## put subst entry to the subst table
+
+def putDefSubst(defnode)
+  defnode.attributes.each {|name,attr|
+    $substTable.add_attribute(name,attr.value) ;
+  }
+end
+
+##----------------------------------------------------------------------
+## insert operation
+
+##------------------------------
+## assign insert body pointer in body stack
+
+def assignInsertBodyPointer(node,bodyStack) 
+
+  pointer = bodyStack.length - 1 ;
+
+  if(node.kind_of?(Element)) then
+    if(isInsertBody?(node)) then
+      node.add_attribute(Attr_Pointer,pointer.to_s) ;
+    end
+    
+    node.each{|e|
+      assignInsertBodyPointer(e,bodyStack) ;
+    }
+  end
+
+end
+
+##------------------------------
+## doInsertBody
+
+def doInsertBody(node,result,bodyStack)
+  
+  pointer = node.attributes[Attr_Pointer].to_i ;
+
+  body = bodyStack[pointer] ;
+
+  body.each { |child|
+    translate(child,result,bodyStack) ;
+  }
+end
+
+##------------------------------
+## callDefinedNode (eval-argument-first version)
+
+def callDefinedNode(node,result,bodyStack)
+
+  definition = cloneAll(getDefine(node)) ;
+  bodyStack.push(node) ;
+  assignInsertBodyPointer(definition,bodyStack) ;
+
+  definition.each { |child|
+    translate(child,result,bodyStack) ;
+  }
+
+  bodyStack.pop() ;
+end
+
+##----------------------------------------------------------------------
+## substitution operation 
+
+##------------------------------
+## subst text
+
+def substText(text,bodyStack)
+  if(text.kind_of?(Text)) 
+    rawtext = text.string ;
+  elsif(text.kind_of?(Attribute))
+    rawtext = text.value ;
+  elsif(text.kind_of?(String))
+    rawtext = text ;
+  else
+    return ;
+  end
+
+  result = rawtext.clone() ;
+
+  result.gsub!(ArgFormat) {|dat| 
+    getSubstText($1,bodyStack,dat) ;
+  }
+
+  return result ;
+end
+
+def getSubstText(key,bodyStack,defaultValue)
+  bodyStack.reverse_each { |body|
+    substtab1 = body.attributes ;
+    substtab2 = getDefine(body).attributes ;
+    r = substtab1[key] || substtab2[key] ;
+    return r if(r) ;
+  }
+  return defaultValue ;
+end
+
+##------------------------------
+## subst rest attributes
+
+def substRestAttr(node,newnode,orgattr,bodyStack)
+  body = bodyStack.last ;
+
+  if(body) then
+    defattrs = getDefine(body).attributes ;
+    body.attributes.each{|name,attr|
+      if(!defattrs.key?(name)) then
+	newnode.add_attribute(name,attr.value) ;
+      end
+    }
+  end
+end
+
+##------------------------------
+## insertSubstText
+
+def doDoSubst(node,result,bodyStack)
+  label = node.attributes[Attr_Label] ;
+  subst = getSubstText(label,bodyStack,"")
+  
+  newnode = Text.new(subst) ;
+
+  result.add(newnode) ;
+end
+
+##----------------------------------------------------------------------
+## include
+
+def doInclude(node,result,bodyStack)
+  orgfilename = node.attributes[Attr_File] ;
+  filename = substText(orgfilename,bodyStack) ;
+  if(!filename) then
+    $stderr << "Warning: no filename in :" << "\n" << node << "\n" ;
+    return node ;
+  end
+
+  input = readAllAsUTF8(File.new(filename)) ;
+  input = DummyNodeStrBegin + input + DummyNodeStrEnd + "\n" ;
+
+  doc = Document.new(input) ;
+
+  translate(doc,result,bodyStack) ;
+end
+
+##----------------------------------------------------------------------
+## utility
+
+##------------------------------
+## clone node deeply
+
+def cloneAll(node)
+  newnode = node.clone() ;
+  if(node.kind_of?(Element)) then
+    node.each { |e|
+      newnode.add(cloneAll(e)) ;
+    }
+    node.attributes.each {|key,attr|
+      newnode.add_attribute(key,attr.value) ;
+    }
+  end
+  return newnode ;
+end
+
+##--------------------------------
+## readAllAsUTF8(strm)
+
+def readAllAsUTF8(strm)
+  input = "" ;
+  while(strm.gets())
+    input.concat(Uconv.euctou8($_)) ;
+  end
+  return input ;
+end
+
+##----------------------------------------------------------------------
+## translate
+
+##------------------------------
+## eval top
+
+def convert(doc)
+  result = Element.new(Tag_Dummy) ;
+
+  translate(doc,result,$defaultBodyStack) ;
+
+  return result ;
+end
+
+##------------------------------
+## translate body
+
+def translate(node, result, 
+	 bodyStack = $defaultBodyStack)
+
+#  $stderr << "IN:" ; showInSexp(node) ;
+#  $stderr << "OT:" ; showInSexp(result) ;
+
+  if(node.kind_of?(Element)) then
+
+    if(isDefine?(node)) then
+      putDefine(node) ;
+
+    elsif(isDefSubst?(node)) then
+      putDefSubst(node) ;
+
+    elsif(isDoSubst?(node)) then
+      doDoSubst(node,result,bodyStack) ;
+
+    elsif(isInsertBody?(node)) then
+      doInsertBody(node,result,bodyStack) ;
+
+    elsif(isInclude?(node)) then
+      doInclude(node,result,bodyStack) ;
+
+    elsif (isDefinedNode?(node)) then
+      callDefinedNode(node,result,bodyStack) ;
+
+    elsif (isDummyNode?(node)) then
+      node.each { |child|
+	translate(child,result,bodyStack) ;
+      }
+
+    else
+      newnode = node.clone() ;
+      node.attributes.each { |name,attr|
+	translateAttribute(node,newnode,name,attr,bodyStack) ;
+      }
+      node.each { |child|
+	translate(child,newnode,bodyStack) ;
+      }
+      result.add(newnode) ;
+    end
+#  elsif(node.kind_of?(Comment)) 
+#    newcomment = Comment.new(node.to_s) ;
+#    result.add(newcomment) ;
+  else  # Text
+    newtext = node.clone() ;
+    result.add(newtext) ;
+  end
+  return result ;
+end
+
+##------------------------------
+## translate attribute
+
+def translateAttribute(node,newnode,name,attr,bodyStack)
+  if(name == Attr_Rest) then
+    substRestAttr(node,newnode,attr,bodyStack) ;
+  else
+    newval = substText(attr.value,bodyStack) ;
+    newnode.add_attribute(name,newval) ;
+  end
+end
+
+##----------------------------------------------------------------------
+## scan
+
+def scanFile(filename)
+  document = Document.new(File.new(filename)) ;
+  document = convert(document) ;
+  return document ;
+end
+
+##----------------------------------------------------------------------
+## showInSexp
+
+##----------------------------------------
+## showInSexp top
+
+def showInSexp(node,strm=$stderr,indent=0)
+  showInSexpBody(node,strm,indent) ;
+  strm << "\n" ;
+end
+
+##----------------------------------------
+## showInSexp body
+
+def showInSexpBody(node,strm=$stderr,indent=0)
+  if(node.kind_of?(Element)) then
+    strm << "(" ; 
+
+    strm << "(" << Uconv.u8toeuc(node.name.to_s) ;
+    node.attributes.each {|label,value|
+#      strm << " (" << Uconv.u8toeuc(label.to_s) << " " ;
+#      strm << Uconv.u8toeuc(value.to_s) << ")" ;
+      strm << " " << Uconv.u8toeuc(value.to_s) ;
+    }
+    strm << ")" ;
+      
+#    node.elements.each { |child|
+    node.each { |child|
+      strm << "\n" ;
+      (0...indent+1).each { strm << " " ; } ;
+      showInSexpBody(child,strm,indent+1) ;
+    }
+
+    strm << ")" ;
+  elsif(node.kind_of?(Comment)) then
+    strm << '"<!--' << Uconv.u8toeuc(node.to_s).gsub("\n","\\n") << '-->"';
+  else
+    strm << '"' << Uconv.u8toeuc(node.to_s).gsub("\n","\\n") << '"';
+  end
+end
+    
+#======================================================================
+# MAIN
+
+##----------------------------------------------------------------------
+## global variables
+
+$substTable = Element::new(SubstTableName) ;
+
+$defaultBodyStack = Array.new() ;
+$defaultBodyStack.push($substTable) ;
+
+$substTableDefNode = Element::new(Tag_Define) ;
+$substTableDefNode.add_attribute(Attr_Tag,SubstTableName) ;
+
+$defTable = Hash.new() ;
+putDefine($substTableDefNode);
+
+#--------------------------------------------------
+# getargs
+
+$istr = $stdin ;
+$ostr = $stdout ;
+
+if(ARGV.length > 0) then
+  $istr = File::new(ARGV[0]) ;
+  if(ARGV.length > 1) then
+    $ostr = File::new(ARGV[1],"w") ;
+  end
+end
+
+#--------------------------------------------------
+# main procedure
+
+$input = readAllAsUTF8($istr) ;
+
+$input = DummyNodeStrBegin + $input + DummyNodeStrEnd ;
+
+doc = Document.new($input) ;
+
+newdoc = convert(doc) ;
+
+$result = Uconv.u8toeuc(newdoc.to_s) ;
+$result.sub!(DummyNodeStrBegin,'') ;
+$result.sub!(DummyNodeStrEnd,'') ;
+
+#$result = "" ;
+#newdoc.each {|r|
+#  $result += Uconv.u8toeuc(r.to_s) ;
+#}
+
+## output heading strings
+$ostr << '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">' ;
+$ostr << "\n" ;
+$ostr << '<!-- This file is generated by ' << $0 << "." ;
+$ostr << " [" << Time.now << "] " << '-->' << "\n" ;
+
+## output result
+$ostr << $result << "\n" ;
+
+
+#======================================================================
+# Sample Data
+
+__END__
+
+<html>
+<head>
+<title> This is a pen. </title>
+
+<DefNode tag="foo" bar="baz">
+	<a x="y" z="&_bar;">
+	bar
+	<b _restargs_="*"/>
+	<InsertBody/>
+	</a>
+</DefNode>
+
+<DefSubst mainColor="black" subColor="white"/>
+
+
+</head>
+<body bgcolor="&_mainColor;" text="&_subColor;" link="red" vlink="blue">
+
+<Include file="bsub.html"/>
+
+aaa
+<table></table>
+
+<foo>kkk</foo>
+
+<table>
+ <tr>
+  <td>
+   a
+  </td>
+ </tr>
+ <tr> <td> 
+  b 
+  <table>
+   <tr><td>
+    c
+   </td></tr>
+  </table>
+ </td> </tr>
+</table>
+
+bbb
+
+<foo bar="barabara" who="you" sports="soccer"> </foo>
+<foo> </foo>
+
+</body>
+</html>

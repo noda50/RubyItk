@@ -1,0 +1,48 @@
+<html>
+<head>
+<title> This is a pen. </title>
+
+<DefNode tag="foo" bar="baz">
+	<a x="y" z="&_bar;">
+	bar
+	<b _restargs_="*"/>
+	<InsertBody/>
+	</a>
+</DefNode>
+
+<DefSubst mainColor="black" subColor="white"/>
+
+
+</head>
+<body bgcolor="&_mainColor;" text="&_subColor;" link="red" vlink="blue">
+
+<Include file="bsub.html"/>
+
+aaa
+<table></table>
+
+<foo>kkk</foo>
+
+<table>
+ <tr>
+  <td>
+   a
+  </td>
+ </tr>
+ <tr> <td> 
+  b 
+  <table>
+   <tr><td>
+    c
+   </td></tr>
+  </table>
+ </td> </tr>
+</table>
+
+bbb
+
+<foo bar="barabara" who="you" sports="soccer"> </foo>
+<foo> </foo>
+
+</body>
+</html>

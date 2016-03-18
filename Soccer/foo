@@ -1,0 +1,27 @@
+#!/usr/local/bin/ruby
+## -*- Mode: Ruby -*-
+##Header:
+##EndHeader:
+
+
+##======================================================================
+## require
+##----------------------------------------------------------------------
+
+require 'socket'
+
+$host = "localhost" ;
+$port = 7
+
+print "a\n" ;
+socket = UDPSocket.new();
+print "b\n" ;
+#socket.bind("localhost",0) ;
+print "c\n" ;
+#socket.connect("localhost",7) ;
+print "d\n" ;
+socket.send("(init aho)",0,$host,$port) ;
+($rbuf,$addr) = socket.recvfrom(4096) ;
+print $addr[1] ;
+print $rbuf ;
+print "\n" ;

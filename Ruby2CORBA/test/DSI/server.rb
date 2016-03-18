@@ -1,0 +1,84 @@
+
+require 'optparse'
+
+OPTIONS = {
+  :use_implement => false,
+  :orb_debuglevel => 0,
+  :iorfile => 'server.ior'
+}
+
+ARGV.options do |opts|
+    script_name = File.basename($0)
+    opts.banner = "Usage: ruby #{script_name} [options]"
+
+    opts.separator ""
+
+    opts.on("--o IORFILE",
+            "Set IOR filename.",
+            "Default: 'server.ior'") { |OPTIONS[:iorfile]| }
+    opts.on("--d LVL",
+            "Set ORBDebugLevel value.",
+            "Default: 0") { |OPTIONS[:orb_debuglevel]| }
+    opts.on("--use-implement",
+            "Load IDL through CORBA.implement() instead of precompiled code.",
+            "Default: off") { |OPTIONS[:use_implement]| }
+
+    opts.separator ""
+
+    opts.on("-h", "--help",
+            "Show this help message.") { puts opts; exit }
+
+    opts.parse!
+end
+
+require 'corba'
+require 'corba/poa'
+
+class MyHello < PortableServer::DynamicImplementation
+  def initialize(orb)
+    @orb = orb
+  end
+
+  OPTABLE = {
+    'echo' => {
+        :result_type => CORBA._tc_string,
+        :arg_list => [
+        ['message', CORBA::ARG_IN, CORBA._tc_string],
+        ['msglen', CORBA::ARG_OUT, CORBA._tc_long] ] }
+  }
+
+  def _primary_interface(oid, poa)
+    puts "Server: repo_id requested for OID: #{oid.inspect}"
+    'IDL:Test/Hello:1.0'
+  end
+
+  def echo(message)
+    [message.to_s, message.to_s.size]
+  end
+
+  def shutdown()
+    @orb.shutdown
+  end
+end #of servant MyHello
+
+orb = CORBA.ORB_init(["-ORBDebugLevel", OPTIONS[:orb_debuglevel]], 'myORB')
+
+obj = orb.resolve_initial_references('RootPOA')
+
+root_poa = PortableServer::POA._narrow(obj)
+
+poa_man = root_poa.the_POAManager
+
+poa_man.activate
+
+hello_srv = MyHello.new(orb)
+
+hello_obj = hello_srv._this()
+
+hello_ior = orb.object_to_string(hello_obj)
+
+open(OPTIONS[:iorfile], 'w') { |io|
+  io.write hello_ior
+}
+
+orb.run

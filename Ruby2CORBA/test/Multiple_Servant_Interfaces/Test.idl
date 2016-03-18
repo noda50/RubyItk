@@ -1,0 +1,27 @@
+//
+// $Id: Test.idl 30 2007-06-23 22:03:30Z martin $
+//
+
+/// Put the interfaces in a module, to avoid global namespace pollution
+module Test
+{
+  /// A very simple interface
+  interface Hello
+  {
+    /// Return a simple string
+    string get_string ();
+
+    /// A method to shutdown the ORB
+    /**
+     * This method is used to simplify the test shutdown process
+     */
+    oneway void shutdown ();
+  };
+
+  /// A very simple interface
+  interface Hello_2
+  {
+    /// Return a simple string
+    string get_string_2 ();
+  };
+};

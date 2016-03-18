@@ -1,0 +1,150 @@
+#! /usr/bin/ruby
+## -*- Mode: ruby -*-
+
+require 'mysql' ;
+
+$dbName = 'test' ;
+$tbName = 'foo' ;
+
+db = Mysql::new('localhost',nil,nil) ;
+
+dbList = db.list_dbs() ;
+p(dbList) ;
+
+db.select_db($dbName) ;
+
+tbList = db.list_tables() ;
+p(tbList) ;
+
+##======================================================================
+class Pos
+  attr :x, true ;
+  attr :y, true ;
+
+  def initialize(x = 0,y = 0)
+    set(x,y) ;
+  end
+
+  def set(x,y)
+    @x = x ;
+    @y = y ;
+  end
+
+  def to_WKT()
+    return "#{@x} #{@y}" ;
+  end
+end
+
+##======================================================================
+class Rectangle
+  attr :ne, true ;  # north-east corner
+  attr :sw, true ;  # south-west corner
+
+  def initialize(ne = Pos::new(), sw = Pos::new())
+    setByNESW(ne,sw) ;
+  end
+
+  def setByNESW(ne,sw)
+    @ne = ne ;
+    @sw = sw ;
+  end
+
+  def setByCenter(center,size)
+    @ne = Pos::new(center.x + size.x/2, center.y + size.y/2) ;
+    @sw = Pos::new(center.x - size.x/2, center.y - size.y/2) ;
+  end
+
+  def center()
+    return Pos::new((@ne.x + @sw.x)/2.0, (@ne.y + @sw.y)/2.0) ;
+  end
+
+  def size()
+    return Pos::new((@ne.x - @sw.x), (@ne.y - @sw.y)) ;
+  end
+
+  def nw()
+    return Pos::new(@ne.x,@sw.y) ;
+  end
+
+  def se()
+    return Pos::new(@sw.x,@ne.y) ;
+  end
+
+  def to_WKT()
+    return "POLYGON((#{@ne.to_WKT()},#{se().to_WKT()},#{@sw.to_WKT()},#{nw().to_WKT()},#{@ne.to_WKT()}))" ;
+
+  end
+
+  def to_SQL()
+    return "GeomFromText('#{to_WKT()}')";
+  end
+
+end
+
+##======================================================================
+class GeoRectObj
+  attr :name, true ;
+  attr :loc,  true ;
+  attr :id,   true ;
+
+  def initialize(name = "", loc = Rectangle::new)
+    set(name,loc) ;
+  end
+
+  def set(name,loc)
+    @name = name ;
+    @loc = loc ;
+  end
+
+  def colString()
+    return "(name,loc)" ;
+  end
+
+  def to_SQL()
+    return "('#{@name}',#{@loc.to_SQL()})" ;
+  end
+
+end
+##======================================================================
+
+def randValue(min,max)
+  range = max - min ;
+  return range * rand() + min ;
+end
+
+def randPos(min,max)
+  return Pos::new(randValue(min,max),randValue(min,max)) ;
+end
+
+$locMin = -100 ;
+$locMax =  100 ;
+$sizMin = 1 ;
+$sizMax = 10 ;
+
+if(TRUE) then
+  (0...10000).each{|i|
+    obj = GeoRectObj::new("bar") ;
+    obj.loc.setByCenter(randPos($locMin,$locMax),randPos($sizMin,$sizMax)) ;
+    str = "insert delayed into #{$tbName} #{obj.colString()} values #{obj.to_SQL()};";
+#    p(str) ;
+    db.query(str) ;
+  }
+end
+
+
+
+
+
+db.close ;
+
+
+######################################################################
+# mysql
+# mysql> use test
+# mysql> create table foo (id int auto_increment key, name varchar(128), loc geometry not null);
+# mysql> create spatial index loc_index on foo (loc);
+#
+# SET @g1 = GeomFromText('Polygon((-10 -10,-10 10,10 10,10 -10,-10 -10))');
+# select id,name,AsText(loc) from foo where MBRIntersects(loc,@g1);
+# select id,name,AsText(loc) from foo where MBRIntersects(loc,GeomFromText('Polygon((-10 -10,-10 10,10 10,10 -10,-10 -10))'));
+

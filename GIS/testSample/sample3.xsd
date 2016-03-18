@@ -1,0 +1,84 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	    xmlns:gml="http://www.opengis.net/gml">
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      Sample schema for DDT Geographical Information files.
+      Copyright 2004 NODA, Itsuki, AIST, Japan.
+      All rights reserved.
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:element name="road" type="RoadType" 
+	substitutionGroup="gml:_Feature" />
+
+  <xsd:complexType name="RoadType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+
+         <xsd:element name="name" 
+	              type="NameType"
+		      minOccurs="1" maxOccurs="1" nillable="true" />
+
+         <xsd:element name="linkList"
+		      type="RoadLinkListType"
+		      minOccurs="1" maxOccurs="1" nillable="true" />
+
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="RoadLinkListType">
+    <xsd:sequence>
+      <xsd:element name="link"
+	           type="RoadLinkType"
+     	            minOccurs="0" maxOccurs="unbounded" nillable="true" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RoadLinkType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+
+         <xsd:element name="linkID"
+	              type="IDType" 
+		      minOccurs="1" maxOccurs="1" nillable="true" />
+
+         <xsd:element name="geometry" 
+		      type="gml:geometryPropertyType"
+		      minOccurs="1" maxOccurs="1" nillable="true" />
+
+         <xsd:element name="width" 
+		      type="xsd:float"
+		      minOccurs="1" maxOccurs="1" nillable="true" />
+
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="NameType">
+    <xsd:simpleContent>
+      <xsd:restriction base="xsd:string">
+        <xsd:maxLength value="256" />
+      </xsd:restriction>
+    </xsd:simpleContent>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="IDType">
+    <xsd:simpleContent>
+      <xsd:restriction base="xsd:string">
+        <xsd:maxLength value="64" />
+      </xsd:restriction>
+    </xsd:simpleContent>
+  </xsd:simpleType>
+
+</xsd:schema>
+
+
+

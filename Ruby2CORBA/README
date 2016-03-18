@@ -1,0 +1,38 @@
+
+* What is Ruby2CORBA
+
+Ruby2CORBA (R2CORBA) is a CORBA mapping implementation for the Ruby
+programming language (see http://www.ruby-lang.org).
+Instead of going for a complete native Ruby mapping implementing a native
+Ruby ORB, R2CORBA aims at providing CORBA functionality through a Ruby
+extension written in Ruby & C++ using the DII and DSI interfaces of an
+existing C++ implementation of CORBA; TAO (The ACE ORB; see
+http://www.cs.wustl.edu/~schmidt/TAO.html).
+A native Ruby implementation of an OMG IDL compiler supplements this
+extension and provides powerful features like direct inclusion of IDL
+language modules into your Ruby programs without the need of precompiling.
+
+* How to get R2CORBA
+
+...
+
+* How to compile and install
+
+See the file INSTALL
+
+* Copying/License
+
+See the file LICENSE
+
+* Acknowledgments
+
+See the file THANKS
+
+* The author(s)
+
+R2CORBA has been created by staff of Remedy IT.
+(http://www.remedy.nl | http://www.theaceorb.nl)
+Feel free to send comments and bug reports to:
+
+   r2corba@remedy.nl
+

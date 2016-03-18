@@ -1,0 +1,365 @@
+%%  -*- Mode: Memo -*-
+
+= converter memo
+
+
+%%======================================================================
+== ToDo
+
+   * inline で記述された element の複合タイプの扱い
+
+   * xpath を決定する方法。(element の ref をなくするとできるか？)
+
+=== Done
+
+%%======================================================================
+%%======================================================================
+%%======================================================================
+= XML -> MySQL conversion rule
+
+%%----------------------------------------------------------------------
+== basic sample
+
+=== class definition
+
+   (Class は C++ style もどきで記述する。)
+
+    class Foo0 {
+          Foo1 bar00 ;
+          Foo2 bar01[?] ;
+          Foo3 bar02[*] ;
+          union { Foo4 ; Foo5 } bar03 ;
+          union { Foo4 ; Foo5 } bar04[*] ;
+    }
+
+    class Foo1 {
+          int  bar10 ;
+          int  bar11[?] ;
+          int  bar12[*] ;
+    }
+
+    class Foo2 {
+          int  bar20 ;
+          int  bar21[?] ;
+          Foo4 bar22[*] ;
+    }
+
+    class Foo3 {
+          int  bar30 ;
+          int  bar31[?] ;
+          int  bar32[*] ;
+    }
+
+    class Foo4 {
+          int  bar40 ;
+          int  bar41 ;
+          int  bar42 ;
+    }
+
+    class Foo5 {
+          int  bar50 ;
+          int  bar51 ;
+    }
+
+
+=== tables for data
+
+    create table Foo0 
+       (id               int unique,
+        bar00~Foo1~bar10 int,
+        bar00~Foo1~bar11 int,
+        bar01~Foo2~bar20 int,
+        bar01~Foo2~bar21 int,
+        bar03~_type_     char(256),
+        bar03~_tableID_  int) ;
+
+    create table Foo0~bar02~Foo3
+       (id              int unique,
+        pid             int,
+        prev            int,            # null means first item
+        next            int,            # null means last item
+        bar30           int,
+        bar31           int) ;
+
+    create table Foo0~bar02~Foo3~bar32~_
+       (id              int unique,
+        pid             int,
+        prev            int,            # null means first item
+        next            int,            # null means last item
+        _value_         int) ;
+
+    create table Foo0~bar00~Foo1~bar12~_
+       (id      int unique,
+        pid     int,
+        prev    int,            # null means first item
+        next    int,            # null means last item
+        _value_ int) ;
+
+    create table Foo0~bar01~Foo2~bar22~_Foo4
+       (id      int unique,
+        pid     int,
+        prev    int,            # null means first item
+        next    int,            # null means last item
+        bar40   int,
+        bar41   int,
+        bar42   int) ;
+
+    create table Foo0~bar03~Foo4
+       (id      int unique,
+        pid     int,
+        bar40   int,
+        bar41   int,
+        bar42   int) ;
+
+    create table Foo0~bar03~Foo5
+       (id      int unique,
+        pid     int,
+        bar50   int,
+        bar51   int) ;
+
+    create table Foo0~bar04
+       (id        int unique,
+        pid       int,
+        prev      int,          # null means first item
+        next      int,          # null means last item
+        _type_    char(256),
+        _tableID_ int) ;
+
+    create table Foo0~bar04~Foo4
+       (id      int unique,
+        pid     int,
+        bar40   int,
+        bar41   int,
+        bar42   int) ;
+
+    create table Foo0~bar04~Foo5
+       (id      int unique,
+        pid     int,
+        bar50   int,
+        bar51   int) ;
+
+
+=== tables for definition
+
+    create table _ClassDefinition_
+       (id              int unique,
+        name            char(256),
+        xsd             longtext,
+        desc            longtext) ;
+
+    create table _ClassAttrDefinition_
+       (id              int unique,
+        classID         int,
+        name            char(256),      
+        type            char(256),      # "*" means multi type
+        typeID          int,            # NULL means built-in type, 
+                                        # 0 means multi type
+        min             int,
+        max             int,            # 0 means "*"
+        multip,         bool,           # true if max > 1
+        desc            longtext) ;
+
+    create table _MultiTypeAttrDefinition_
+       (attrID          int,
+        type            char(256),
+        typeID          int);           # NULL means built-in type
+
+    create table _TableIndex_
+       (id              int unique,
+        pid             int,            # parent table. nil means top table
+        type            enum(MultiData,MultiType) # top is MultiType
+        fullname        longtext,
+        shortname       char(256)) ;
+
+    create table _AttributeIndex_
+       (id              int unique,
+        tableID         int,
+        fullname        longtext,
+        shortname       char(256)) ;
+
+
+%%----------------------------------------------------------------------
+== XML Query
+
+%%----------------------------------------------------------------------
+=== FLWR
+
+        {Query} ::= 
+          <FLWR>
+            <for varname="foo" dburi="URI_of_DB">{BareXPath}</for>
+            [ <let varname="bar">{Form}</let> ]
+            [ <where>{LogicForm}</where> ]
+            <return>{Form}</return>
+          </FLWR>
+
+        {Form} ::= {Text} 
+                 | {XPath}
+                 | <AnyTag/>
+                 | <AnyTag>{Form}</AnyTag>
+                 | <Quote>{Form}</Quote>
+                 | <Eval>{Form}</Eval>
+
+        {XPath} ::= <XPath varname="foo">{BareXPath}</XPath>
+
+        {BareXPath} ::= {AnyXPathString}
+
+        {LogicForm} ::= <true/>
+                      | <false/>
+                      | <and>{LogicForm}*</and>
+                      | <or>{LogicForm}*</or>
+                      | <not>{LogicForm}</not>
+                      | {StrCond}
+                      | {NumCond}
+                      | {GeoCond}
+
+        {StrCond} ::= <equal><x>{StrForm}</x><y>{StrForm}</y></equal>
+                    | <match><x>{StrForm}</x><y>{StrForm}</y></match>
+
+        {StrForm} ::= {Form}
+
+        {NumCond} ::= <equal><x>{NumForm}</x><y>{NumForm}</y></equal>
+                    | <greaterThan><x>{NumForm}</x><y>{NumForm}</y></greaterThan>
+                    | <greaterEqual><x>{NumForm}</x><y>{NumForm}</y></greaterEqual>
+                    | <lessThan><x>{NumForm}</x><y>{NumForm}</y></lessThan>
+                    | <lessEqual><x>{NumForm}</x><y>{NumForm}</y></lessEqual>
+
+        {NumForm} ::= {AnyNumberString}
+                    | {XPath}
+                    | <strLength>{StrForm}</strLength>
+
+        {GeoCond} ::= <MBRIntersect><x>{GeoForm}</x><y>{GeoForm}</y></MBRIntersect>
+                    | <MBRWithin><x>{GeoForm}</x><y>{GeoForm}</y></MBRWithin>
+                    | <MBRContains><x>{GeoForm}</x><y>{GeoForm}</y></MBRContains>
+                    | <MBR...><x>{GeoForm}</x><y>{GeoForm}</y></MBR...>
+
+        {GeoForm} ::= {AnyGmlGeometry}
+                    | {XPath}
+        
+        
+%%----------------------------------------------------------------------
+=== sample
+
+    * リンクの一部がある領域（Polygon）に引っ掛かっており、さらにある
+      リンクの幅が3.0以上であるような道路をピックアップ。
+
+      <FLWR>
+       <for varname="road" dburi="uri:ddt:road">/road</for>
+       <where>
+         <and>
+           <MBRIntersect>
+             <x>
+               <XPath varname="road">linkList/link[*]/geometry</XPath>
+             </x>
+             <y>
+               <gml:Polygon>
+                 <gml:outerBoundryIs>...</gml:outerBoundaryIs>
+               </gml:Polygon>
+             </y>
+           <MBRIntersect>
+           <greaterThan>
+             <x>
+               <XPath varname="road">linkList/link[*]/width</XPath>
+             </x>
+             <y>
+               3.0
+             </y>
+           </greaterThan>
+         </and>   
+       </where>
+       <return>
+         <XPath varname="road">/road</XPath>
+       </return>
+      <FLWR>
+
+    * リンクの一部がある領域（Polygon）に引っ掛かっており、かつ、
+      そのリンクの幅が3.0以上であるような道路をピックアップ。
+
+      <FLWR>
+       <for varname="road" dburi="uri:ddt:road">/road</for>
+       <let varname="link"><XPath varname="road">linkList/link[*]</XPath>
+       <where>
+         <and>
+           <MBRIntersect>
+             <x>
+               <XPath varname="link">geometry</XPath>
+             </x>
+             <y>
+               <gml:Polygon>
+                 <gml:outerBoundryIs>...</gml:outerBoundaryIs>
+               </gml:Polygon>
+             </y>
+           <MBRIntersect>
+           <greaterThan>
+             <x>
+               <XPath varname="link">width</XPath>
+             </x>
+             <y>
+               3.0
+             </y>
+           </greaterThan>
+         </and>   
+       </where>
+       <return>
+         <XPath varname="road">/road</XPath>
+       </return>
+      <FLWR>
+
+%%----------------------------------------------------------------------
+=== Qxmly
+
+  * 上記のは、リストとスカラが混在していて気色悪い。
+
+  * とりあえず、logical に設計してみる。
+
+        {Qxmly} ::= <Qxmly>{ListForm}</Qxmly>
+
+        {ListForm} ::= {XPath} | {DB} | {ScalarList} | {ForEach} 
+
+        {XPath} ::= <xpath varref="variable_name">{BareXPath}</xpath>
+
+        {DB} ::= <DataBase dburi="URI_of_DB" />
+
+        {ScalarList} ::= <list>{ScalarForm}* </list>
+
+        {ForEach} ::= 
+          <foreach varname="variable_name">
+            <in>{ListForm}</in>
+            {ScalarForm}
+          </foreach>
+
+        {ScalarForm} ::= {Text}
+                       | {LetForm}
+                       | {QueueForm}
+                       | {PickOne}
+                       | <AnyTag/>
+                       | <AnyTag>{ScalarForm}</AnyTag>
+                       | <Quote>{ScalarForm}</Quote>
+                       | <Eval>{ScalrForm}</Eval>
+
+        {LetForm} ::= 
+          <let>
+            [ <letvar varname="variable_name">{ScalarForm}</letvar> ]*
+            {ScalarForm}
+          </let>
+
+        {QueueForm} ::= {SimpleQueueForm} | {CondQueueForm} | {LetForm}
+
+        {SimpleQueueForm} ::= <queue><ScalarForm></queue>
+
+        {CondQueueForm} ::= 
+          <if>
+            <cond>{LogicalForm}</cond>
+            <then>{QueueForm}</then>
+            [ <else>{QueueForm}</else> ]
+          </if>
+
+        {PickOne} ::= {First} | {Nth} | {Last}
+
+        {First} ::= <first>{ListForm}</first>
+
+        {Nth} ::= <nth n="n">{ListForm}</first>
+
+        {Last} ::= <last>{ListForm}</last>
+
+
+

@@ -1,0 +1,178 @@
+#! /usr/bin/env ruby
+## -*- mode: ruby -*-
+## = sensor Monitor
+## Author:: Itsuki Noda
+## Version:: 0.0 2015/01/30 I.Noda
+##
+## === History
+## * [2015/01/30]: Create This File.
+## * [YYYY/MM/DD]: add more
+## == Usage
+## * ...
+
+$LOAD_PATH.push("~/lib/ruby");
+
+require 'optparse' ;
+require 'ostruct' ;
+require 'pp' ;
+
+#------------------------------------------------------------------------
+#++
+$conf =
+  OpenStruct.new({
+                   :foo => false,
+                   :bar => 1,
+                   :baz => "test",
+                 }) ;
+
+#------------------------------------------------------------------------
+#++
+$op = OptionParser.new() {|op|
+  op.banner = <<_END_
+  Usage: #{$0} [Options]*
+_END_
+
+  op.separator("Options:") ;
+  op.set_summary_indent("") ;
+  op.set_summary_width(60) ;
+  sep = "\n\t\t" ;
+
+  op.on("-f","--[no-]foo", sep + "switch foo.") {|foo|
+    $conf.foo = foo ;
+  }
+  op.on("-b","--bar BarVal", Integer, sep + "bar int value.") {|bar|
+    $conf.bar = bar ;
+  }
+  op.on("-z","--baz BazVal", String, sep + "baz str value.") {|baz|
+    $conf.baz = baz ;
+  }
+  op.on_tail("--help", sep + "show this message.") { |h|
+    puts(op)
+    exit(1)
+  }
+}
+
+$op.parse!(ARGV) ;
+$restArg = ARGV ;
+p [:rest, ARGV], [:conf,$conf] ; 
+
+#--======================================================================
+#++
+## lm sensor utility
+class LmSensor
+  #--============================================================
+  #++
+  ## Sensed Data class
+  class SensedData
+    #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    #++
+    ## datas
+    attr :count, true ;
+    attr :tempCore0, true ;
+    attr :tempCore2, true ;
+    attr :fan1, true ;
+    attr :temp1, true ;
+
+    #--::::::::::::::::::::::::::::::::::::::::
+    #++
+    ## Output Scan Pattern
+    TemperaturePattern = /\+([0-9\.]+)°C(.*)$/ ;
+
+    RpmPattern = /([0-9]+)\sRPM/ ;
+
+    #------------------------------------------
+    #++
+    ## scan command output
+    def scanOutput(strm, count = 0)
+      while(line = strm.gets())
+        if(line =~ /\:/) then
+          line.chomp!() ;
+          parts = line.split(':') ;
+          case(parts[0])
+          when("Core 0")
+            parts[1] =~ TemperaturePattern ;
+            @tempCore0 = $~[1].to_f ;
+          when("Core 2")
+            parts[1] =~ TemperaturePattern ;
+            @tempCore2 = $~[1].to_f ;
+          when("fan1")
+            parts[1] =~ RpmPattern ;
+            @fun1 = $~[1].to_i ;
+          when("temp1")
+            parts[1] =~ TemperaturePattern ;
+            @temp1 = $~[1].to_f ;
+          end
+        end
+      end
+      @count = count ;
+    end
+
+    #------------------------------------------
+    #++
+    ## scan command output
+    def to_a()
+      [@count, @tempCore0, @tempCore2, @temp1] ;
+    end
+
+  end ## class SensedData
+
+  #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  #++
+  ## command path
+  SensorCommand = "/usr/bin/sensors"
+
+
+  #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  #++
+  ## description of attribute baz.
+  attr :dataQueue, true ;
+
+  #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  #++
+  ## counter
+  attr :count, true ;
+
+  #--------------------------------------------------------------
+  #++
+  ## description of method initialize
+  ## _baz_:: about argument baz.
+  def initialize(conf)
+    @conf = conf ;
+    @count = 0 ;
+  end
+
+  #--------------------------------------------------------------
+  #++
+  ## description of method foo
+  ## _bar_:: about argument bar
+  ## *return*:: about return value
+  def cycle()
+    open("| #{SensorCommand}","r") {|comstrm|
+      data = SensedData.new() ;
+      data.scanOutput(comstrm, @count) ;
+      p data.to_a ;
+      @count += 1 ;
+    }
+  end
+
+  #--------------------------------------------------------------
+  #++
+  ## description of method foo
+  ## _bar_:: about argument bar
+  ## *return*:: about return value
+  def run()
+    while(true)
+      cycle() ;
+      sleep(2) ;
+    end
+  end
+
+
+end # class Foo
+
+########################################################################
+########################################################################
+########################################################################
+
+lmsensor = LmSensor.new($conf) ;
+lmsensor.run() ;

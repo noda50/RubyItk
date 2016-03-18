@@ -1,0 +1,18 @@
+<Transaction>
+  <Delete typeName="Building">
+    <Filter>
+      <And>
+        <BBox>
+          <PropertyName>gml:geometryProperty</PropertyName>
+          <gml:Box>
+            <gml:coordinates>-12200.0,-55100.0 -12000.0,-55000.0</gml:coordinates>
+          </gml:Box>
+        </BBox>
+        <PropertyIsEqualTo>
+          <PropertyName>nFloors</PropertyName>
+          <Literal>0</Literal>
+        </PropertyIsEqualTo>
+      </And>
+    </Filter>
+  </Delete>
+</Transaction>

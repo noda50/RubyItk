@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+## -*- Mode: Ruby -*-
+
+require "socket" ;
+
+# server and protocol information
+$host = "localhost" ;
+$port = 6000 ;
+#$protoVersion = 5.0 ;
+$protoVersion = 9.0 ;
+$bufsize = 4096 ;
+
+# teamname
+$teamname = "bare" ; 
+
+# open socket
+$socket = UDPSocket::new() ;
+$socket.bind($host,0) ;
+
+# send init command
+$socket.send("(init %s (version %f))" % [$teamname, $protoVersion],
+	     0, $host, $port) ;
+
+# receive init response
+(initmsg, fromaddr) = $socket.recvfrom($bufsize) ;
+$stdout << initmsg << "\n" ;
+
+# adjust server port
+$port = fromaddr[1] ;
+
+# loop for receiving sensor info
+Thread.start {
+  while(true) do
+    (sensorinfo, fromaddr) = $socket.recvfrom($bufsize) ;
+    $stdout << sensorinfo << "\n" ;
+  end
+}
+
+# loop for sending commands
+while(true) do
+  gets ;
+  $socket.send($_, 0, $host, $port) ;
+end
+
+
+

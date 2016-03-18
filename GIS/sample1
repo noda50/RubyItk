@@ -1,0 +1,299 @@
+#! /usr/bin/ruby
+## -*- Mode: ruby -*-
+
+require 'mysql' ;
+require 'OpenGIS' ;
+require 'ItkSql' ;
+require 'tempfile' ;
+include OpenGIS ;
+
+$dbName = 'test' ;
+$tbName = 'foo' ;
+
+$locMin = -10000 ;
+$locMax =  10000 ;
+$sizMin = 1 ;
+$sizMax = 10 ;
+#$objN = 100000 ;
+#$objN = 500000 ;
+$objN = 10000 ;
+
+#$range = 2000 ;
+#$range = 1000 ;
+#$range = 500 ;
+$range = 200 ;
+
+if(!ARGV[0].nil?) 
+  $mode = ARGV[0] ;
+else
+  # $mode = 'create' ;
+  # $mode = 'drop' ;
+  # $mode = 'insert' ;
+  $mode = 'loaddata' ;
+  # $mode = 'load' ;
+  # $mode = 'count' ;
+  # $mode = 'select' ;
+  # $mode = 'list' ;
+  # $mode = 'gml' ;
+  # $mode = 'scanwkt' ;
+  # $mode = 'scangml' ;
+end
+
+$connectP = TRUE ;
+#$connectP = FALSE ;
+
+#$testP = TRUE ;
+$testP = FALSE ;
+
+##======================================================================
+
+def randValue(min,max)
+  range = max - min ;
+  return range * rand() + min ;
+end
+
+def randPos(min,max)
+  return Point::new(randValue(min,max),randValue(min,max)) ;
+end
+
+##======================================================================
+class GeoRectObj < ItkSqlTableEntry;
+
+  declareTable($tbName,
+	       [ 
+		 ['id',	 'int',		[ItkSqlColumnDef::F_AutoIncrement] ],
+		 ['name',['varchar',128],	[] ],
+		 ['loc', 'geometry',	[ItkSqlColumnDef::F_NotNull,
+		                         ItkSqlColumnDef::F_Index] ]]) ;
+
+  def initialize(name = "", loc = Rectangle::new)
+    set(name,loc) ;
+  end
+
+  def set(name,loc)
+    @name = name ;
+    @loc = loc ;
+  end
+
+end
+
+##======================================================================
+## test routine
+
+##------------------------------
+def testCreate()
+  qstr = GeoRectObj.strCreateTable() ;
+
+  p(qstr) ;
+  $db.query(qstr) if (!$testP) ;
+
+end
+
+##------------------------------
+def testDrop()
+  qstr = GeoRectObj.strDropTable() ;
+
+  p(qstr);
+  $db.query(qstr) if (!$testP) ;
+end
+
+##------------------------------
+def testInsert()
+  (0...$objN).each{|i|
+    rect = Rectangle::new() ;
+    rect.setByCenter(randPos($locMin,$locMax),randPos($sizMin,$sizMax)) ;
+    obj = GeoRectObj::new("bar-#{i}",rect) ;
+
+    qstr = obj.strSimpleInsert(TRUE) ;
+
+    p(qstr) if ($testP) ;
+    $db.query(qstr) if (!$testP) ;
+  }
+end
+
+##------------------------------
+$loadDataFile = "sample.load.data" ;
+def testMakeLoadData()
+  tmpfile = open($loadDataFile,"w") ;
+  (0...$objN).each{|i|
+    rect = Rectangle::new() ;
+    rect.setByCenter(randPos($locMin,$locMax),randPos($sizMin,$sizMax)) ;
+    obj = GeoRectObj::new("bar-#{i}",rect) ;
+
+#    sep = "\t" ;
+    sep = ":" ;
+    str = obj.name().to_s + sep + obj.loc().to_SQL() ;
+    tmpfile << str << "\n" ;
+  }
+  tmpfile.close() ;
+end
+
+##------------------------------
+def testLoad()
+  filename = $loadDataFile ;
+#  qstr = "load data local infile '#{filename}' into table #{$tbName} (id,name,loc);" ;
+  qstr = "load data local infile '#{filename}' into table #{$tbName} fields terminated by ':' (id,name,loc);" ;
+  
+  p(qstr) ;
+  $db.query(qstr) if (!$testP) ;
+end
+
+##------------------------------
+
+def testCount()
+  rect = Rectangle::new() ;
+  rect.setByCenter(Point::new(0,0),Point::new($range,$range)) ;
+
+#  qstr = GeoRectObj.strSimpleCount("MBRIntersects(loc,#{rect.to_SQL})") ;
+  qstr = GeoRectObj.strSimpleCount("MBRWithIn(loc,#{rect.to_SQL})") ;
+#  qstr = GeoRectObj.strSimpleCount("MBRContains(loc,#{rect.to_SQL})") ;
+
+  p(qstr)  ;
+  if(!$testP) then
+    result = $db.query(qstr) if (!$testP) ;
+    result.each(){|x|
+      p(x) ;
+    }
+  end
+  
+end
+
+##------------------------------
+def testSelect()
+  rect = Rectangle::new() ;
+  rect.setByCenter(Point::new(0,0),Point::new($range,$range)) ;
+
+  qstr = GeoRectObj.strSimpleSelect("MBRIntersects(loc,#{rect.to_SQL})") ;
+
+  p(qstr);
+  if(!$testP) then
+    result = $db.query(qstr) if (!$testP) ;
+    result.each(){|x|
+      p(x) ;
+    }
+  end
+    
+end
+
+##------------------------------
+def testList()
+  tbList = $db.list_tables() ;
+  p(tbList);
+end
+
+##------------------------------
+def testGml()
+  point = Point::new(1,2) ;
+  $stdout << point.to_GML() << "\n" ;
+
+  lines = LineString::new([[1,2],[3,4],[5,6],[0,0]]) ;
+  $stdout << lines.to_GML() << "\n" ;
+
+  pol = Polygon::new([[0,0],[1,0],[0,1],[0,0]],
+		     [ [[1,2],[3,4],[5,6],[0,0]],
+		       [[1,2],[3,4],[5,6],[0,0]],
+		       [[1,2],[3,4],[5,6],[0,0]]]) ;
+  $stdout << pol.to_GML() << "\n" ;
+end
+
+##------------------------------
+def testScanWkt()
+  point = Point::new(1,2) ;
+  s = point.to_WKT() ;
+  $stdout << s  << "\n" ;
+  point2 = Geometry::scanWkt(s) ;
+  $stdout << point2.to_WKT() << "\n" ; 
+
+  lines = LineString::new([[1,2],[3,4],[5,6],[0,0]]) ;
+  s = lines.to_WKT() 
+  $stdout << s << "\n" ;
+  lines2 = Geometry::scanWkt(s) ;
+  $stdout << lines2.to_WKT() << "\n" ; 
+  
+  pol = Polygon::new([[0,0],[1,0],[0,1],[0,0]],
+		     [ [[1,2],[3,4],[5,6],[0,0]],
+		       [[1,2],[3,4],[5,6],[0,0]],
+		       [[1,2],[3,4],[5,6],[0,0]]]) ;
+  s = pol.to_WKT() ;
+  $stdout << s << "\n" ;
+  pol2 = Geometry::scanWkt(s) ;
+  $stdout << pol2.to_WKT() << "\n" ;
+end
+
+##------------------------------
+def testScanGml()
+  point = Point::new(1,2) ;
+  s = point.to_GML() ;
+  $stdout << s  << "\n" ;
+  doc = XML::Document.new(s) ;
+  point2 = Geometry::scanGml(doc.root) ;
+  $stdout << point2.to_GML() << "\n" ; 
+
+  lines = LineString::new([[1,2],[3,4],[5,6],[0,0]]) ;
+  s = lines.to_GML() 
+  $stdout << s << "\n" ;
+  doc = XML::Document.new(s) ;
+  lines2 = Geometry::scanGml(doc.root) ;
+  $stdout << lines2.to_GML() << "\n" ; 
+  
+  pol = Polygon::new([[0,0],[1,0],[0,1],[0,0]],
+		     [ [[1,2],[3,4],[5,6],[0,0]],
+		       [[1,2],[3,4],[5,6],[0,0]],
+		       [[1,2],[3,4],[5,6],[0,0]]]) ;
+  s = pol.to_GML() ;
+  $stdout << s << "\n" ;
+  doc = XML::Document.new(s) ;
+  pol2 = Geometry::scanGml(doc.root) ;
+  $stdout << pol2.to_GML() << "\n" ;
+end
+
+##======================================================================
+## MAIN
+
+if($connectP) then
+  $db = Mysql::new('localhost',nil,nil) ;
+
+  dbList = $db.list_dbs() ;
+
+  $db.select_db($dbName) ;
+end
+
+sTime = Time::now() ;
+
+case($mode)
+when 'create'
+  testCreate() ;
+when 'drop'
+  testDrop() ;
+when 'insert' 
+  testInsert() ;
+when 'loaddata' 
+  testMakeLoadData() ;
+when 'load' 
+  testLoad() ;
+when 'count'
+  testCount() ;
+when 'select'
+  testSelect() ;
+when 'list'
+  testList() ;
+when 'gml'
+  testGml() ;
+when 'scanwkt'
+  testScanWkt() ;
+when 'scangml'
+  testScanGml() ;
+end
+
+eTime = Time::now() ;
+spentTime = eTime - sTime ;
+
+if($connectP) then
+  $stdout << "info:" << $db.info() << "\n" ;
+  $stdout << "stat:" << $db.stat() << "\n" ;
+end
+
+$stdout << "#{$mode} takes #{spentTime} sec.\n" ;
+
+$db.close() if $connectP ;
+

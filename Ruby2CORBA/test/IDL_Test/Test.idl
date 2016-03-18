@@ -1,0 +1,92 @@
+//
+// $Id: Test.idl 103 2008-08-26 13:38:26Z johnny $
+//
+#ifndef TEST_IDL_DEFINED
+#define TEST_IDL_DEFINED
+
+#include "orb.idl"
+
+#pragma prefix "Remedy"
+
+#include "Test_inc.idl"
+
+module Test
+{
+};
+
+// superfluous second include
+#include "Test_inc.idl"
+
+# define ZERO 0
+# define FIRST ZERO
+# define SECOND 1
+
+#define VOID void
+
+#define NUMBER 12345
+
+#define STRING "hello"
+
+/// Put the interfaces in a module, to avoid global namespace pollution
+module Test
+{
+#if FIRST < SECOND
+  struct S1
+  {
+    long m_one;
+    double m_two;
+    string m_three;
+    struct S2 {
+      boolean m_b;
+    }      m_four;
+  };
+#endif
+
+  struct R1
+  {
+    // anonymous recursive sequence
+    sequence<R1> m_recurseq;
+  };
+
+  const long MyNum = NUMBER;
+  const string MyString = STRING;
+
+  /// A very simple interface
+  interface Hello : ::Types::Noop
+  {
+    /// A method to shutdown the ORB
+    /**
+     * This method is used to simplify the test shutdown process
+     */
+    oneway VOID shutdown ();
+  };
+};
+
+#endif // TEST_IDL_DEFINED
+
+module i1
+{
+  interface if1
+  {
+    string getStr();
+  };
+};
+
+module i2
+{
+  interface if2 : ::i1::if1
+  {
+    string getstr2();
+  };
+
+  interface if3 : ::i2::if2
+  {
+    string getstr3();
+  };
+};
+
+
+
+#pragma ID Test::S1 "IDL:Test_S1:1.1"
+#pragma version Test::S1::S2 1.0
+

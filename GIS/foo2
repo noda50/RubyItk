@@ -1,0 +1,213 @@
+#! /usr/bin/ruby
+## -*- Mode: ruby -*-
+
+require 'mysql' ;
+require 'OpenGIS' ;
+include OpenGIS ;
+
+$dbName = 'test' ;
+$tbName = 'foo' ;
+
+$locMin = -10000 ;
+$locMax =  10000 ;
+$sizMin = 1 ;
+$sizMax = 10 ;
+$objN = 1000000 ;
+
+
+#$mode = 'create' ;
+#$mode = 'drop' ;
+#$mode = 'insert' ;
+#$mode = 'count' ;
+$mode = 'select' ;
+#$mode = 'list' ;
+
+#$testP = TRUE ;
+$testP = FALSE ;
+
+##======================================================================
+
+def randValue(min,max)
+  range = max - min ;
+  return range * rand() + min ;
+end
+
+def randPos(min,max)
+  return Point::new(randValue(min,max),randValue(min,max)) ;
+end
+
+##======================================================================
+
+##======================================================================
+class GeoRectObj
+  attr :name, true ;
+  attr :loc,  true ;
+  attr :id,   true ;
+
+  def initialize(name = "", loc = Rectangle::new)
+    set(name,loc) ;
+  end
+
+  def set(name,loc)
+    @name = name ;
+    @loc = loc ;
+  end
+
+  def colString()
+    return "(name,loc)" ;
+  end
+
+  def to_SQL()
+    return "('#{@name}',#{@loc.to_SQL()})" ;
+  end
+
+end
+
+def GeoRectObj::columnDefStr()
+  columnList = [
+    "id int auto_increment key",
+    "name varchar(128)",
+    "loc geometry not null"] ;
+
+  str = "" ;
+  columnList.each{|col|
+    str += "," if (str != "") ;
+    str += col ;
+  }
+  return "(" + str + ")" ;
+end
+
+def GeoRectObj::columnShowStr()
+  return "id,name,AsText(loc)" ;
+end
+
+##======================================================================
+## test routine
+
+##------------------------------
+def testCreate()
+  qstr = ("create table #{$tbName} " + GeoRectObj::columnDefStr()) + ";";
+
+  p(qstr) if ($testP) ;
+  $db.query(qstr) if (!$testP) ;
+
+  qstr = ("create spatial index loc_index on #{$tbName} (loc);");
+
+  p(qstr);
+  $db.query(qstr) if (!$testP) ;
+  
+end
+
+##------------------------------
+def testDrop()
+  qstr = ("drop table #{$tbName};") ;
+
+  p(qstr);
+  $db.query(qstr) if (!$testP) ;
+end
+
+##------------------------------
+def testInsert()
+  (0...$objN).each{|i|
+    rect = Rectangle::new() ;
+    rect.setByCenter(randPos($locMin,$locMax),randPos($sizMin,$sizMax)) ;
+    obj = GeoRectObj::new("bar-#{i}",rect) ;
+    
+    qstr = ("insert delayed " +
+	    "into #{$tbName} " +
+	    "#{obj.colString()} values #{obj.to_SQL()}" +
+	    ";")
+    p(qstr) if ($testP) ;
+    $db.query(qstr) if (!$testP) ;
+  }
+end
+
+##------------------------------
+def testCount()
+  rect = Rectangle::new() ;
+  rect.setByCenter(Point::new(0,0),Point::new(100,100)) ;
+
+  qstr = ("select count(*) " + 
+	  "from #{$tbName} " +
+	  "where MBRIntersects(loc,#{rect.to_SQL})" +
+	  ";");
+
+  p(qstr)  ;
+  if(!$testP) then
+    result = $db.query(qstr) if (!$testP) ;
+    result.each(){|x|
+      p(x) ;
+    }
+  end
+  
+end
+
+##------------------------------
+def testSelect()
+  rect = Rectangle::new() ;
+  rect.setByCenter(Point::new(0,0),Point::new(100,100)) ;
+
+  qstr = ("select #{GeoRectObj::columnShowStr()} " +
+	  "from #{$tbName} " +
+	  "where MBRIntersects(loc,#{rect.to_SQL})" +
+	  ";");
+
+  p(qstr);
+  if(!$testP) then
+    result = $db.query(qstr) if (!$testP) ;
+    result.each(){|x|
+      p(x) ;
+    }
+  end
+    
+end
+
+##------------------------------
+def testList()
+  tbList = $db.list_tables() ;
+  p(tbList);
+end
+
+##======================================================================
+## MAIN
+
+$db = Mysql::new('localhost',nil,nil) ;
+
+dbList = $db.list_dbs() ;
+
+$db.select_db($dbName) ;
+
+sTime = Time::now() ;
+
+case($mode)
+when 'create'
+  testCreate() ;
+when 'drop'
+  testDrop() ;
+when 'insert' 
+  testInsert() ;
+when 'count'
+  testCount() ;
+when 'select'
+  testSelect() ;
+when 'list'
+  testList() ;
+end
+
+eTime = Time::now() ;
+spentTime = eTime - sTime ;
+
+$stdout << "info:" << $db.info() << "\n" ;
+$stdout << "stat:" << $db.stat() << "\n" ;
+$stdout << "#{$mode} takes #{spentTime} sec.\n" ;
+
+$db.close() ;
+
+
+
+  
+
+
+
+
+

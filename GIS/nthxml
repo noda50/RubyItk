@@ -1,0 +1,67 @@
+#! /usr/bin/env ruby
+## -*- Mode: ruby -*-
+
+require "XmlFilter.rb"
+
+##======================================================================
+## class NthSwitcherListener
+
+class NthSwitcherListener < ItkXml::BaseSwitcherListener
+  
+  attr :strm, true ;
+  attr :nth,  true ;
+  attr :count, true ;
+
+  def initialize(tagNames,parser,monitor)
+    @strm = $stdout ;
+    @count = 0 ;
+    @nth = 0 ;
+    super
+  end
+    
+  def start_element(uri,local,qname,attributes) 
+    if(@count == @nth) then
+      @monitor.recordOn() ;
+    end
+  end
+
+  def cycle(uri,local,qname)
+    if(@count == @nth) then
+      @strm << @monitor.fetchBuffer() ;
+      raise EndOfParsingException.new ;
+    else
+      @monitor.clearBuffer() ;
+      @count += 1 ;
+    end
+  end
+
+end
+
+##======================================================================
+##======================================================================
+##======================================================================
+## args
+
+node = ARGV[0] ;
+
+nth = ARGV[1].to_i ;
+
+
+##======================================================================
+## main
+
+istr = $stdin ;
+ostr = $stdout ;
+
+filter = ItkXml::XmlFilter::new( $stdin ) ;
+filter.setup([node],NthSwitcherListener) ;
+filter.switcher.strm = ostr ;
+filter.switcher.nth = nth ;
+filter.run() ;
+ostr << "\n" ;
+
+
+
+
+
+

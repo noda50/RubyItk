@@ -1,0 +1,313 @@
+#! /usr/bin/env ruby
+## -*- Mode: ruby -*-
+
+$LOAD_PATH.push("~/lib/ruby") ;
+
+require "myCanvas.rb" ;
+require "OpenGIS.rb" ;
+require "XmlFilter.rb" ;
+
+##======================================================================
+## class DrawObject
+
+class DrawObject
+
+  ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ## attributes
+
+  attr :geometry,	true ;
+
+  ##----------------------------------------
+  ## initialize
+
+  def initialize(geo) 
+    @geometry = geo ;
+  end
+
+  ##----------------------------------------
+  ## draw
+
+  def draw(canvas)
+    if    (@geometry.is_a?(OpenGIS::Point)) then
+      drawPoint(canvas) ;
+    elsif (@geometry.is_a?(OpenGIS::LineString)) then
+      drawLineString(canvas) ;
+    elsif (@geometry.is_a?(OpenGIS::Polygon)) then
+      drawPolygon(canvas) ;
+    else
+      $stderr << 
+	"draw() is not defined for class " << 
+	@geometry.class().to_s() <<
+	" [" << self.to_s << "]" << "\n" ;
+    end
+    canvas.flush() ;
+  end
+
+  ##----------------------------------------
+  ## draw Point
+
+  def drawPoint(canvas)
+    radius = 1.0 ;
+    color = "black" ;
+    canvas.drawCircle(@geometry.x, -@geometry.y, radius, true, color) ;
+  end
+  
+  ##----------------------------------------
+  ## draw LineString
+
+  def drawLineString(canvas)
+    drawLineStringBody(canvas,@geometry) ;
+  end
+
+  def drawLineStringBody(canvas,line)
+    thickness = 1 ;
+    color = "black" ;
+
+    currentPoint = nil;
+    line.points.each{ |nextPoint|
+      if(!currentPoint.nil?) then
+	canvas.drawSolidLine(currentPoint.x, -currentPoint.y, 
+			     nextPoint.x, -nextPoint.y, 
+			     thickness, color) ;
+      end
+      currentPoint = nextPoint ;
+    }
+  end
+
+  ##----------------------------------------
+  ## draw Polygon
+
+  def drawPolygon(canvas)
+    drawLineStringBody(canvas,@geometry.exterior) ;
+    
+    @geometry.interior.each{ |ring|
+      drawLineStringBody(canvas,ring) ;
+    }
+  end
+
+end
+
+##======================================================================
+## class DrawerListener
+
+class DrawerListener < ItkXml::BaseSwitcherListener
+  
+  attr :canvas, true ;
+  attr :list,  true ;
+
+  def initialize(tagNames,parser,monitor)
+    @strm = $stdout ;
+    @canvas = nil ;
+    @list = nil ;
+    super
+  end
+
+  def setup(canvas,list)
+    @canvas = canvas ;
+    @list = list ;
+  end
+    
+  def start_element(uri,local,qname,attributes) 
+    @monitor.recordOn() ;
+  end
+
+  def cycle(uri,local,qname)
+    case qname
+    when "gml:boundedBy" then
+      setupViewportByBoundaryBox(@monitor.fetchBuffer()) ;
+    when "gml:geometryProperty" then
+      addElementByGeometry(@monitor.fetchBuffer()) ;
+    when "ogr:geometryProperty" then
+      addElementByGeometry(@monitor.fetchBuffer()) ;
+    end
+  end
+
+  def setupViewportByBoundaryBox(gml)
+    doc = XML::Document.new(gml) ;
+    box = (XML::XPath::first(doc,"gml:boundedBy/gml:box") ||
+	   XML::XPath::first(doc,"gml:boundedBy/gml:Box"))
+
+    coords = Array::new ;
+    XML::XPath::each(box,"gml:coord") { |coord| coords.push(coord) ; }
+
+    x0 = XML::XPath::first(coords[0],"gml:X").text.to_f ;
+    y0 = XML::XPath::first(coords[0],"gml:Y").text.to_f ;
+
+    x1 = XML::XPath::first(coords[1],"gml:X").text.to_f ;
+    y1 = XML::XPath::first(coords[1],"gml:Y").text.to_f ;
+
+    @canvas.setScaleShiftByBoundaryBox(x0,-y0,x1,-y1) ;
+
+  end
+
+  def addElementByGeometry(gml)
+    doc = XML::Document.new(gml) ;
+#    geoxml = XML::XPath::first(doc,"gml:geometryProperty/*") ;
+    geoxml = ( XML::XPath::first(doc,"gml:geometryProperty/*") ||
+	       XML::XPath::first(doc,"ogr:geometryProperty/*") ) ;
+    geo = OpenGIS::Geometry::scanGml(geoxml) ;
+    obj = DrawObject::new(geo) ;
+    @list.push(obj) ;
+    obj.draw(@canvas) ;
+  end
+
+end
+
+##======================================================================
+## class DrawerListener 2 (faster version, maybe)
+
+class DrawerListener2 < ItkXml::BaseScanListener
+  
+  attr :canvas, true ;
+  attr :list,  true ;
+
+  def initialize()
+    @strm = $stdout ;
+    @canvas = nil ;
+    @list = nil ;
+    super
+  end
+
+  def setup(canvas,list)
+    @canvas = canvas ;
+    @list = list ;
+  end
+    
+  def cycle(node)
+    case node.name
+    when "boundedBy" then
+      setupViewportByBoundaryBox(node) ;
+    when "geometryProperty" then
+      addElementByGeometry(node) ;
+    end
+  end
+
+  def setupViewportByBoundaryBox(node)
+    box = (XML::XPath::first(node,"gml:box") ||
+	   XML::XPath::first(node,"gml:Box"))
+
+    coords = Array::new ;
+    XML::XPath::each(box,"gml:coord") { |coord| coords.push(coord) ; }
+
+    x0 = XML::XPath::first(coords[0],"gml:X").text.to_f ;
+    y0 = XML::XPath::first(coords[0],"gml:Y").text.to_f ;
+
+    x1 = XML::XPath::first(coords[1],"gml:X").text.to_f ;
+    y1 = XML::XPath::first(coords[1],"gml:Y").text.to_f ;
+
+    @canvas.setScaleShiftByBoundaryBox(x0,-y0,x1,-y1) ;
+
+  end
+
+  def addElementByGeometry(node)
+    geoxml = XML::XPath::first(node,"*") ;
+    geo = OpenGIS::Geometry::scanGml(geoxml) ;
+    obj = DrawObject::new(geo) ;
+    @list.push(obj) ;
+    obj.draw(@canvas) ;
+  end
+
+end
+
+##----------------------------------------------------------------------
+## test1 
+
+def test1() 
+
+  canvas = MyCanvas.new('gtk',
+			{ 'width'	=> 512,
+			  'height'	=> 512,
+			  'scale'	=> 10,
+			  'centerp'	=> true,
+			  'filename'	=> "foo.obj",
+			  '' 		=> nil}) ;
+
+  canvas.run() ;
+
+  canvas.beginPage(nil) ;
+  canvas.drawSolidLine(0,0,10,20,1,"blue") ;
+  canvas.endPage() ;
+
+  canvas.finish() ;
+
+end
+
+##----------------------------------------------------------------------
+## test2
+
+def test2() 
+
+  canvas = MyCanvas.new('gtk',
+			{ 'width'	=> 512,
+			  'height'	=> 512,
+			  'scale'	=> 10,
+			  'centerp'	=> true,
+			  'filename'	=> "foo.obj",
+			  '' 		=> nil}) ;
+
+  filter = ItkXml::XmlFilter::new( $stdin ) ;
+  filter.setup(["gml:boundedBy",/.*:geometryProperty/], DrawerListener) ;
+
+  filter.switcher.setup(canvas,[]) ;
+
+  canvas.run() ;
+  canvas.beginPage(nil) ;
+
+  filter.run() ;
+
+  canvas.endPage() ;
+
+  canvas.finish() ;
+
+end
+
+##----------------------------------------------------------------------
+## test3
+
+def test3() 
+
+  canvas = MyCanvas.new('gtk',
+			{ 'width'	=> 512,
+			  'height'	=> 512,
+			  'scale'	=> 10,
+			  'centerp'	=> true,
+			  'filename'	=> "foo.obj",
+			  '' 		=> nil}) ;
+
+  filter = ItkXml::ScanFilter::new( $stdin ) ;
+  filter.setup(["gml:boundedBy",/.*:geometryProperty/], DrawerListener2) ;
+
+  filter.scanListener.setup(canvas,[]) ;
+
+  canvas.run() ;
+  canvas.beginPage(nil) ;
+
+  filter.run() ;
+
+  canvas.endPage() ;
+
+  canvas.finish() ;
+
+end
+
+##======================================================================
+##======================================================================
+##======================================================================
+##======================================================================
+
+#test1() ;
+
+if(ARGV[0].nil?) then
+  mode = 3 if mode.nil? ;
+else
+  mode = ARGV[0].to_i ;
+end
+
+case mode
+when 2 ;  test2() ;
+when 3 ;  test3() ;
+end
+  
+
+
+

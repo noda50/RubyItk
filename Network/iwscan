@@ -1,0 +1,244 @@
+#! /usr/bin/env ruby
+## -*- mode: ruby -*-
+
+require 'pp' ;
+
+$defaultInterface = "ath0"
+$iwlistcom = "/sbin/iwlist %s scan"
+
+##============================================================
+class CellInfo
+  attr :cell, true ;
+  attr :address, true ;
+  attr :essId, true ;
+  attr :mode, true ;
+  attr :frequency, true ;
+  attr :channel, true ;
+  attr :qualityStr, true ;
+  attr :signalLevel, true ;
+  attr :noiseLevel, true ;
+  attr :encryptionKey, true ;
+  attr :bitRatesStr, true ;
+  attr :extraStr, true ;
+  
+  attr :lastEntry, true ;
+
+  ##----------------------------------------
+  def initialize(cell)
+    @cell = cell ;
+    @lastEntry = nil ;
+  end
+
+  ##----------------------------------------
+  def scanInfo(infostr)
+    infostr.gsub!(/^\s*/,'') ;
+    case(infostr)
+    when /^Address\:/        ; scanAddress(infostr) ; @lastEntry = :addr ;
+    when /^ESSID:/           ; scanEssId(infostr) ;   @lastEntry = :essid ;
+    when /^Mode\:/           ; scanMode(infostr) ;    @lastEntry = :mode ;
+    when /^Frequency\:/      ; scanFrequency(infostr) ; @lastEntry = :freq ;
+    when /^Quality/          ; scanQuality(infostr) ; @lastEntry = :quality ;
+    when /^Encryption key\:/ ; scanEncryptionKey(infostr) ; @lastEntry = :key ;
+    when /^Bit Rates\:/      ; scanBitRates(infostr) ; @lastEntry = :rate ;
+    when /^Extra\:/          ; scanExtra(infostr) ;    @lastEntry = :extra ;
+    when /^IE\:/	     ; scanIE(infostr) ;       @lastEntry = :ie ;
+    else 
+      case(@lastEntry)
+        when :rate ; scanBitRatesTail(infostr) ;
+        when :ie ; scanIETail(infostr) ;
+        else raise "Unknown scan info string:" + infostr ;
+      end
+    end
+
+  end
+
+  ##----------------------------------------
+  def scanAddress(infostr)
+    if(infostr =~ /^Address\:\s*(.*)/) then
+      @address = $1 ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+  ##----------------------------------------
+  def scanEssId(infostr)
+    if(infostr =~ /^ESSID\:\s*\"(.*)\"/) then
+      @essId = $1 ;
+    elsif(infostr =~ /^ESSID\:\s*\"(.*)/) then
+      @essId = $1 ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+
+  ##----------------------------------------
+  def scanMode(infostr)
+    if(infostr =~ /^Mode\:\s*(.*)/) then
+      @mode = $1 ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+  ##----------------------------------------
+  def scanFrequency(infostr)
+    if(infostr =~ /^Frequency\:\s*(.*)\s*GHz\s*\(Channel\s*([0-9]*)\)/) then
+      @frequency = $1.to_f ;
+      @channel = $2.to_i ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+  ##----------------------------------------
+  def scanQuality(infostr)
+    if(infostr =~ /^Quality=(.*)\s*Signal level=(.*)\sdBm\s*Noise level=(.*)\sdBm/) then
+      @qualityStr = $1 ;
+      @signalLevel = $2.to_f ;
+      @noiseLevel = $3.to_f ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+  ##----------------------------------------
+  def scanEncryptionKey(infostr)
+    if(infostr =~ /^Encryption key\:\s*(.*)/) then
+      @encryptionKey = $1 ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+  ##----------------------------------------
+  def scanBitRates(infostr)
+    if(infostr =~ /^Bit Rates\:\s*(.*)/) then
+      @bitRatesStr = $1 ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+  ##----------------------------------------
+  def scanBitRatesTail(infostr)
+    @bitRatesStr += "; " + infostr ;
+  end
+
+  ##----------------------------------------
+  def scanExtra(infostr)
+    if(infostr =~ /^Extra\:\s*(.*)/) then
+      @extraStr = $1 ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+  ##----------------------------------------
+  def scanIE(infostr)
+    if(infostr =~ /^IE\:\s*(.*)/) then
+      @ieStr = $1 ;
+    else
+      raise "Unknown scan info string:" + infostr ;
+    end
+  end
+
+  ##----------------------------------------
+  def scanIETail(infostr)
+    @ieStr += "\n" + infostr ;
+  end
+
+end
+
+##============================================================
+class ScanInfo
+  attr :interface, true ;
+  attr :cellInfoList, true ;
+  attr :channelList, true ;
+  
+  ##----------------------------------------
+  def initialize(interface = $defaultInterface)
+    @interface = interface ;
+    @channelList = [] ;
+  end
+
+  ##----------------------------------------
+  def scan()
+    com = $iwlistcom % @interface ;
+
+    cell = nil ;
+    @cellInfoList = [] ;
+
+    open("| #{com}","r"){ |strm|
+      while(infostr = strm.gets()) 
+        next if (infostr =~ /^\s*$/) ;
+        infostr.chomp!() ;
+        if(infostr =~ /\s*Cell\s+([0-9]+)\s+\-(.*)$/)
+          cellstr = $1 ;
+          infostr = $2 ;
+          cell = CellInfo.new(cellstr.to_i) ;
+          @cellInfoList.push(cell) ;
+        end
+        cell.scanInfo(infostr) if(!cell.nil?) ;
+      end
+    }
+
+    arrignByChannel() ;
+  end
+
+  ##----------------------------------------
+  def arrignByChannel()
+    @cellInfoList.each{|cell|
+      stack = @channelList[cell.channel] ;
+      if(stack.nil?)
+        stack = [] ;
+      end
+      stack.push(cell) ;
+      @channelList[cell.channel] = stack ;
+    }
+  end
+
+  ##----------------------------------------
+  def showByTable()
+    puts "-" * 60
+    @channelList.each{|cellList|
+      if(!cellList.nil?) then
+        cellList.each{|cell|
+          puts("Ch%02d[%02d]cell/%2ddBm %s key=%3s '%s'" % 
+               [cell.channel, cell.cell,
+                (cell.signalLevel - cell.noiseLevel).to_i,
+                cell.address, cell.encryptionKey,
+                cell.essId]) ;
+        }
+      end
+    }
+  end
+
+
+  
+end
+
+######################################################################
+######################################################################
+######################################################################
+
+while(true)
+  sinfo = ScanInfo.new() ;
+  sinfo.scan() ;
+  sinfo.showByTable() ;
+  sleep(1)
+end
+
+
+
+
+    
+
+    
+
+
+
+
+
+  

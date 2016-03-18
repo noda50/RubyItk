@@ -1,0 +1,26 @@
+
+Our thanks go to:
+
+* Yukihiro Matsumoto, a.k.a. “Matz”, for creating the wonderfully
+  powerful and elegant programming language named Ruby.
+  With him we also thank all those who have contributed to the
+  Ruby programming tool and have made Ruby what it is today.
+
+* Prof. Douglas Schmidt for (and all his collaborators) for creating
+  a high-quality OpenSource CORBA compliant ORB. The high level of
+  OS abstraction and multiplatform compatibility of this software
+  make it an ideal ingredient for a Ruby CORBA implementation.
+
+* Minero Aoki for creating the original 'setup.rb' install script.
+
+* Daisuke Kanda for his initial work on CORBA bindings for Ruby from
+  2001 (incl. RINN and Ruby-Orbit) which has helped us in many ways
+  to create R2CORBA.
+
+* Paul Brannan of Automated Trading Desk, LLC for his insightfull
+  comments on the first release of the Ruby CORBA language mapping.
+
+* Renato Lucindo and Eider Oliveira for their remarks and fixes for
+  the IDL compiler.
+
+* Ragnar Dahlen for his tests and comments.

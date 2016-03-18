@@ -1,0 +1,12 @@
+<GetFeature>
+  <Query typeName="Node">
+    <Filter>
+      <BBox>
+        <PropertyName>gml:geometryProperty</PropertyName>
+        <gml:Box>
+          <gml:coordinates>-11200.0,-51200.0 -11000.0,-51000.0</gml:coordinates>
+        </gml:Box>
+      </BBox>
+    </Filter>
+  </Query>
+</GetFeature>

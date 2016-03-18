@@ -1,0 +1,30 @@
+// $Id: Diamond.idl 72 2008-01-07 13:30:40Z martin $
+
+module Diamond
+{
+  interface Top
+    {
+      string shape ();
+    };
+
+  interface Left : Top
+    {
+      string color ();
+    };
+
+  interface Right : Top
+    {
+      long width ();
+    };
+
+  interface Buttom : Left, Right
+    {
+      enum e_units {
+        MM,
+        CM
+      };
+
+      string name ();
+      void area (in e_units unit, out long result);
+    };
+};

@@ -1,0 +1,115 @@
+#! /bin/tcsh
+## -*- Mode: shell-script -*-
+
+##======================================================================
+## help doc section
+cat << __END_HELP__ > /dev/null
+__HELP__
+
+	Usage: % __ThisProgram__ <SrcFile> [<DstFile>]
+
+__END_HELP__
+##======================================================================
+
+set script = /tmp/$0.$$
+
+if ($#argv < 1) goto __help__
+	
+set srcfile = $1 
+
+onintr __final__
+
+cat <<__END__ > $script
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		xmlns:gml="http://www.opengis.net/gml">
+
+  <xsl:output method="xml" />
+
+  <!-- ============================================================
+    -  nake "collection" tag and insert "Transaction/Insert" tag 
+    -  ============================================================ -->
+  <xsl:template match="/collection">
+    <Transaction>
+      <Insert>
+        <xsl:for-each select="gml:featureMember">
+	  <xsl:apply-templates select="@*|node()" mode="e"/>
+        </xsl:for-each>
+      </Insert>
+    </Transaction>
+  </xsl:template>
+
+  <!-- ============================================================
+    -  copy every
+    -  ============================================================ -->
+
+  <xsl:template match="@*|node()" mode="e">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()" mode="e"/>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
+__END__
+
+#xt $srcfile $script
+saxon $srcfile $script
+
+__final__:
+rm -f $script
+
+exit
+##======================================================================
+__help__:
+
+sed -n '/^__HELP__/,/^__END_HELP__/ p' $0 |\
+sed '/^__.*$/ d' |\
+sed "s/__ThisProgram__/$0/g"
+
+exit
+
+
+
+##======================================================================
+## version 0.0
+
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		xmlns:gml="http://www.opengis.net/gml">
+
+  <xsl:output method="xml" />
+
+  <!-- ============================================================
+    -  nake "collection" tag and insert "Transaction/Insert" tag 
+    -  ============================================================ -->
+  <xsl:template match="/collection">
+    <Transaction>
+      <Insert>
+        <xsl:apply-templates />
+      </Insert>
+    </Transaction>
+  </xsl:template>
+
+  <!-- ============================================================
+    -  ignore gml:boundedBy tag
+    -  ============================================================ -->
+  <xsl:template match="gml:boundedBy">
+  </xsl:template>
+
+  <!-- ============================================================
+    -  nake "gml:featureMember"
+    -  ============================================================ -->
+  <xsl:template match="gml:featureMember">
+    <xsl:apply-templates select="@*|node()"/>
+  </xsl:template>
+
+  <!-- ============================================================
+    -  nake "gml:featureMember"
+    -  ============================================================ -->
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>
