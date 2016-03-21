@@ -3,6 +3,9 @@
 # Author:: Itsuki Noda
 # Type:: class definition
 # Date:: 2004/12/01
+# === Note:
+# * should be included before "test/unit".
+#
 # === Usage:
 # * create canvas
 #	canvas = MyCanvas.new('gtk',  # or 'tgif'
@@ -102,16 +105,16 @@ class MyCanvas < MyCanvasDevBase
   # setSize by param table
   def setupDevice(devtype,param) 
     case devtype
-    when 'gtk'
+    when 'gtk', :gtk
       @device = MyCanvasGtk.new(param) ;
 ##    when 'gtk2'
 ##      @device = MyCanvasGtk2.new(param) ;
-    when 'tgif'
+    when 'tgif', :tgif
       @device = MyCanvasTgif.new(param) ;
-    when 'tk'
+    when 'tk', :tk
       @device = MyCanvasTk.new(param) ;
     else
-      @stderr.printf("Error:unknown device type : %s\n",devtype.to_s) ;
+      $stderr.printf("Error:unknown device type : %s\n",devtype.to_s) ;
       fail ;
     end
   end

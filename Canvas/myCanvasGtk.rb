@@ -134,10 +134,12 @@ class MyCanvasGtk < MyCanvasDevBase
   def initialize(param = {})
     super(param) ;
 
-    setupWindow(param) ;
     @drawMutex = Mutex::new() ;
+    @drawMutex.synchronize(){
+      setupWindow(param) ;
+      @exitWhenQuit = true ;
+    }
 
-    @noExitWhenQuit = false ;
   end
 
   ##--------------------
@@ -158,7 +160,7 @@ class MyCanvasGtk < MyCanvasDevBase
   def setupWindow(param)
     case($gtkVer)
     when :gtk2,:gtk3;
-      Gtk.init ;
+#      Gtk.init ;
       @topwindow = Gtk::Window::new() ;
     else
       @topwindow = Gtk::Window::new(Gtk::WINDOW_TOPLEVEL) ;
@@ -181,6 +183,8 @@ class MyCanvasGtk < MyCanvasDevBase
     setupWindowQuit(param) ;
 
     @topwindow.show_all ;
+#    configureDrawable() ;
+
   end
 
   ##--------------------
@@ -258,36 +262,47 @@ class MyCanvasGtk < MyCanvasDevBase
 
 
     @centerbox.add(@canvas) ;
-    @canvas.show() ;
 
     @canvas.signal_connect(Gtk::Widget::SIGNAL_EXPOSE_EVENT) do |win,evt|
       expose_event(win,evt) ;
     end
 
-    @canvas.signal_connect(Gtk::Widget::SIGNAL_CONFIGURE_EVENT){|w, e| 
-      if(@drawable.nil?) 
-	@drawable = @canvas.window ;
-
-        case($gtkVer)
-        when :gtk2, :gtk3 ;
-          @geometry = @drawable.geometry ;
-        else
-          @geometry = @drawable.get_geometry ;
-        end
-	@sizeX = @geometry[2] ;
-	@sizeY = @geometry[3] ;
-
-	assignNewBuffer(false) ;
-
-	prepareGC(true) ;
-	assignBaseColors() ;
-	assignBaseFonts() ;
-
-        setupBackgroundImage() ;
-      end
+    @canvas.signal_connect(Gtk::Widget::SIGNAL_CONFIGURE_EVENT){|w, e|
+      configureDrawable() ;
     }
+
+    @canvas.show() ;
+
   end
 
+  ##--------------------
+  ## configure operation
+  def configureDrawable() ;
+    if(@drawable.nil?)
+      while(@drawable.nil?)
+        Thread::pass() ;
+        @drawable = @canvas.window ;
+      end
+
+      case($gtkVer)
+      when :gtk2, :gtk3 ;
+        @geometry = @drawable.geometry ;
+      else
+        @geometry = @drawable.get_geometry ;
+      end
+      @sizeX = @geometry[2] ;
+      @sizeY = @geometry[3] ;
+
+      assignNewBuffer(false) ;
+
+      prepareGC(true) ;
+      assignBaseColors() ;
+      assignBaseFonts() ;
+
+      setupBackgroundImage() ;
+    end
+  end
+    
   ##--------------------
   ## setup background image
 
@@ -407,6 +422,8 @@ class MyCanvasGtk < MyCanvasDevBase
   ## setup quit button
 
   def setupWindowQuit(param)
+    prepareQuitCV() ;
+    
     pos = param.fetch('quitbutton','bottom') ;
     
     if(!pos.nil?) then
@@ -429,12 +446,15 @@ class MyCanvasGtk < MyCanvasDevBase
       @quitbutton.signal_connect("clicked") {
 	# Thread::main.kill() ;
         # broadcastQuit() ;
-        if (!@noExitWhenQuit)
+        if (@exitWhenQuit)
           #exit(0) ;
 #          p ThreadGroup::Default.list ;
-#          p [:sendSignal, Thread::current] ;
-          @quitCV.signal() ;
-#          p [:sentSignal, Thread::current] ;
+          p [:sendQuitSignal, Thread::current] ;
+          @quitMutex.synchronize(){
+            @quitCV.signal() ;
+          }
+          p [:sentSignal, Thread::current] ;
+          Thread::exit() ;
         else
           (0...10).each{|i|
             p i ;
@@ -463,14 +483,28 @@ class MyCanvasGtk < MyCanvasDevBase
 
   def run()
     if(@thread.nil?) then
+      Thread::current.abort_on_exception = true ;
       @thread = Thread::new{
         Thread::current.abort_on_exception = true ;
-        Gtk.main ;
-        while(true)
-          Thread::pass() ;
+        begin
+          Gtk.main ;
+        rescue => ex then
+          if(ex.backtrace_locations[0].label == "exit_application") then
+            # bug of RubyGtk. glib2.rb cause error of calling Fixnum#message.
+            # do nothing.
+          else
+            $stderr << "Itk:Error in Gtk.main loop:" << ex.message << "\n";
+            $stderr << "=== backtrace ===\n" ;
+            ex.backtrace.each{|trace|
+              $stderr << "\t" << trace << "\n" ;
+            }
+            $stderr << "=================\n" ;
+            exit(1) ;
+          end
         end
+        Thread::exit ;
       }
-      if(RUBY_VERSION < "2.0.0") then
+      if(RUBY_VERSION < "2.0.0" || !@thread.alive?) then
         @thread.run() ;  #  !!! <- key point !!!
       end
       beginPage() ;
@@ -485,20 +519,21 @@ class MyCanvasGtk < MyCanvasDevBase
     if(@quitMutex) then
 #      p [:enterWaitQuit, Thread::current] ;
       @quitCV.wait(@quitMutex) ;
+      @isQuited = true ;
 #      p [:exitWaitQuit, Thread::current] ;
     end
   end
 
   def waitQuit_not_work()
-#    p [:waitQuit, Thread::current] ;
     if(@quitMutex)
       @quitMutex.synchronize() {
-#        p [:enterWaitQuit, Thread::current] ;
+        p [:enterWaitQuit, Thread::current] ;
         @quitCV.wait(@quitMutex) ;
         ## なぜか以下の２つがないと、うまく終われない。
-        p [:exitWaitQuit, Thread::current] ;
+#        p [:exitWaitQuit, Thread::current] ;
+        @isQuited = true ;
       }
-      p [:exitWaitQuit2, Thread::current] ;
+#      p [:exitWaitQuit2, Thread::current] ;
     end
   end
 
@@ -531,7 +566,7 @@ class MyCanvasGtk < MyCanvasDevBase
     endPage() ;
     @thread.run() ;  #  !!! <- key point !!!
     # sleep ;
-    prepareQuitCV() ;
+#    prepareQuitCV() ;
     waitQuit() ;
   end
 
@@ -558,6 +593,14 @@ class MyCanvasGtk < MyCanvasDevBase
   ## begin/end page
 
   def beginPage(color="white") # if color=nil, copy from old buffer
+    while(@drawable.nil?) 
+      p [:drawable, @drawable, @thread.status, @thread.stop?, Gtk.main_level]
+#      @thread.backtrace.each{|trace|
+#        $stdout << ">>>" << trace << "\n" ;
+#      }
+      @thread.run() ;
+    end 
+    
     assignNewBuffer(color.nil?) ;
     clearPage(color) if(!color.nil?) ;
   end
@@ -730,6 +773,13 @@ class MyCanvasGtk < MyCanvasDevBase
   def assignNewBuffer(copyp = false) # if initp=true, copy from old buffer
     # create new buffer
     oldbuf = @buffer ;
+
+#    $stderr << "=== backtrace ===\n" ;
+#    caller_locations.each{|trace|
+#        $stderr << "\t" << trace << "\n" ;
+#    }
+#    $stderr << "=================\n" ;
+      
     newbuf = Gdk::Pixmap::new(@drawable, width(), height(),-1) ;
 
     #copy from old buffer
@@ -751,14 +801,26 @@ class MyCanvasGtk < MyCanvasDevBase
   ##
 
   def expose_event(w,e)
+    if(@quitMutex) then
+      @quitMutex.synchronize(){
+        if(!@isQuitted) then
+          expose_event_body(w,e) ;
+        end
+      }
+    else
+      expose_event_body(w,e) ;
+    end
+    false ;
+  end
+      
+  def expose_event_body(w,e)
     case($gtkVer)
     when :gtk2, :gtk3 ;
       @drawable.draw_drawable(@gc,@currentbuffer,0,0,0,0,width(),height()) ;
     else
       @drawable.draw_pixmap(@gc,@currentbuffer,0,0,0,0,width(),height()) ;
     end
-#    p(e.area) ;
-    false ;
+    #    p(e.area) ;
   end
 
   ##----------------------------------------

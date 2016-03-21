@@ -264,8 +264,10 @@ end # module Geo2D
 ########################################################################
 if($0 == __FILE__) then
 
+  require 'myCanvas.rb' ;
   require 'test/unit' ;
   require 'Stat/Uniform.rb' ;
+  require 'pp' ;
 
   #--============================================================
   #++
@@ -299,9 +301,46 @@ if($0 == __FILE__) then
         y = genY.value() ;
         point = Geo2D::Point.new(x,y) ;
         rtree.insert(point) ;
-        p [:insert, i, point] ;
-        rtree.showTree() ;
+#        p [:insert, i, point] ;
+#        rtree.showTree() ;
       }
+      showRTreeOnCanvas(rtree) ;
+    end
+
+
+    #----------------------------------------------------
+    #++
+    ## show on canvas
+    def showRTreeOnCanvas(rtree)
+      width = height = 512 ;
+      sizeX = 20.0 ;
+      sizeY = 20.0 ;
+      scale = width.to_f / sizeX ;
+      canvas = MyCanvas.new('gtk',
+                            { 'width' => width,
+                              'height' => height,
+                              'scale' => scale,
+                              'centerp' => true }) ;
+      canvas.singlePage('white') {
+        showNodeOnCanvas(rtree.root, canvas) ;
+      }
+    end
+    
+    def showNodeOnCanvas(node, canvas)
+      p [:node, node.bbox()] ;
+      bbox = node.bbox() ;
+      if(node.is_a?(Geo2D::RTree::Node)) then
+        return if(bbox.nil?) ;
+        canvas.drawEmptyRectangle(bbox.minX(), bbox.minY(),
+                                  bbox.sizeX(), bbox.sizeY(),'green') ;
+        node.children.each{|child|
+          showNodeOnCanvas(child, canvas) ;
+        }
+      else
+        d = 1.0 / canvas.getScaleX() ;
+        canvas.drawFilledRectangle(bbox.minX()-d, bbox.minY()-d,
+                                   bbox.sizeX()+2*d, bbox.sizeY()+2*d,'red') ;
+      end
     end
 
   end # class TC_Foo < Test::Unit::TestCase
