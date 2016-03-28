@@ -60,6 +60,13 @@ module Geo2D
 
     #--------------------------------------------------------------
     #++
+    ## search
+    def searchByBBox(bbox)
+      @root.searchByBBox(bbox, []) ;
+    end
+
+    #--------------------------------------------------------------
+    #++
     ## show tree.
     def showTree(strm = $stdout)
       @root.showTree(strm, "", "  ") ;
@@ -233,6 +240,24 @@ module Geo2D
       
       #------------------------------------------
       #++
+      ## search by BBox
+      def searchByBBox(_bbox, result)
+        if(_bbox.intersectsWithBox(bbox())) then
+          if(isBottom()) then
+            @children.each{|child|
+              result.push(child) if(_bbox.intersectsWithBox(child.bbox())) ;
+            }
+          else
+            @children.each{|child|
+              child.searchByBBox(_bbox, result) ;
+            }
+          end
+        end
+        return result ;
+      end
+
+      #------------------------------------------
+      #++
       ## show tree.
       def showTree(strm, indent, nextIndent)
         strm << indent << "*+[#{@count}]: #{@bbox}" << "\n" ;
@@ -291,43 +316,114 @@ if($0 == __FILE__) then
     #----------------------------------------------------
     #++
     ## about test_a
-    def test_a
+    ## random plog
+    def x_test_a
       rtree = Geo2D::RTree.new() ;
-      genX = Stat::Uniform.new(-10.0, 10.0) ;
-      genY = Stat::Uniform.new(-10.0, 10.0) ;
+      size = 10.0 ;
+      genX = Stat::Uniform.new(-size, size) ;
+      genY = Stat::Uniform.new(-size, size) ;
+      canvas = prepareCanvas(2 * size) ;
+      n = 100 ;
+      canvas.animation((0...n),0.1){|i|
+        x = genX.value() ;
+        y = genY.value() ;
+        point = Geo2D::Point.new(x,y) ;
+        showNodeOnCanvas(rtree.root, canvas) ;
+        rtree.insert(point) ;
+#        p [:insert, i, point] ;
+#        rtree.showTree() ;
+      }
+    end
+
+    #----------------------------------------------------
+    #++
+    ## about test_b
+    ## shifting random plot
+    def x_test_b
+      rtree = Geo2D::RTree.new() ;
+      size = 10.0 ;
+      genX = Stat::Uniform.new(-size, size) ;
+      genY = Stat::Uniform.new(-size, size) ;
+      r = 10.0 ;
+      canvas = prepareCanvas(r * size) ;
+      n = 100 ;
+      canvas.animation((0...n),0.1){|i|
+        offset = r * size * ((i - n/2).to_f / n.to_f) ;
+        x = genX.value() + offset ;
+        y = genY.value() + offset ;
+        p [:offset, offset, x, y] ;
+        point = Geo2D::Point.new(x,y) ;
+        rtree.insert(point) ;
+        showNodeOnCanvas(rtree.root, canvas) ;
+#        p [:insert, i, point] ;
+#        rtree.showTree() ;
+      }
+    end
+
+    #----------------------------------------------------
+    #++
+    ## about test_c
+    ## shifting random plot
+
+    def test_c
+      rtree = Geo2D::RTree.new() ;
+      size = 10.0 ;
+      genX = Stat::Uniform.new(-size, size) ;
+      genY = Stat::Uniform.new(-size, size) ;
+      ##
       n = 100 ;
       (0...n).each{|i|
         x = genX.value() ;
         y = genY.value() ;
         point = Geo2D::Point.new(x,y) ;
         rtree.insert(point) ;
-#        p [:insert, i, point] ;
-#        rtree.showTree() ;
       }
-      showRTreeOnCanvas(rtree) ;
+      ##
+      s = size/4.0 ;
+      box = Geo2D::Box.new([-s, -s],[s, s]) ;
+      plist = rtree.searchByBBox(box) ;
+      pp plist ;
+      ##
+      canvas = prepareCanvas(2 * size) ;
+      canvas.singlePage('white'){
+        showNodeOnCanvas(rtree.root, canvas) ;
+        canvas.drawEmptyRectangle(box.minX(), box.minY(),
+                                  box.sizeX(), box.sizeY(),'orange') ;
+        d = 2.0 / canvas.getScaleX() ;
+        plist.each{|pt|
+          canvas.drawFilledRectangle(pt.minX()-d, pt.minY()-d,
+                                     2*d, 2*d, 'red') ;
+        }
+      }
     end
+    
 
-
+    #----------------------------------------------------
+    #++
+    ## 
+    def prepareCanvas(rangeXY, sizeXY = 512)
+      scale = sizeXY.to_f / rangeXY.to_f ;
+      canvas = MyCanvas.new('gtk',
+                            { 'width' => sizeXY,
+                              'height' => sizeXY,
+                              'scale' => scale,
+                              'centerp' => true }) ;
+      return canvas ;
+    end
+      
     #----------------------------------------------------
     #++
     ## show on canvas
     def showRTreeOnCanvas(rtree)
-      width = height = 512 ;
       sizeX = 20.0 ;
-      sizeY = 20.0 ;
-      scale = width.to_f / sizeX ;
-      canvas = MyCanvas.new('gtk',
-                            { 'width' => width,
-                              'height' => height,
-                              'scale' => scale,
-                              'centerp' => true }) ;
+      canvas = prepareCanvas(sizeX) ;
       canvas.singlePage('white') {
         showNodeOnCanvas(rtree.root, canvas) ;
       }
     end
     
     def showNodeOnCanvas(node, canvas)
-      p [:node, node.bbox()] ;
+#      p [:node, node.bbox()] ;
       bbox = node.bbox() ;
       if(node.is_a?(Geo2D::RTree::Node)) then
         return if(bbox.nil?) ;

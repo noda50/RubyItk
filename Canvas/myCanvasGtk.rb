@@ -527,7 +527,7 @@ class MyCanvasGtk < MyCanvasDevBase
   def waitQuit_not_work()
     if(@quitMutex)
       @quitMutex.synchronize() {
-        p [:enterWaitQuit, Thread::current] ;
+#        p [:enterWaitQuit, Thread::current] ;
         @quitCV.wait(@quitMutex) ;
         ## なぜか以下の２つがないと、うまく終われない。
 #        p [:exitWaitQuit, Thread::current] ;

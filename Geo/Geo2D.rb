@@ -1,3 +1,4 @@
+# coding: euc-jp
 ## -*- Mode: ruby -*-
 ##Header:
 ##Title: Generic 2D Geometrical Operations
@@ -1387,6 +1388,18 @@ module Geo2D
     def includePoint(point)
       return (point.x >= minX() && point.x <= maxX() &&
               point.y >= minY() && point.y <= maxY()) ;
+    end
+
+    ##----------------------------------------
+    ## check inside
+    def intersectsWithBox(box)
+      myMinX = minX() ; myMinY = minY() ;
+      myMaxX = maxX() ; myMaxY = maxY() ;
+      otherMinX = box.minX() ; otherMinY = box.minY() ;
+      otherMaxX = box.maxX() ; otherMaxY = box.maxY() ;
+      ans = ((! (myMinX > otherMaxX || myMaxX < otherMinX)) &&
+             (! (myMinY > otherMaxY || myMaxY < otherMinY))) ;
+      return ans ;
     end
 
     ##----------------------------------------
