@@ -60,6 +60,13 @@ module Geo2D
 
     #--------------------------------------------------------------
     #++
+    ## insert geo object.
+    def delete(geo)
+      @root.delete(geo) ;
+    end
+
+    #--------------------------------------------------------------
+    #++
     ## search
     def searchByBBox(bbox)
       @root.searchByBBox(bbox, []) ;
@@ -258,6 +265,68 @@ module Geo2D
 
       #------------------------------------------
       #++
+      ## delete.
+      def delete(geo)
+        c = 0 ;
+        if(!bbox().nil? && bbox().intersectsWithBox(geo.bbox())) then
+          if(isBottom()) then
+            c = deleteFromBottom(geo) ;
+          else
+            c = deleteFromMiddle(geo) ;
+          end
+          recalcBBox() if(c>0) ;
+        end
+        return c ;
+      end
+
+      #------------------------------------------
+      #++
+      ## delete from bottom node.
+      def deleteFromBottom(geo)
+        c = 0 ;
+        @children.each{|obj|
+          if(geo == obj) then
+            @children.delete(obj) ;
+            @count -= 1 ;
+            c += 1 ;
+          end
+        }
+        return c ;
+      end
+
+      #------------------------------------------
+      #++
+      ## delete from middle node.
+      def deleteFromMiddle(geo)
+        csum = 0 ;
+        @children.each{|child|
+          c = child.delete(geo) ;
+          @count -= c ;
+          csum += c ;
+        }
+        return csum ;
+      end
+
+      #------------------------------------------
+      #++
+      ## delete from bottom node.
+      def recalcBBox()
+        @bbox = nil ;
+        @children.each{|child|
+          childBBox = child.bbox() ;
+          if(!childBBox.nil?) then
+            if(@bbox.nil?) then
+              @bbox = childBBox.dup() ;
+            else
+              @bbox.insert(childBBox) ;
+            end
+          end
+        }
+        return @bbox ;
+      end
+
+      #------------------------------------------
+      #++
       ## show tree.
       def showTree(strm, indent, nextIndent)
         strm << indent << "*+[#{@count}]: #{@bbox}" << "\n" ;
@@ -365,7 +434,7 @@ if($0 == __FILE__) then
     ## about test_c
     ## shifting random plot
 
-    def test_c
+    def x_test_c
       rtree = Geo2D::RTree.new() ;
       size = 10.0 ;
       genX = Stat::Uniform.new(-size, size) ;
@@ -397,6 +466,36 @@ if($0 == __FILE__) then
       }
     end
     
+
+    #----------------------------------------------------
+    #++
+    ## about test_d
+    ## shifting random plot
+
+    def test_d
+      rtree = Geo2D::RTree.new() ;
+      size = 10.0 ;
+      genX = Stat::Uniform.new(-size, size) ;
+      genY = Stat::Uniform.new(-size, size) ;
+      ##
+      n = 500 ;
+      m = 100 ;
+      plist = [] ;
+      canvas = prepareCanvas(2 * size) ;
+      canvas.animation((0...n),0.1){|i|
+        x = genX.value() ;
+        y = genY.value() ;
+        point = Geo2D::Point.new(x,y) ;
+        plist.push(point) ;
+        rtree.insert(point) ;
+        if(i >= m) then
+          p = plist[rand(plist.size)] ;
+          rtree.delete(p) ;
+          plist.delete(p) ;
+        end
+        showNodeOnCanvas(rtree.root, canvas) ;
+      }
+    end
 
     #----------------------------------------------------
     #++
