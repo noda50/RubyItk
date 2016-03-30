@@ -24,6 +24,7 @@ module Geo2D
     #++
     ## description of DefaultOptsions.
     DefaultConf = { :branchN => 4,
+                    :reballanceP => true,
                     nil => nil
                   } ;
 
@@ -33,6 +34,8 @@ module Geo2D
     attr_accessor :branchN ;
     ## root node
     attr_accessor :root ;
+   ## auto reballance
+    attr_accessor :reballanceP ;
 
     #--------------------------------------------------------------
     #++
@@ -48,6 +51,7 @@ module Geo2D
     ## setup parameters.
     def setup()
       @branchN = getConf(:branchN) ;
+      @reballanceP = getConf(:reballanceP) ;
       @root = Node.new(self) ;
     end
 
@@ -56,6 +60,7 @@ module Geo2D
     ## insert geo object.
     def insert(geo)
       @root.insert(geo) ;
+      @root.reballanceNode() if (@reballanceP) ;
     end
 
     #--------------------------------------------------------------
@@ -114,7 +119,7 @@ module Geo2D
       #++
       ## initializer/constructor
       def initialize(parent)
-        setParent(parent) ;
+        setInitParent(parent) ;
         @children = [] ;
         @isBottom = true ;
         @bbox = nil ;
@@ -124,7 +129,7 @@ module Geo2D
       #------------------------------------------
       #++
       ## initializer/constructor
-      def setParent(parent)
+      def setInitParent(parent)
         if(parent.is_a?(RTree))
           @parent = nil ;
           @tree = parent ;
@@ -158,6 +163,13 @@ module Geo2D
       ## fill check.
       def isEmpty()
         return (@children.size == 0) ;
+      end
+      
+      #------------------------------------------
+      #++
+      ## fill check.
+      def isTop()
+        return @parent.nil? ;
       end
       
       #------------------------------------------
@@ -339,6 +351,103 @@ module Geo2D
         return @bbox ;
       end
 
+      #------------------------------------------
+      #++
+      ## re-ballance node body process
+      def reballanceNode(deepP = true)
+        r = false ;
+        if(!isBottom()) then
+          depthRange = getDepthRange() ;
+          if(depthRange[1] - depthRange[0] > 1) then
+            (deepestChild, childRange) = findDeepestMiddleChild() ;
+            if(!deepestChild.nil?) then
+              r = swapWithChild(deepestChild, childRange) ;
+            end
+            if(deepP) then
+              @children.each{|child|
+                child.reballanceNode(deepP) ;
+              }
+            end
+          end
+        end
+        return r ;
+      end
+
+      #------------------------------------------
+      #++
+      ## re-ballance node
+      def findDeepestMiddleChild()
+        deepestChild = nil ;
+        deepestRange = nil ;
+        @children.each{|child|
+          if(!child.isBottom()) then
+            childDepth = child.getDepthRange() ;
+            if(deepestChild.nil? || deepestRange[1] < childDepth[1]) then
+              deepestChild = child ;
+              deepestRange = childDepth ;
+            end
+          end
+        }
+        return [deepestChild, deepestRange] ;
+      end
+      
+      #------------------------------------------
+      #++
+      ## re-ballance node
+      def swapWithChild(childNode, depthRange)
+        box = nil ;
+        nth = nil ;
+        i = 0 ;
+        @children.each{|child|
+          if(child == childNode) then
+            nth = i ;
+          else
+            box = insertToBox(box, child.bbox) ;
+          end
+          i += 1 ;
+        }
+        bestGChild = nil ;
+        bestBox = nil ;
+        childNode.children.each{|gchild|
+          gchildDepth = gchild.getDepthRange() ;
+          if(gchildDepth[1] + 2 < depthRange[1]) then
+            newBox = box.dup ;
+            newBox.insert(gchild.bbox()) ;
+            if(bestGChild.nil? ||
+               bestBox.grossArea() > newBox.grossArea()) then 
+              bestGChild = gchild ;
+              bestBox = newBox ;
+            end
+          end
+        }
+        if(!bestGChild.nil?) then
+          _parent = @parent ;
+          if(isTop()) then
+            @tree.root = childNode ;
+          else
+            _parent.children[_parent.children.index(self)] = childNode ;
+          end
+          childNode.parent = _parent ;
+          #
+          childNode.children[childNode.children.index(bestGChild)] = self ;
+          self.parent = childNode ;
+          #
+          @children[@children.index(childNode)] = bestGChild ;
+          bestGChild.parent = self ;
+          #
+          self.recalcBBox() ;
+          childNode.recalcBBox() ;
+          _parent.recalcBBox() if(!_parent.nil?) ;
+          #
+          @count += (bestGChild.count - childNode.count) ;
+          childNode.count += (@count - bestGChild.count) ;
+          p [:swapNode] ;
+          return true ;
+        else
+          return false ;
+        end
+      end
+      
       #------------------------------------------
       #++
       ## depth range to the leaf
@@ -583,18 +692,43 @@ if($0 == __FILE__) then
     ## ballance
 
     def test_e
-      rtree = Geo2D::RTree.new() ;
-      size = 10.0 ;
-      genX = Stat::Uniform.new(-size, size) ;
-      genY = Stat::Uniform.new(-size, size) ;
-      r = 10.0 ;
-      canvas = prepareCanvas(r * size) ;
+#      rtree = Geo2D::RTree.new({:reballanceP => true}) ;
+      rtree = Geo2D::RTree.new({:reballanceP => false}) ;
+      size = 100.0 ;
+      canvas = prepareCanvas(size) ;
       n = 1000 ;
+      m = Math::sqrt(n) ;
       canvas.animation((0...n),0.0){|i|
-        offset = r * size * ((i - n/2).to_f / n.to_f) ;
-        x = genX.value() + offset ;
-        y = genY.value() + offset ;
-        p [:offset, offset, x, y] ;
+        a = (i / m - (m/2)) * 1.4 ;
+        b = (i % m.to_i - (m/2)) * 1.4 ;
+        k = 0.1 ;
+        x = a + k * b ;
+        y = k * a - b ;
+        p [x, y] ;
+        point = Geo2D::Point.new(x,y) ;
+        rtree.insert(point) ;
+        showNodeOnCanvas(rtree.root, canvas) ;
+#        p [:insert, i, point] ;
+#        rtree.showTree(){|node|
+#          "#{node.getDepthRange().inspect}:#{node.children.size}" ;
+#        };
+        p rtree.root.getDepthRange() ;
+      }
+    end
+
+    #----------------------------------------------------
+    #++
+    ## ballance
+
+    def x_test_f
+      rtree = Geo2D::RTree.new({:reballanceP => true}) ;
+#      rtree = Geo2D::RTree.new({:reballanceP => false}) ;
+      size = 100.0 ;
+      canvas = prepareCanvas(size) ;
+      n = 1000 ;
+      canvas.animation((0...n),0.01){|i|
+        x = y = (i.to_f/n.to_f - 0.5) * size * 0.9;
+        p [x, y] ;
         point = Geo2D::Point.new(x,y) ;
         rtree.insert(point) ;
         showNodeOnCanvas(rtree.root, canvas) ;
