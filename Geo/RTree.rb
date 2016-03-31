@@ -238,7 +238,7 @@ module Geo2D
         if(box.nil?) ;
           box = geo.bbox() ;
         else
-          box.insert(geo) ;
+          box.insert(geo.bbox()) ;
         end
         return box ;
       end
@@ -296,7 +296,7 @@ module Geo2D
         else
           tempBBox = @bbox.dup(true) ;
           origArea = tempBBox.grossArea() ;
-          tempBBox.insert(geo) ;
+          tempBBox.insert(geo.bbox()) ;
           newArea = tempBBox.grossArea() ;
           return newArea - origArea ;
         end

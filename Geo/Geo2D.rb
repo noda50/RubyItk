@@ -1427,6 +1427,15 @@ module Geo2D
     end
 
     ##----------------------------------------
+    def growByMargin(margin)
+      @minPos.x -= margin ;
+      @maxPos.x += margin ;
+      @minPos.y -= margin ;
+      @maxPos.y += margin ;
+      return self ;
+    end
+
+    ##----------------------------------------
     def to_s()
       "#Box[#{@minPos.to_s(true)}:#{@maxPos.to_s(true)}]" ;
     end
