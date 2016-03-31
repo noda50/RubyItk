@@ -58,6 +58,8 @@
 #	drawFilledCircle(x,y,r,color="black")
 #	drawFramedCircle(x,y,r,framecolor="black",fillcolor="white")
 #
+#       drawEllipse(x,y,rx,ry,fillp=false,color="black")
+#
 #	drawRectangle(x,y,w,h,fillp,color="black")
 #	drawEmptyRectangle(x,y,w,h,color="black")
 #	drawFilledRectangle(x,y,w,h,color="black") 

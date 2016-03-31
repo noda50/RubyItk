@@ -1403,6 +1403,20 @@ module Geo2D
     end
 
     ##----------------------------------------
+    ## get intersecting box with a given box
+    def getIntersectionBoxWith(box)
+      myMinX = max(minX(), box.minX()) ;
+      myMinY = max(minY(), box.minY()) ;
+      myMaxX = min(maxX(), box.maxX()) ;
+      myMaxY = min(maxY(), box.maxY()) ;
+      if(myMinX <= myMaxX && myMinY <= myMaxY) then
+        return Box.new([myMinX, myMinY], [myMaxX, myMaxY]) ;
+      else
+        return nil ;
+      end
+    end
+
+    ##----------------------------------------
     def length()
       return 2.0 * (sizeX() + sizeY()) ;
     end

@@ -1,4 +1,5 @@
 #! /usr/bin/env ruby
+# coding: utf-8
 ## -*- mode: ruby -*-
 ## = RTree implement by pure Ruby
 ## Author:: Itsuki Noda
@@ -24,7 +25,8 @@ module Geo2D
     #++
     ## description of DefaultOptsions.
     DefaultConf = { :branchN => 4,
-                    :reballanceP => true,
+                    :reballanceN => 0, ## 1 だとあまりうまく動かない。
+                    :useCountCost => true,
                     nil => nil
                   } ;
 
@@ -34,8 +36,10 @@ module Geo2D
     attr_accessor :branchN ;
     ## root node
     attr_accessor :root ;
-   ## auto reballance
-    attr_accessor :reballanceP ;
+    ## auto reballance
+    attr_accessor :reballanceN ;
+    ## flag to use count cost.  cost increases if entity count is large.
+    attr_accessor :useCountCost ;
 
     #--------------------------------------------------------------
     #++
@@ -51,7 +55,8 @@ module Geo2D
     ## setup parameters.
     def setup()
       @branchN = getConf(:branchN) ;
-      @reballanceP = getConf(:reballanceP) ;
+      @reballanceN = getConf(:reballanceN) ;
+      @useCountCost = getConf(:useCountCost) ;
       @root = Node.new(self) ;
     end
 
@@ -60,7 +65,8 @@ module Geo2D
     ## insert geo object.
     def insert(geo)
       @root.insert(geo) ;
-      @root.reballanceNode() if (@reballanceP) ;
+      (0...@reballanceN).each{ @root.reballanceNode() ; }
+      return self ;
     end
 
     #--------------------------------------------------------------
@@ -68,20 +74,27 @@ module Geo2D
     ## insert geo object.
     def delete(geo)
       @root.delete(geo) ;
+      return self ;
     end
 
     #--------------------------------------------------------------
     #++
     ## search
     def searchByBBox(bbox)
-      @root.searchByBBox(bbox, []) ;
+      return @root.searchByBBox(bbox, []) ;
+    end
+
+    #--------------------------------------------------------------
+    #++
+    ## calculate overlap area
+    def calcOverlapArea(recursiveP = true)
+      return @root.calcOverlapArea(recursiveP) ;
     end
 
     #--------------------------------------------------------------
     #++
     ## show tree.
     def showTree(strm = $stdout, &body)
-      p body ;
       if(body.nil?) then
         @root.showTree(strm, "", "  ") {|node|
           "*+[#{node.count}]: #{node.bbox}" ;
@@ -91,6 +104,20 @@ module Geo2D
       end
     end
 
+    #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    #++
+    ## default configulation on in show on canvas
+    DefaultShowOnCanvasConf = { :canvasColor => 'white',
+                                :nodeColor => 'green',
+                                :leafColor => 'red' } ;
+    #--------------------------------------------------------------
+    #++
+    ## show on canvas
+    def showOnCanvas(canvas, optConf = {})
+      conf = DefaultShowOnCanvasConf.dup.update(optConf) ;
+      @root.showOnCanvas(canvas, conf) ;
+    end
+    
     #--============================================================
     #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -253,7 +280,11 @@ module Geo2D
       ## calc insert cost
       def calcInsertCost(geo)
         incArea = calcIncreasingArea(geo) ;
-        return incArea * @count ;
+        if(@tree.useCountCost) then
+          return incArea * @count ;
+        else
+          return incArea ;
+        end
       end
       
       #------------------------------------------
@@ -353,20 +384,20 @@ module Geo2D
 
       #------------------------------------------
       #++
-      ## re-ballance node body process
+      ## re-ballance node body process (bad performance)
       def reballanceNode(deepP = true)
         r = false ;
         if(!isBottom()) then
           depthRange = getDepthRange() ;
           if(depthRange[1] - depthRange[0] > 1) then
-            (deepestChild, childRange) = findDeepestMiddleChild() ;
-            if(!deepestChild.nil?) then
-              r = swapWithChild(deepestChild, childRange) ;
-            end
             if(deepP) then
               @children.each{|child|
                 child.reballanceNode(deepP) ;
               }
+            end
+            (deepestChild, childRange) = findDeepestMiddleChild() ;
+            if(!deepestChild.nil?) then
+              r = swapWithChild(deepestChild, childRange) ;
             end
           end
         end
@@ -375,7 +406,7 @@ module Geo2D
 
       #------------------------------------------
       #++
-      ## re-ballance node
+      ## re-ballance node (bad performance)
       def findDeepestMiddleChild()
         deepestChild = nil ;
         deepestRange = nil ;
@@ -393,7 +424,7 @@ module Geo2D
       
       #------------------------------------------
       #++
-      ## re-ballance node
+      ## re-ballance node (bad performance)
       def swapWithChild(childNode, depthRange)
         box = nil ;
         nth = nil ;
@@ -441,7 +472,7 @@ module Geo2D
           #
           @count += (bestGChild.count - childNode.count) ;
           childNode.count += (@count - bestGChild.count) ;
-          p [:swapNode] ;
+#          p [:swapNode] ;
           return true ;
         else
           return false ;
@@ -480,6 +511,36 @@ module Geo2D
 
       #------------------------------------------
       #++
+      ## calc overlap area in children
+      def calcOverlapArea(recursiveP)
+        if(isBottom()) then
+          return 0.0 ;
+        elsif(@bbox.nil?) then
+          return 0.0 ;
+        else
+          bboxList = @children.map(){|child| child.bbox()} ;
+          k = bboxList.size() ;
+          area = 0.0 ;
+          (0...k).each{|i|
+            (0...i).each{|j|
+              intersection =
+                bboxList[i].getIntersectionBoxWith(bboxList[j]) ;
+              if(!intersection.nil?) then
+                area += intersection.grossArea() ;
+              end
+            }
+          }
+          if(recursiveP) then
+            @children.each{|child|
+              area += child.calcOverlapArea(recursiveP) ;
+            }
+          end
+          return area ;
+        end
+      end
+
+      #------------------------------------------
+      #++
       ## show tree.
       def showTree(strm, indent, nextIndent, &body)
         strm << indent << "+-+" << body.call(self) << "\n" ;
@@ -496,6 +557,31 @@ module Geo2D
         }
       end
 
+      #------------------------------------------
+      #++
+      ## show tree on canvas
+      def showOnCanvas(canvas, conf)
+        if(!@bbox.nil?) then
+          canvas.drawEmptyRectangle(@bbox.minX(), @bbox.minY(),
+                                    @bbox.sizeX(), @bbox.sizeY(),
+                                    conf[:nodeColor]) ;
+          if(isBottom()) then
+            d = 1.0 / canvas.getScaleX() ;
+            @children.each{|leaf|
+              _bbox = leaf.bbox() ;
+              rx = _bbox.sizeX()/2.0 ; rx = d if (rx < d) ;
+              ry = _bbox.sizeY()/2.0 ; ry = d if (ry < d) ;
+              canvas.drawEllipse(_bbox.midX(), _bbox.midY(),
+                                 rx, ry, false, conf[:leafColor]) ;
+            }
+          else
+            @children.each{|child|
+              child.showOnCanvas(canvas, conf) ;
+            }
+          end
+        end
+      end
+      
       #--========================================
       #--::::::::::::::::::::::::::::::::::::::::
       #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -555,42 +641,34 @@ if($0 == __FILE__) then
       sizeX = 20.0 ;
       canvas = prepareCanvas(sizeX) ;
       canvas.singlePage('white') {
-        showNodeOnCanvas(rtree.root, canvas) ;
+        rtree.showOnCanvas(canvas) ;
       }
     end
     
-    def showNodeOnCanvas(node, canvas)
-#      p [:node, node.bbox()] ;
-      bbox = node.bbox() ;
-      if(node.is_a?(Geo2D::RTree::Node)) then
-        return if(bbox.nil?) ;
-        canvas.drawEmptyRectangle(bbox.minX(), bbox.minY(),
-                                  bbox.sizeX(), bbox.sizeY(),'green') ;
-        node.children.each{|child|
-          showNodeOnCanvas(child, canvas) ;
-        }
-      else
-        d = 1.0 / canvas.getScaleX() ;
-        canvas.drawFilledRectangle(bbox.minX()-d, bbox.minY()-d,
-                                   bbox.sizeX()+2*d, bbox.sizeY()+2*d,'red') ;
-      end
-    end
 
     #----------------------------------------------------
     #++
-    ## random plot
-    def x_test_a
-      rtree = Geo2D::RTree.new() ;
+    ## random plot (no reballance / reballance)
+    def test_a0
+      _test_a(0)
+    end
+
+    def test_a1
+      _test_a(1)
+    end
+    
+    def _test_a(reballanceN)
+      rtree = Geo2D::RTree.new({:reballanceN => reballanceN}) ;
       size = 10.0 ;
       genX = Stat::Uniform.new(-size, size) ;
       genY = Stat::Uniform.new(-size, size) ;
-      canvas = prepareCanvas(2 * size) ;
-      n = 100 ;
-      canvas.animation((0...n),0.1){|i|
+      canvas = prepareCanvas(2.1 * size) ;
+      n = 300 ;
+      canvas.animation((0...n),0.001){|i|
         x = genX.value() ;
         y = genY.value() ;
         point = Geo2D::Point.new(x,y) ;
-        showNodeOnCanvas(rtree.root, canvas) ;
+        rtree.showOnCanvas(canvas) ;
         rtree.insert(point) ;
 #        p [:insert, i, point] ;
 #        rtree.showTree() ;
@@ -600,8 +678,16 @@ if($0 == __FILE__) then
     #----------------------------------------------------
     #++
     ## shifting random plot
-    def x_test_b
-      rtree = Geo2D::RTree.new() ;
+    def test_b0
+      _test_b(0) ;
+    end
+
+    def test_b1
+      _test_b(1) ;
+    end
+    
+    def _test_b(reballanceN)
+      rtree = Geo2D::RTree.new({:reballanceN => reballanceN}) ;
       size = 10.0 ;
       genX = Stat::Uniform.new(-size, size) ;
       genY = Stat::Uniform.new(-size, size) ;
@@ -615,7 +701,7 @@ if($0 == __FILE__) then
         p [:offset, offset, x, y] ;
         point = Geo2D::Point.new(x,y) ;
         rtree.insert(point) ;
-        showNodeOnCanvas(rtree.root, canvas) ;
+        rtree.showOnCanvas(canvas) ;
 #        p [:insert, i, point] ;
 #        rtree.showTree() ;
       }
@@ -625,8 +711,16 @@ if($0 == __FILE__) then
     #++
     ## search
 
-    def x_test_c
-      rtree = Geo2D::RTree.new() ;
+    def test_c0
+      _test_c(0) ;
+    end
+
+    def test_c1
+      _test_c(1) ;
+    end
+    
+    def _test_c(reballanceN)
+      rtree = Geo2D::RTree.new({:reballanceN => reballanceN}) ;
       size = 10.0 ;
       genX = Stat::Uniform.new(-size, size) ;
       genY = Stat::Uniform.new(-size, size) ;
@@ -646,7 +740,7 @@ if($0 == __FILE__) then
       ##
       canvas = prepareCanvas(2 * size) ;
       canvas.singlePage('white'){
-        showNodeOnCanvas(rtree.root, canvas) ;
+        rtree.showOnCanvas(canvas) ;
         canvas.drawEmptyRectangle(box.minX(), box.minY(),
                                   box.sizeX(), box.sizeY(),'orange') ;
         d = 2.0 / canvas.getScaleX() ;
@@ -661,9 +755,16 @@ if($0 == __FILE__) then
     #----------------------------------------------------
     #++
     ## delete
+    def test_d0
+      _test_d(0) ;
+    end
 
-    def x_test_d
-      rtree = Geo2D::RTree.new() ;
+    def test_d1
+      _test_d(1) ;
+    end
+
+    def _test_d(reballanceN)
+      rtree = Geo2D::RTree.new({:reballanceN => reballanceN}) ;
       size = 10.0 ;
       genX = Stat::Uniform.new(-size, size) ;
       genY = Stat::Uniform.new(-size, size) ;
@@ -683,61 +784,75 @@ if($0 == __FILE__) then
           rtree.delete(p) ;
           plist.delete(p) ;
         end
-        showNodeOnCanvas(rtree.root, canvas) ;
+        rtree.showOnCanvas(canvas) ;
       }
     end
 
     #----------------------------------------------------
     #++
-    ## ballance
+    ## ballance (grid) ;
 
-    def test_e
-#      rtree = Geo2D::RTree.new({:reballanceP => true}) ;
-      rtree = Geo2D::RTree.new({:reballanceP => false}) ;
+    def test_e0
+      _test_e(0) ;
+    end
+
+    def test_e1
+      _test_e(1) ;
+    end
+
+    def test_e7
+      _test_e(7) ;
+    end
+
+    def _test_e(reballanceN)
+      rtree = Geo2D::RTree.new({:reballanceN => reballanceN}) ;
       size = 100.0 ;
       canvas = prepareCanvas(size) ;
-      n = 1000 ;
+      n = 3000 ;
       m = Math::sqrt(n) ;
+      l = 0.5 * (size / m);
+      k = 0.1 ;
       canvas.animation((0...n),0.0){|i|
-        a = (i / m - (m/2)) * 1.4 ;
-        b = (i % m.to_i - (m/2)) * 1.4 ;
-        k = 0.1 ;
-        x = a + k * b ;
-        y = k * a - b ;
-        p [x, y] ;
+        a = (i / m - (m/2)) * l
+        b = (i % m.to_i - (m/2)) * l ;
+        x = (1-k)*a + k * b ;
+        y = k * a - (1-k) * b ;
         point = Geo2D::Point.new(x,y) ;
         rtree.insert(point) ;
-        showNodeOnCanvas(rtree.root, canvas) ;
-#        p [:insert, i, point] ;
-#        rtree.showTree(){|node|
-#          "#{node.getDepthRange().inspect}:#{node.children.size}" ;
-#        };
-        p rtree.root.getDepthRange() ;
+        rtree.showOnCanvas(canvas) ;
+        p [reballanceN, i, rtree.root.getDepthRange()] ;
       }
+      p rtree.root.bbox() ;
     end
 
     #----------------------------------------------------
     #++
-    ## ballance
+    ## ballance (along a line)
+    def test_f0
+      _test_f(0);
+    end
 
-    def x_test_f
-      rtree = Geo2D::RTree.new({:reballanceP => true}) ;
-#      rtree = Geo2D::RTree.new({:reballanceP => false}) ;
+    def test_f1
+      _test_f(1);
+    end
+
+    def test_f7
+      _test_f(7);
+    end
+
+    def _test_f(reballanceN)
+      rtree = Geo2D::RTree.new({:reballanceN => reballanceN}) ;
       size = 100.0 ;
       canvas = prepareCanvas(size) ;
       n = 1000 ;
       canvas.animation((0...n),0.01){|i|
         x = y = (i.to_f/n.to_f - 0.5) * size * 0.9;
-        p [x, y] ;
         point = Geo2D::Point.new(x,y) ;
         rtree.insert(point) ;
-        showNodeOnCanvas(rtree.root, canvas) ;
-#        p [:insert, i, point] ;
-#        rtree.showTree(){|node|
-#          "#{node.getDepthRange().inspect}:#{node.children.size}" ;
-#        };
-        p rtree.root.getDepthRange() ;
+        rtree.showOnCanvas(canvas) ;
+        p [reballanceN, i, rtree.root.getDepthRange()] ;
       }
+      p rtree.root.bbox() ;
     end
 
   end # class TC_Foo < Test::Unit::TestCase
