@@ -306,7 +306,8 @@ module Geo2D
       #++
       ## search by BBox
       def searchByBBox(_bbox, result)
-        if(_bbox.intersectsWithBox(bbox())) then
+        return result if(@bbox.nil?) ;
+        if(_bbox.intersectsWithBox(@bbox)) then
           if(isBottom()) then
             @children.each{|child|
               result.push(child) if(_bbox.intersectsWithBox(child.bbox())) ;

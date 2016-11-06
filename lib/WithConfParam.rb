@@ -11,7 +11,7 @@
 ## * ...
 
 $LOAD_PATH.push("~/lib/ruby") ;
-require 'sexp.rb' ;
+# require 'sexp.rb' ;
 
 ## WithConfParam library
 
@@ -167,6 +167,8 @@ class WithConfParam
   end
 
   #----------------------------------------------------
+  if defined?(Sexp) then
+  #----------------------------------------------------
   #++
   ## convert to Sexp format.
   ## *return*:: an Sexp object
@@ -210,6 +212,8 @@ class WithConfParam
     
     return sexp ;
   end
+  #----------------------------------------------------
+  end # if defined?(Sexp)
 
 end ## class WithConfParam
 
