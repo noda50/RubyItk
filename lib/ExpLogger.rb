@@ -44,6 +44,21 @@ module Itk
     #--------------------------------------------------
     #++
     ## generate timestamp form
+    def getLevelVal(level)
+      if(level.is_a?(Numeric)) then
+        return level ;
+      elsif(level.is_a?(String))
+        return Level[level.intern] ;
+      elsif(level.is_a?(Symbol))
+        return Level[level] ;
+      else
+        return nil ;
+      end
+    end
+    
+    #--------------------------------------------------
+    #++
+    ## generate timestamp form
     def getTimestamp()
       return Time.now.strftime(TimestampFormat)
     end
@@ -62,7 +77,7 @@ module Itk
       elsif(obj.is_a?(Numeric))
         putOne_Atom(strm, obj) ;
       elsif(obj.is_a?(String))
-        putOne_Atom(strm, obj) ;
+        putOne_String(strm, obj) ;
       elsif(obj.is_a?(Symbol))
         putOne_Atom(strm, obj) ;
       elsif(obj.is_a?(Class))
@@ -138,6 +153,16 @@ module Itk
 
     #--------------------------------------------------
     #++
+    ## log output of Atomic or Primitive Objects
+    def putOne_String(strm, obj)
+      if(@quoteString) then
+        strm << obj.inspect ;
+      else
+        strm << obj ;
+      end
+    end
+    #--------------------------------------------------
+    #++
     ## output message if level is higher than the current log level.
     # _level_ :: log level of this message.
     # _*messageList_ :: a list of objects to output for logging.
@@ -207,11 +232,13 @@ module Itk
       :stream => $stdout,
       :file => nil,
       :tee => false, ## if true and :file is given, make log both.
+      :chain => nil,
       :append => false,
       :level => LevelInfo,
       :withLevel => false,
       :compress => false,
       :timestamp => false,
+      :quoteString => true,
     } ;
 
     #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -224,8 +251,10 @@ module Itk
     attr :level, true ;
     ## flag to output level info in the log
     attr :withLevel, true ;
-    ## flag to output stream and chained logger
+    ## flag to output stimestamp in the log
     attr :withTimestamp, true ;
+    ## flat to output string with quotation mark
+    attr :quoteString, true ;
     ## flag to output stream and chained logger
     attr :tee, true ;
     ## chained logger
@@ -248,6 +277,7 @@ module Itk
     def setup()
       @append = getConf(:append) ;
       @tee = getConf(:tee) ;
+      @chain = getConf(:chain) ;
       @file = getConf(:file) ;
       @compress = getConf(:compress) ;
       openFile(@file) if(@file) ;
@@ -255,6 +285,7 @@ module Itk
       setLevel(getConf(:level)) ;
       @withLevel = getConf(:withLevel) ;
       @withTimestamp = getConf(:withTimestamp) ;
+      @quoteString = getConf(:quoteString) ;
       @stream ;
     end
 
@@ -295,15 +326,7 @@ module Itk
     # *return* :: the level.
     def setLevel(level)
       @chain.setLevel(level) if(@chain) ;
-      if(level.is_a?(Numeric)) then
-        @level = level ;
-      elsif(level.is_a?(String))
-        @level = Level[level.intern] ;
-      elsif(level.is_a?(Symbol))
-        @level = Level[level] ;
-      else
-        @level = nil ;
-      end
+      @level = getLevelVal(level) ;
 
       raise("unknown LogLevel:" + level.inspect) if (@level.nil?) ;
 
@@ -330,11 +353,21 @@ module Itk
 
     #--------------------------------------------------
     #++
+    ## set flag to output string with quotation
+    # _flag_ :: true or false.
+    def setQuoteString(flag = true)
+      @chain.setQuoteString(flag) if(@chain) ;
+      @quoteString = flag ;
+    end
+
+    #--------------------------------------------------
+    #++
     ## output message if level is higher than the current log level.
     # _level_ :: log level of this message.
     # _*messageList_ :: a list of objects to output for logging.
     # _&body_ :: a procedure to generate the final message.
     def logging(level,*messageList, &body)
+      level = getLevelVal(level) ;
       ## call chained logger
       @chain.logging(level,*messageList, &body) if(@chain) ;
       
