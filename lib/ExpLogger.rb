@@ -43,26 +43,34 @@ module Itk
 
     #--------------------------------------------------
     #++
+    ## generate timestamp form
+    def getTimestamp()
+      return Time.now.strftime(TimestampFormat)
+    end
+    TimestampFormat = "%Y-%m-%dT%H:%M:%S" ;
+    
+    #--------------------------------------------------
+    #++
     ## generic function for logging objects for each type of objects.
-    def loggingTo(strm, obj, newlinep = true)
+    def putOne(strm, obj, newlinep = true)
       if(obj.is_a?(Array))
-        loggingTo_Array(strm, obj) ;
+        putOne_Array(strm, obj) ;
       elsif(obj.is_a?(Hash))
-        loggingTo_Hash(strm, obj) ;
+        putOne_Hash(strm, obj) ;
       elsif(obj.is_a?(Time))
-        loggingTo_Time(strm, obj) ;
+        putOne_Time(strm, obj) ;
       elsif(obj.is_a?(Numeric))
-        loggingTo_Atom(strm, obj) ;
+        putOne_Atom(strm, obj) ;
       elsif(obj.is_a?(String))
-        loggingTo_Atom(strm, obj) ;
+        putOne_Atom(strm, obj) ;
       elsif(obj.is_a?(Symbol))
-        loggingTo_Atom(strm, obj) ;
+        putOne_Atom(strm, obj) ;
       elsif(obj.is_a?(Class))
-        loggingTo_Atom(strm, obj) ;
+        putOne_Atom(strm, obj) ;
       elsif(obj == true || obj == false || obj == nil)
-        loggingTo_Atom(strm, obj) ;
+        putOne_Atom(strm, obj) ;
       else
-        loggingTo_Object(strm, obj) ;
+        putOne_Object(strm, obj) ;
       end
       strm << "\n" if(newlinep) ;
     end
@@ -70,13 +78,13 @@ module Itk
     #--------------------------------------------------
     #++
     ## log output of Array
-    def loggingTo_Array(strm, obj)
+    def putOne_Array(strm, obj)
       strm << '[' ;
       initp = true ;
       obj.each{|value| 
         strm << ', ' if(!initp) ;
         initp = false ;
-        loggingTo(strm, value, false) ;
+        putOne(strm, value, false) ;
       }
       strm << ']' ;
     end
@@ -84,15 +92,15 @@ module Itk
     #--------------------------------------------------
     #++
     ## log output of Hash
-    def loggingTo_Hash(strm, obj)
+    def putOne_Hash(strm, obj)
       strm << '{' ;
       initp = true ;
       obj.each{|key,value| 
         strm << ', ' if(!initp) ;
         initp = false ;
-        loggingTo(strm, key, false) ;
+        putOne(strm, key, false) ;
         strm << '=>'
-        loggingTo(strm, value, false) ;
+        putOne(strm, value, false) ;
       }
       strm << '}' ;
     end
@@ -100,7 +108,7 @@ module Itk
     #--------------------------------------------------
     #++
     ## log output of Time
-    def loggingTo_Time(strm, obj)
+    def putOne_Time(strm, obj)
       strm << 'Time.parse(' ;
       strm << obj.strftime("%Y-%m-%dT%H:%M:%S%z").inspect
       strm << ')' ;
@@ -109,14 +117,14 @@ module Itk
     #--------------------------------------------------
     #++
     ## log output of other Objects
-    def loggingTo_Object(strm, obj)
+    def putOne_Object(strm, obj)
       strm << '{' ;
       strm << ':__class__' << '=>' << obj.class.inspect ;
       obj.instance_variables.each{|var|
         strm << ', ' ;
         strm << (var.slice(1...var.size).intern.inspect) ;
         strm << '=>'
-        loggingTo(strm, obj.instance_eval("#{var}"), false) ;
+        putOne(strm, obj.instance_eval("#{var}"), false) ;
       }
       strm << '}' ;
     end
@@ -124,7 +132,7 @@ module Itk
     #--------------------------------------------------
     #++
     ## log output of Atomic or Primitive Objects
-    def loggingTo_Atom(strm, obj)
+    def putOne_Atom(strm, obj)
       strm << obj.inspect ;
     end
 
@@ -132,9 +140,10 @@ module Itk
     #++
     ## output message if level is higher than the current log level.
     # _level_ :: log level of this message.
-    # _message_ :: an object to output for logging.
-    def put(level,message)
-      raise("put(level,message) is not implemented for this instance" + 
+    # _*messageList_ :: a list of objects to output for logging.
+    # _&body_ :: a procedure to generate the final message.
+    def logging(level,*messageList, &body)
+      raise("logging(level,*messageList, &body) is not implemented for this instance" + 
             self.inspect) ;
     end
 
@@ -143,39 +152,43 @@ module Itk
     ## force logging
     # _message_ :: message or object
     def <<(message)
-      put(LevelNone,message) ;
+      logging(LevelNone,message) ;
     end
 
     #--------------------------------------------------
     #++
     ## logging info debug level
-    # _message_ :: message or object
-    def debug(message)
-      put(LevelDebug, message) ;
+    # _*messageList_ :: a list of objects to output for logging.
+    # _&body_ :: a procedure to generate the final message.
+    def debug(*messageList,&body)
+      logging(LevelDebug, *messageList, &body) ;
     end
 
     #--------------------------------------------------
     #++
     ## logging info level
-    # _message_ :: message or object
-    def info(message)
-      put(LevelInfo, message) ;
+    # _*messageList_ :: a list of objects to output for logging.
+    # _&body_ :: a procedure to generate the final message.
+    def info(*messageList,&body)
+      logging(LevelInfo, *messageList, &body) ;
     end
 
     #--------------------------------------------------
     #++
     ## logging error level
-    # _message_ :: message or object
-    def error(message)
-      put(LevelError, message) ;
+    # _*messageList_ :: a list of objects to output for logging.
+    # _&body_ :: a procedure to generate the final message.
+    def error(*messageList,&body)
+      logging(LevelError, *messageList, &body) ;
     end
 
     #--------------------------------------------------
     #++
     ## logging fatal level
-    # _message_ :: message or object
-    def fatal(message)
-      put(LevelFatal, message) ;
+    # _*messageList_ :: a list of objects to output for logging.
+    # _&body_ :: a procedure to generate the final message.
+    def fatal(*messageList,&body)
+      logging(LevelFatal, *messageList, &body) ;
     end
 
   end ## module Itk::ExpLogUtility
@@ -198,6 +211,7 @@ module Itk
       :level => LevelInfo,
       :withLevel => false,
       :compress => false,
+      :timestamp => false,
     } ;
 
     #--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -209,7 +223,9 @@ module Itk
     ## log level
     attr :level, true ;
     ## flag to output level info in the log
-    attr :withLevelp, true ;
+    attr :withLevel, true ;
+    ## flag to output stream and chained logger
+    attr :withTimestamp, true ;
     ## flag to output stream and chained logger
     attr :tee, true ;
     ## chained logger
@@ -238,6 +254,7 @@ module Itk
       @stream = @stream || getConf(:stream) ;
       setLevel(getConf(:level)) ;
       @withLevel = getConf(:withLevel) ;
+      @withTimestamp = getConf(:withTimestamp) ;
       @stream ;
     end
 
@@ -304,14 +321,40 @@ module Itk
 
     #--------------------------------------------------
     #++
+    ## set flag to specify log output with timestamp
+    # _flag_ :: true or false.
+    def setWithTimestamp(flag = true)
+      @chain.setWithTimestmap(flag) if(@chain) ;
+      @withTimestamp = flag ;
+    end
+
+    #--------------------------------------------------
+    #++
     ## output message if level is higher than the current log level.
     # _level_ :: log level of this message.
-    # _message_ :: an object to output for logging.
-    def put(level,message)
-      @chain.put(level,message) if(@chain) ;
+    # _*messageList_ :: a list of objects to output for logging.
+    # _&body_ :: a procedure to generate the final message.
+    def logging(level,*messageList, &body)
+      ## call chained logger
+      @chain.logging(level,*messageList, &body) if(@chain) ;
+      
       if(@stream && level >= @level)
-        @stream << LevelName[level] << ": " if(@withLevel) ;
-        loggingTo(@stream,message) ;
+        ## check length of messageList
+        l = messageList.length ;
+        l += 1 if(body) ;
+
+        ## output separator if multiple message.
+        @stream << "-" * 10 << "\n" if(l > 1) ;
+        
+        ## header
+        @stream << LevelName[level] << ":" if(@withLevel) ;
+        @stream << "[" << getTimestamp() << "]:" if (@withTimestamp) ;
+
+        ## output body
+        messageList.each{|message|
+          putOne(@stream, message, true) ;
+        }
+        putOne(@stream, body.call(), true) if(body) ;
       end
     end
 
@@ -367,9 +410,19 @@ module Itk
 
     #--------------------------------------------------
     #++
+    ## set withTimestamp for the logger instance
+    def setWithTimestamp(flag=true)
+      logger().setWithTimestamp(flag) ;
+    end
+
+    #--------------------------------------------------
+    #++
+    # _level_ :: log level of this message.
+    # _*messageList_ :: a list of objects to output for logging.
+    # _&body_ :: a procedure to generate the final message.
     ## output for the logger instance
-    def put(level, message)
-      logger().put(level, message) ;
+    def logging(level,*messageList, &body)
+      logger().logging(level, *messageList, &body) ;
     end
 
     #--------------------------------------------------
@@ -389,18 +442,6 @@ module Itk
       ensure
         _logger.close() ;
       end
-    end
-
-    #--------------------------------------------------
-    #++
-    ## top level logger
-    #--------------------------------------------------
-    #++
-    ## output message if level is higher than the current log level.
-    # _level_ :: log level of this message.
-    # _message_ :: an object to output for logging.
-    def put(level,message)
-      self.logger().put(level,message) ;
     end
 
   end # class << ExpLogger
@@ -442,13 +483,13 @@ if($0 == __FILE__) then
               Time.now,
               {:a => [1,2,3], :c => Hash, :d => {1 => 2, "bar" => 'baz'}},
               Foo.new()] ;
-      Itk::ExpLogUtility::loggingTo($stdout , data) ;
+      Itk::ExpLogUtility::putOne($stdout , data) ;
       str = "" ;
-      Itk::ExpLogUtility::loggingTo(str, data) ;
+      Itk::ExpLogUtility::putOne(str, data) ;
       p str ;
       d = eval(str) ;
       p [:eval, d] ;
-      Itk::ExpLogUtility::loggingTo($stdout, d) ;
+      Itk::ExpLogUtility::putOne($stdout, d) ;
     end
 
     class Foo
@@ -503,6 +544,14 @@ if($0 == __FILE__) then
       }
     end
 
+    ##----------------------------------------
+    description "test of multiple message and call-body."
+    def test_d()
+      Itk::ExpLogger.setLevel(:info) ;
+      Itk::ExpLogger.setWithTimestamp() ;
+      Itk::ExpLogger.info("foo","bar","baz"){"x" * 10}
+    end
+    
   end ##   class TC_WithExpLogger
 
 end
