@@ -20,7 +20,8 @@ require "itml2.rb" ;
 
 $istr = $stdin ;
 #$ostr = $stdout ;
-$ostr = open("|nkf -j","w") ;
+#$ostr = open("|nkf -j","w") ;
+$ostr = open("|nkf -w","w") ;
 $test = FALSE ;
 
 if(ARGV.length > 0) then
@@ -30,7 +31,8 @@ if(ARGV.length > 0) then
     $istr = File::new(ARGV[0]) ;
     if(ARGV.length > 1) then
       #    $ostr = File::new(ARGV[1],"w") ;
-      $ostr = open("|nkf -j > #{ARGV[1]}","w") ;
+#      $ostr = open("|nkf -j > #{ARGV[1]}","w") ;
+      $ostr = open("|nkf -w > #{ARGV[1]}","w") ;
     end
   end
 end

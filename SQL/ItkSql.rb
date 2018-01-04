@@ -1,10 +1,12 @@
 #! /usr/bin/env ruby
+# coding: euc-jp
 ## -*- mode: ruby -*-
 
 require 'pp' ;
 require 'mysql' ;
-require 'parsedate' ;
+#require 'parsedate' ;
 require 'date' ;
+require 'time'
 
 $LOAD_PATH.push("~/lib/ruby") ;
 
@@ -83,6 +85,8 @@ module ItkSql
         @columnList.push(colDef) ;
         @columnTable[colDef.tag] = colDef ;
         @columnTableByName[colDef.name] = colDef ;
+      elsif(colDef.is_a?(Hash))
+        addColDef(ColDef.new(colDef)) ;
       else
         addColDef(ColDef.new(*colDef)) ;
       end
@@ -120,9 +124,26 @@ module ItkSql
     attr :mysql, true ;
 
     ##------------------------------
-    def initialize(name, type, isIndexed = false, 
-                   isKey = false, notNull = false, 
-                   *otherOpt) 
+    ##++
+    ## initialize
+    ## initialize({...}) or initialize(name, type, isIndexed, ...)
+    def initialize(*args)
+      if(args[0].is_a?(Hash))
+        arg = ({ :isIndexed => false,
+                 :isKey => false,
+                 :notNull => false,
+                 :otherOpt => []}) ;
+        arg.update(args[0])
+        setup(arg[:name], arg[:type], arg[:isIndexed],
+              arg[:isKey], arg[:notNull], *(arg[:otherOpt])) ;
+      else
+        setup(*args) ;
+      end
+    end
+    ##------------------------------
+    def setup(name, type, isIndexed = false, 
+              isKey = false, notNull = false, 
+              *otherOpt) 
       setName(name) ;
       setType(type) ;
       @isIndexed = isIndexed ;
@@ -163,6 +184,7 @@ module ItkSql
     def setType(type, param = nil)
       case(type)
       when :int ;  	setType('integer') ;
+      when :bigint ;    setType('bigint') ;
       when :float ; 	setType('float') ;
       when :geo ; 	setType('geometry') ;
       when :bool ;	setType('boolean') ;
@@ -397,13 +419,15 @@ module ItkSql
 
   ##--------------------------------------------------
   def sqlValueListForm(valueList)
+    form = nil ;
     if(valueList.is_a?(Array))
-      return sqlValueListFormByArray(valueList) ;
+      form = sqlValueListFormByArray(valueList) ;
     elsif(valueList.is_a?(Hash))
-      return sqlValueListFormByHash(valueList) ;
+      form = sqlValueListFormByHash(valueList) ;
     else
       raise "Arg of sqlValueListForm should be Array/Hash" ;
     end
+    return '(' + form + ')' ;
   end
 
   ##--------------------------------------------------
@@ -781,18 +805,45 @@ $connect = 0 ;
   end
 
   ##--------------------------------------------------
+  def pushValues(values)
+    @valuesList = [] if(@valuesList.nil?) ;
+    @valuesList.push(values) ;
+  end
+
+  ##--------------------------------------------------
+  def setValues(values)
+    @values = values ;
+  end
+
+  ##--------------------------------------------------
   def sqlValues()
+    if(@valuesList.nil? && !@values.nil?) then
+      return sqlValueListForm(@values) ;
+    elsif(@valuesList.is_a?(Array)) then
+      form = nil ;
+      @valuesList.each(){|values|
+        if(form.nil?()) then
+          form = '' ;
+        else
+          form += "," ;
+        end
+        form += sqlValueListForm(values) ;
+      }
+      @valuesList = nil ;
+      return form ;
+    end
     raise ('sqlValues() has not implemented for class:' + self.class().to_s) ;
   end
 
   ##--------------------------------------------------
   def sqlScript_Insert(delayedp = false)
-    values = sqlValues() ;
+    valuesStr = sqlValues() ;
+    return nil if(valuesStr.nil?) ;  # return nil if no values.
     ("insert #{(delayedp ? 'delayed' : '')} " + 
-     "into `#{tableName()}` (#{sqlCols(sqlKeyIsAssignedP())}) " + 
+#     "into `#{tableName()}` (#{sqlCols(sqlKeyIsAssignedP())}) " + 
      ## 上と下、どちらが正しいのか不明
-#     "into `#{tableName()}` (#{sqlColsForSelect(sqlKeyIsAssignedP())}) " + 
-     "values (#{values});") ;
+     "into `#{tableName()}` (#{sqlColsForSelect(sqlKeyIsAssignedP())}) " + 
+     "values #{valuesStr};") ;
   end
 
   ##--------------------------------------------------
@@ -801,6 +852,7 @@ $connect = 0 ;
 
     com = sqlScript_Insert(delayedp) ;
     puts com if $verbosep ;
+    return if(com.nil?) ;  ## skip no values to insert.
     mysql.query(com){|res|
       p res if @verbosep ;
     }
@@ -861,7 +913,8 @@ $connect = 0 ;
     elsif(value.is_a?(Time))
       return value ;
     elsif(value.is_a?(String))
-      return Time.local(*(ParseDate::parsedate(value))) ;
+#      return Time.local(*(ParseDate::parsedate(value))) ;
+      return Time.parse(value) ;
     else
       raise "Can't convert to Time object from: " + value.to_s ;
     end
@@ -876,8 +929,9 @@ $connect = 0 ;
     elsif(value.is_a?(Time))
       return Date.new(value.year, value.month, value.day) ;
     elsif(value.is_a?(String))
-      timeValue = ParseDate::parsedate(value) ;
-      return Date.new(*timeValue[0..2]) ;
+#      timeValue = ParseDate::parsedate(value) ;
+#      return Date.new(*timeValue[0..2]) ;
+      return Date.parse(value) ;
     else
       raise "Can't convert to Time object from: " + value.to_s ;
     end
@@ -890,9 +944,11 @@ $connect = 0 ;
     elsif(value.is_a?(TimeDuration))
       return value ;
     elsif(value.is_a?(String))
-      timeValue = ParseDate::parsedate(value) ;
+#      timeValue = ParseDate::parsedate(value) ;
+      time = Time.parse(value) ;
       duration = TimeDuration.new() ;
-      duration.setTime(*timeValue[range]) ;
+#      duration.setTime(*timeValue[range]) ;
+      duration.setTime(time.hour, time.min, time.sec) ;
       return duration ;
     else
       raise "Can't convert to TimeDuration object from: " + value.to_s ;
