@@ -201,6 +201,15 @@ module Itk
 
     #--------------------------------------------------
     #++
+    ## logging warn level
+    # _*messageList_ :: a list of objects to output for logging.
+    # _&body_ :: a procedure to generate the final message.
+    def warn(*messageList,&body)
+      logging(LevelWarn, *messageList, &body) ;
+    end
+
+    #--------------------------------------------------
+    #++
     ## logging error level
     # _*messageList_ :: a list of objects to output for logging.
     # _&body_ :: a procedure to generate the final message.
