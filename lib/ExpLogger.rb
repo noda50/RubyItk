@@ -33,9 +33,10 @@ module Itk
       :none => LevelAll = 0,
       :debug => LevelDebug = 1,
       :info => LevelInfo = 2,
-      :error => LevelError = 3,
-      :fatal => LevelFatal = 4,
-      :top => LevelNone = 5,
+      :warn => LevelWarn = 3,
+      :error => LevelError = 4,
+      :fatal => LevelFatal = 5,
+      :top => LevelNone = 6,
     } ;
     ## Table for Logging Level
     LevelName = {} ;
