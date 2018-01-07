@@ -14,7 +14,13 @@
 require 'time' ;
 require 'zlib' ;
 
-$LOAD_PATH.push('~/lib/ruby') if(!$LOAD_PATH.member?('~/lib/ruby')) ;
+def $LOAD_PATH.addIfNeed(path)
+  self.unshift(path) if(!self.include?(path)) ;
+end
+
+$LOAD_PATH.addIfNeed("~/lib/ruby");
+$LOAD_PATH.addIfNeed(File.dirname(__FILE__));
+
 require 'WithConfParam.rb' ;
 
 #--======================================================================
