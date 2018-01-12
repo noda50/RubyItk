@@ -19,7 +19,17 @@ require 'Geo2D.rb' ;
 module Geo2D
   #--======================================================================
   #++
-  ## RTree implements by pure ruby
+  ## RTree implements by pure ruby.
+  ## Basic Usage:
+  ##   [create]:
+  ##     rtree = Geo2D::RTree.new() ;
+  ##   [insert]:
+  ##     rtree.insert(geoObject) ;
+  ##   [delete]:
+  ##     rtree.delete(geoObject) ;
+  ##   [search]:
+  ##     objList = rtree.searchByBBox(box) ;
+  ##   ,where, geoObject should bbox() method.
   class RTree < WithConfParam
     #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     #++
