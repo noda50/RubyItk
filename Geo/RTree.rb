@@ -40,6 +40,7 @@ module Geo2D
     DefaultConf = { :branchN => 4,
                     :reballanceN => 0, ## 1 だとあまりうまく動かない。
                     :useCountCost => true,
+                    :epsilon => Float::EPSILON, ## minimum bbox size in search
                     nil => nil
                   } ;
 
@@ -53,6 +54,8 @@ module Geo2D
     attr_accessor :reballanceN ;
     ## flag to use count cost.  cost increases if entity count is large.
     attr_accessor :useCountCost ;
+    ## minimum bbox size in search
+    attr_accessor :epsilon ;
 
     #--------------------------------------------------------------
     #++
@@ -70,6 +73,7 @@ module Geo2D
       @branchN = getConf(:branchN) ;
       @reballanceN = getConf(:reballanceN) ;
       @useCountCost = getConf(:useCountCost) ;
+      @epsilon = getConf(:epsilon) ;
       @root = Node.new(self) ;
     end
 
@@ -163,11 +167,15 @@ module Geo2D
       objList = searchByBBox(bbox) ;
 
       if(objList.size > 0) then
-        ret = searchByMinimalDistBBox_Down(reference, dist / 2.0) ;
-        if(ret.nil?) then
-          return [dist, obList] ;
+        if(dist < epsilon()) then
+          return [dist, objList] ;
         else
-          return ret ;
+          ret = searchByMinimalDistBBox_Down(reference, dist / 2.0) ;
+          if(ret.nil?) then
+            return [dist, objList] ;
+          else
+            return ret ;
+          end
         end
       else
         return nil ;
@@ -683,6 +691,13 @@ module Geo2D
       end
       
 
+      #------------------------------------------
+      #++
+      ## get epsilon value
+      def epsilon()
+        return (@tree.nil? ? @parent.epsilon() : @tree.epsilon()) ;
+      end
+      
       #------------------------------------------
       #++
       ## show tree.
