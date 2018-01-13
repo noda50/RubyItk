@@ -30,7 +30,7 @@ module Geo2D
   ##   [search by BoundaryBox]:
   ##     geoObjList = rtree.searchByBBox(box) ;
   ##   [find nearest from a point]
-  ##     geoObject = rtree.searchNearestFrom(point) ;
+  ##     geoObject = rtree.findNearestFrom(point) ;
   ##   ,where, geoObject should bbox() and distanceFrom()
   ##
   class RTree < WithConfParam
@@ -75,6 +75,13 @@ module Geo2D
 
     #--------------------------------------------------------------
     #++
+    ## check empty
+    def isEmpty()
+      return @root.count == 0 ;
+    end
+    
+    #--------------------------------------------------------------
+    #++
     ## insert geo object.
     def insert(geo)
       @root.insert(geo) ;
@@ -92,9 +99,93 @@ module Geo2D
 
     #--------------------------------------------------------------
     #++
-    ## search
+    ## search by boundary box
     def searchByBBox(bbox)
       return @root.searchByBBox(bbox, []) ;
+    end
+
+    #--------------------------------------------------------------
+    #++
+    ## find the nearest object from an target object
+    def findNearestFrom(reference)
+      if(!isEmpty()) then
+        (dist, objList) = searchByMinimalDistBBox(reference) ;
+        return findNearestInListSurelyFrom(reference, dist, objList) ;
+      else
+        return nil ;
+      end
+    end
+
+    #--------------------------------
+    #++
+    ## search objects with minimal distance bbox.
+    def findNearestInListSurelyFrom(reference, origDist, objList)
+      minDist = nil ;
+      minObj = nil ;
+      objList.each{|obj|
+        dist = obj.distanceFrom(reference) ;
+        if(minDist.nil? || minDist > dist) then
+          minDist = dist ;
+          minObj = obj ;
+        end
+      }
+
+      if(minDist <= origDist) then
+        return minObj ;
+      else
+        bbox = reference.bbox.dup.growByMargin(minDist) ;
+        newObjList = searchByBBox(bbox) ;
+        return findNearestInListSurelyFrom(reference, minDist, newObjList) ;
+      end
+
+    end
+    
+    #--------------------------------
+    #++
+    ## search objects with minimal distance bbox.
+    def searchByMinimalDistBBox(reference)
+      dist = Math.sqrt(@root.bbox.grossArea() / @root.count)
+      
+      ret = searchByMinimalDistBBox_Down(reference, dist) ;
+      
+      if(ret == nil) then
+        ret = searchByMinimalDistBBox_Up(reference, dist * 2.0) ;
+      end
+
+      return ret ;
+    end
+      
+    #--------------------------------
+    #++
+    ## search objects with minimal distance bbox.
+    def searchByMinimalDistBBox_Down(reference, dist)
+      bbox = reference.bbox.dup.growByMargin(dist) ;
+      objList = searchByBBox(bbox) ;
+
+      if(objList.size > 0) then
+        ret = searchByMinimalDistBBox_Down(reference, dist / 2.0) ;
+        if(ret.nil?) then
+          return [dist, obList] ;
+        else
+          return ret ;
+        end
+      else
+        return nil ;
+      end
+    end
+
+    #--------------------------------
+    #++
+    ## search objects with minimal distance bbox.
+    def searchByMinimalDistBBox_Up(reference, dist)
+      bbox = reference.bbox.dup.growByMargin(dist) ;
+      objList = searchByBBox(bbox) ;
+
+      if(objList.size > 0) then
+        return [dist, objList] ;
+      else
+        return searchByMinimalDistBBox_Up(reference, dist * 2.0) ;
+      end
     end
 
     #--------------------------------------------------------------

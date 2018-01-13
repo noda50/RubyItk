@@ -327,7 +327,7 @@ module Geo2D
 
     ##----------------------------------------
     def distanceFromPoint(point)
-      Math::sqrt((@x - v.x) ** 2 + (@y - v.y) ** 2) ;
+      Math::sqrt((@x - point.x) ** 2 + (@y - point.y) ** 2) ;
     end
 
     ##----------------------------------------
