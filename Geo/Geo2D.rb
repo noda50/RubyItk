@@ -180,6 +180,41 @@ module Geo2D
   class GeoObject
 
     include GeoObjUtil
+
+    ##----------------------------------------
+    ## ある位置からの最短距離
+    def distanceFrom(object)
+      if(object.is_a?(Vector))
+        return distanceFromPoint(object) ;
+      elsif(object.is_a?(LineSegment))
+        return distanceFromLine(object) ;
+      elsif(object.is_a?(LineString))
+        return distanceFromLineString(object)
+      elsif(object.is_a?(Polygon))
+        return distanceFromLineString(object.exterior) ;
+      else
+        raise("unsupported object type for distanceFrom: " + object.to_s) ;
+      end
+    end
+
+    ##----------------------------------------
+    ## ある位置からの最短距離
+    def distanceFromPoint(point)
+      raise "distanceFromPoint() has not been defined in class : #{self.class().to_s}"
+    end
+
+    ##----------------------------------------
+    ## あるLineからの最短距離
+    def distanceFromLine(line)
+      line.distanceFrom(self) ;
+    end
+
+    ##----------------------------------------
+    ## あるLineStringからの最短距離
+    def distanceFromLineString(lineString)
+      lineString.distanceFrom(self) ;
+    end
+    
   end
 
   ##============================================================
@@ -287,10 +322,13 @@ module Geo2D
 
     ##----------------------------------------
     def distanceTo(v)
-      Math::sqrt((@x - v.x) ** 2 + (@y - v.y) ** 2) ;
+      distanceFrom(v)
     end
 
-    alias distanceFrom distanceTo ;
+    ##----------------------------------------
+    def distanceFromPoint(point)
+      Math::sqrt((@x - v.x) ** 2 + (@y - v.y) ** 2) ;
+    end
 
     ##----------------------------------------
     def unit()
@@ -873,22 +911,6 @@ module Geo2D
     
     ##----------------------------------------
     ## ある位置からの最短距離
-    def distanceFrom(object)
-      if(object.is_a?(Vector))
-        return distanceFromPoint(object) ;
-      elsif(object.is_a?(LineSegment))
-        return distanceFromLine(object) ;
-      elsif(object.is_a?(LineString))
-        return distanceFromLineString(object)
-      elsif(object.is_a?(Polygon))
-        return distanceFromLineString(object.exterior) ;
-      else
-        raise("unsupported object type for distanceFrom: " + object.to_s) ;
-      end
-    end
-
-    ##----------------------------------------
-    ## ある位置からの最短距離
     def distanceFromPoint(point)
       dist = nil ;
       eachLine{|line|
@@ -1435,6 +1457,11 @@ module Geo2D
       return self ;
     end
 
+    ##----------------------------------------
+    def distanceFrom(geoObject)
+      to_Polygon().distanceFrom(geoObject) ;
+    end
+    
     ##----------------------------------------
     def to_s()
       "#Box[#{@minPos.to_s(true)}:#{@maxPos.to_s(true)}]" ;

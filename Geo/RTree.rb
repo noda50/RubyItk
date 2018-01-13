@@ -27,9 +27,12 @@ module Geo2D
   ##     rtree.insert(geoObject) ;
   ##   [delete]:
   ##     rtree.delete(geoObject) ;
-  ##   [search]:
-  ##     objList = rtree.searchByBBox(box) ;
-  ##   ,where, geoObject should bbox() method.
+  ##   [search by BoundaryBox]:
+  ##     geoObjList = rtree.searchByBBox(box) ;
+  ##   [find nearest from a point]
+  ##     geoObject = rtree.searchNearestFrom(point) ;
+  ##   ,where, geoObject should bbox() and distanceFrom()
+  ##
   class RTree < WithConfParam
     #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     #++
