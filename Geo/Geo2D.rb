@@ -214,6 +214,13 @@ module Geo2D
     def distanceFromLineString(lineString)
       lineString.distanceFrom(self) ;
     end
+
+    ##----------------------------------------
+    ## geoObject を得るメソッド。
+    ## RTree で使用。
+    def geoObject()
+      self ;
+    end
     
   end
 

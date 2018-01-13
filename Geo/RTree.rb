@@ -24,14 +24,14 @@ module Geo2D
   ##   [create]:
   ##     rtree = Geo2D::RTree.new() ;
   ##   [insert]:
-  ##     rtree.insert(geoObject) ;
+  ##     rtree.insert(object) ;
   ##   [delete]:
-  ##     rtree.delete(geoObject) ;
+  ##     rtree.delete(object) ;
   ##   [search by BoundaryBox]:
-  ##     geoObjList = rtree.searchByBBox(box) ;
+  ##     objectList = rtree.searchByBBox(box) ;
   ##   [find nearest from a point]
-  ##     geoObject = rtree.findNearestFrom(point) ;
-  ##   ,where, geoObject should bbox() and distanceFrom()
+  ##     object = rtree.findNearestFrom(point) ;
+  ##   ,where, object should geoObject() method that return Geo2D::GeoObject.
   ##
   class RTree < WithConfParam
     #--::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -127,7 +127,7 @@ module Geo2D
       minDist = nil ;
       minObj = nil ;
       objList.each{|obj|
-        dist = obj.distanceFrom(reference) ;
+        dist = obj.geoObject().distanceFrom(reference) ;
         if(minDist.nil? || minDist > dist) then
           minDist = dist ;
           minObj = obj ;
@@ -223,7 +223,7 @@ module Geo2D
     def showTree(strm = $stdout, &body)
       if(body.nil?) then
         @root.showTree(strm, "", "  ") {|node|
-          "*+[#{node.count}]: #{node.bbox}" ;
+          "*+[#{node.count}]: #{node.geoObject().bbox}" ;
         } ;
       else
         @root.showTree(strm, "", "  ", &body) ;
@@ -362,9 +362,9 @@ module Geo2D
       ## update bbox.
       def insertToBox(box, geo)
         if(box.nil?) ;
-          box = geo.bbox() ;
+          box = geo.geoObject().bbox() ;
         else
-          box.insert(geo.bbox()) ;
+          box.insert(geo.geoObject().bbox()) ;
         end
         return box ;
       end
@@ -418,11 +418,11 @@ module Geo2D
       ## calc insert cost
       def calcIncreasingArea(geo)
         if(@bbox.nil?) then
-          return geo.bbox.grossArea() ;
+          return geo.geoObject().bbox().grossArea() ;
         else
           tempBBox = @bbox.dup(true) ;
           origArea = tempBBox.grossArea() ;
-          tempBBox.insert(geo.bbox()) ;
+          tempBBox.insert(geo.geoObject().bbox()) ;
           newArea = tempBBox.grossArea() ;
           return newArea - origArea ;
         end
@@ -436,7 +436,9 @@ module Geo2D
         if(_bbox.intersectsWithBox(@bbox)) then
           if(isBottom()) then
             @children.each{|child|
-              result.push(child) if(_bbox.intersectsWithBox(child.bbox())) ;
+              if(_bbox.intersectsWithBox(child.geoObject().bbox())) ;
+                result.push(child)
+              end
             }
           else
             @children.each{|child|
@@ -452,7 +454,8 @@ module Geo2D
       ## delete.
       def delete(geo)
         c = 0 ;
-        if(!bbox().nil? && bbox().intersectsWithBox(geo.bbox())) then
+        if(!bbox().nil? &&
+           bbox().intersectsWithBox(geo.geoObject().bbox())) then
           if(isBottom()) then
             c = deleteFromBottom(geo) ;
           else
@@ -497,7 +500,7 @@ module Geo2D
       def recalcBBox()
         @bbox = nil ;
         @children.each{|child|
-          childBBox = child.bbox() ;
+          childBBox = child.geoObject().bbox() ;
           if(!childBBox.nil?) then
             if(@bbox.nil?) then
               @bbox = childBBox.dup() ;
@@ -560,7 +563,7 @@ module Geo2D
           if(child == childNode) then
             nth = i ;
           else
-            box = insertToBox(box, child.bbox) ;
+            box = insertToBox(box, child.geoObject().bbox()) ;
           end
           i += 1 ;
         }
@@ -570,7 +573,7 @@ module Geo2D
           gchildDepth = gchild.getDepthRange() ;
           if(gchildDepth[1] + 2 < depthRange[1]) then
             newBox = box.dup ;
-            newBox.insert(gchild.bbox()) ;
+            newBox.insert(gchild.geoObject().bbox()) ;
             if(bestGChild.nil? ||
                bestBox.grossArea() > newBox.grossArea()) then 
               bestGChild = gchild ;
@@ -645,7 +648,7 @@ module Geo2D
         elsif(@bbox.nil?) then
           return 0.0 ;
         else
-          bboxList = @children.map(){|child| child.bbox()} ;
+          bboxList = @children.map(){|child| child.geoObject().bbox()} ;
           k = bboxList.size() ;
           area = 0.0 ;
           (0...k).each{|i|
@@ -693,6 +696,13 @@ module Geo2D
 
       #------------------------------------------
       #++
+      ## get geoObject()
+      def geoObject()
+        self ;
+      end
+      
+      #------------------------------------------
+      #++
       ## get epsilon value
       def epsilon()
         return (@tree.nil? ? @parent.epsilon() : @tree.epsilon()) ;
@@ -727,7 +737,7 @@ module Geo2D
           if(isBottom()) then
             d = 1.0 / canvas.getScaleX() ;
             @children.each{|leaf|
-              _bbox = leaf.bbox() ;
+              _bbox = leaf.geoObject().bbox() ;
               rx = _bbox.sizeX()/2.0 ; rx = d if (rx < d) ;
               ry = _bbox.sizeY()/2.0 ; ry = d if (ry < d) ;
               canvas.drawEllipse(_bbox.midX(), _bbox.midY(),
@@ -981,7 +991,7 @@ if($0 == __FILE__) then
         rtree.showOnCanvas(canvas) ;
         p [reballanceN, i, rtree.root.getDepthRange()] ;
       }
-      p rtree.root.bbox() ;
+      p rtree.root.geoObject().bbox() ;
     end
 
     #----------------------------------------------------
