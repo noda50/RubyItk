@@ -106,6 +106,20 @@ module Geo2D
 
     #--------------------------------------------------------------
     #++
+    ## calculate accumulated area
+    def calcAccumulatedArea()
+      return @root.calcAccumulatedArea() ;
+    end
+
+    #--------------------------------------------------------------
+    #++
+    ## calculate overlap area ratio
+    def calcOverlapRatio()
+      return @root.calcOverlapRatio()
+    end
+
+    #--------------------------------------------------------------
+    #++
     ## show tree.
     def showTree(strm = $stdout, &body)
       if(body.nil?) then
@@ -552,6 +566,31 @@ module Geo2D
           return area ;
         end
       end
+
+      #------------------------------------------
+      #++
+      ## calc overlap area ratio in children
+      def calcAccumulatedArea()
+        if(isBottom()) then
+          return 0.0 ;
+        elsif(@bbox.nil?) then
+          return 0.0 ;
+        else
+          area = bbox().grossArea() ;
+          @children.each{|child|
+            area += child.calcAccumulatedArea() ;
+          }
+          return area ;
+        end
+      end
+      
+      #------------------------------------------
+      #++
+      ## calc overlap area ratio in children
+      def calcOverlapRatio()
+        return calcOverlapArea(true) / calcAccumulatedArea() ;
+      end
+      
 
       #------------------------------------------
       #++
