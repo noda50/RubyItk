@@ -625,7 +625,7 @@ module Geo2D
 
     ##----------------------------------------
     ## 垂線の足のある位置の u からの比率 k を求める
-    def footPointRatioFrom(point)
+    def footPointRatioFrom(point, extendP = true)
       dx = @u.x - @v.x ;
       dy = @u.y - @v.y ;
       rx = @u.x - point.x ;
@@ -636,11 +636,29 @@ module Geo2D
       else
         k = (dx * rx + dy * ry) / d ;
       end
+
+      ## adjust k if non-extendP mode.
+      if(!extendP) then
+        if(k < 0.0)
+          k = 0.0 ;
+        elsif(k > 1.0)
+          k = 1.0 ;
+        end
+      end
+      
+      return k ;
+    end
+
+    ##----------------------------------------
+    ## 垂線の足のある位置の u からの距離を求める
+    def footPointSpanFrom(point, extendP = true)
+      k = footPointRatioFrom(point, extendP) ;
+      return k * length() ;
     end
 
     ##----------------------------------------
     ## 垂線の足のある位置。extendP が false の時は線分としての最近点
-    def footPointFrom(point,extendP = false)
+    def footPointFrom(point, extendP = false)
       k = footPointRatioFrom(point) ;
 
       if(extendP)
@@ -917,14 +935,54 @@ module Geo2D
     end
     
     ##----------------------------------------
-    ## ある位置からの最短距離
-    def distanceFromPoint(point)
-      dist = nil ;
-      eachLine{|line|
-        d = line.distanceFromPoint(point) ;
-        dist = min(dist, d) ;
+    ## 垂線の足(または最近点)のある位置。
+    def footPointFrom(point)
+      (dist, minLine, minK) = distanceFromPoint(point, true) ;
+      return minLine.footPointFrom(point, false) ;
+    end
+    
+    ##----------------------------------------
+    ## ある位置からの垂線の足の、開始点からの位置。
+    ## _point_ :: reference point.
+    ## *return* :: span of the foot point from the begining.
+    def footPointSpanFrom(point)
+      (dist, minLine, minK) = distanceFromPoint(point, true) ;
+      span = 0.0 ;
+      (0...minK).each{|k|
+        span += nthLine(k).length() ;
       }
-      dist ;
+      span += minLine.footPointSpanFrom(point, false) ;
+
+      return span ;
+    end
+
+    ##----------------------------------------
+    ## ある位置からの最短距離。
+    ## _point_ :: reference point.
+    ## _fullAnswerP_ :: if true, return full information about min dist.
+    ## *return* :: if _fullAnswerP_ is false (default),  return distance value.
+    ##             if _fullAnswerP_ is true, return [dist, minLine, minK]
+    ##             where minLine is the nearest LineSegment,
+    ##             and minK is the nth of minLine in this LineSequence.
+    def distanceFromPoint(point, fullAnswerP = false)
+      minDist = nil ;
+      minLine = nil ;
+      minK = nil ;
+      k = 0 ;
+      eachLine{|line|
+        dist = line.distanceFromPoint(point) ;
+        if(minDist.nil? || dist < minDist) then
+          minDist = dist ;
+          minLine = line ;
+          minK = k ;
+        end
+        k += 1 ;
+      }
+      if(fullAnswerP) then
+        return [minDist, minLine, minK] ;
+      else
+        return minDist ;
+      end
     end
 
     ##----------------------------------------
